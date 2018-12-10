@@ -1,0 +1,40 @@
+\BOOKMARK [1][-]{section.1}{System Overview \(75 pts\)}{}% 1
+\BOOKMARK [2][-]{subsection.1.1}{Lifetime of a request}{section.1}% 2
+\BOOKMARK [2][-]{subsection.1.2}{General numbers observed w.r.t. clients, middlewares and server}{section.1}% 3
+\BOOKMARK [1][-]{section.2}{Baseline without Middleware \(75 pts\)}{}% 4
+\BOOKMARK [2][-]{subsection.2.1}{One Server}{section.2}% 5
+\BOOKMARK [3][-]{subsubsection.2.1.1}{Read-only}{subsection.2.1}% 6
+\BOOKMARK [3][-]{subsubsection.2.1.2}{Write-only}{subsection.2.1}% 7
+\BOOKMARK [2][-]{subsection.2.2}{Two Servers}{section.2}% 8
+\BOOKMARK [3][-]{subsubsection.2.2.1}{Read-only}{subsection.2.2}% 9
+\BOOKMARK [3][-]{subsubsection.2.2.2}{Write-only}{subsection.2.2}% 10
+\BOOKMARK [3][-]{subsubsection.2.2.3}{Explanation}{subsection.2.2}% 11
+\BOOKMARK [2][-]{subsection.2.3}{Summary}{section.2}% 12
+\BOOKMARK [1][-]{section.3}{Baseline with Middleware \(90 pts\)}{}% 13
+\BOOKMARK [2][-]{subsection.3.1}{One Middleware}{section.3}% 14
+\BOOKMARK [3][-]{subsubsection.3.1.1}{Read-only and Explanation}{subsection.3.1}% 15
+\BOOKMARK [3][-]{subsubsection.3.1.2}{Write-only and Explanation}{subsection.3.1}% 16
+\BOOKMARK [3][-]{subsubsection.3.1.3}{Additional Explanation}{subsection.3.1}% 17
+\BOOKMARK [2][-]{subsection.3.2}{Two Middlewares}{section.3}% 18
+\BOOKMARK [3][-]{subsubsection.3.2.1}{Read-only}{subsection.3.2}% 19
+\BOOKMARK [3][-]{subsubsection.3.2.2}{Write-only}{subsection.3.2}% 20
+\BOOKMARK [3][-]{subsubsection.3.2.3}{Explanation}{subsection.3.2}% 21
+\BOOKMARK [2][-]{subsection.3.3}{Summary}{section.3}% 22
+\BOOKMARK [1][-]{section.4}{Throughput for Writes \(90 pts\)}{}% 23
+\BOOKMARK [2][-]{subsection.4.1}{Full System}{section.4}% 24
+\BOOKMARK [3][-]{subsubsection.4.1.1}{Explanation}{subsection.4.1}% 25
+\BOOKMARK [2][-]{subsection.4.2}{Summary}{section.4}% 26
+\BOOKMARK [1][-]{section.5}{Gets and Multi-gets \(90 pts\)}{}% 27
+\BOOKMARK [2][-]{subsection.5.1}{Sharded Case}{section.5}% 28
+\BOOKMARK [3][-]{subsubsection.5.1.1}{Explanation}{subsection.5.1}% 29
+\BOOKMARK [2][-]{subsection.5.2}{Non-sharded Case}{section.5}% 30
+\BOOKMARK [3][-]{subsubsection.5.2.1}{Explanation}{subsection.5.2}% 31
+\BOOKMARK [2][-]{subsection.5.3}{Histogram}{section.5}% 32
+\BOOKMARK [2][-]{subsection.5.4}{Summary}{section.5}% 33
+\BOOKMARK [1][-]{section.6}{2K Analysis \(90 pts\)}{}% 34
+\BOOKMARK [2][-]{subsubsection.6.0.1}{Read-only}{section.6}% 35
+\BOOKMARK [3][-]{subsubsection.6.0.2}{Write-only}{subsubsection.6.0.1}% 36
+\BOOKMARK [1][-]{section.7}{Queuing Model \(90 pts\)}{}% 37
+\BOOKMARK [2][-]{subsection.7.1}{M/M/1}{section.7}% 38
+\BOOKMARK [2][-]{subsection.7.2}{M/M/m}{section.7}% 39
+\BOOKMARK [2][-]{subsection.7.3}{Network of Queues}{section.7}% 40
