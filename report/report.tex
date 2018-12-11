@@ -58,25 +58,6 @@
 
 Furthermore, it is expected that the interactive law holds for all experiments. In case throughput and response time do not match, it is imperative that you explain why, otherwise you risk losing most of the points for the experiment in question.
 
-In each section you can find a table summarizing the system configuration that should to be used for that particular section. These configurations should be considered as a guideline to help you find interesting configurations where we expect your system to change its behaviour (e.g., going from an under-saturated to a saturated system). If you do not observe such a change inside that range of parameters, you should expand the range and run additional experiments outside the given range. In that case, ask your assistant for advise.
-
-This document provides you with the end-results that have to be included in the report. Please keep in mind that you are encouraged to provide additional graphs and experiments that help you in understanding your system. These additional experiments should be chosen such that they support the claims you make in your explanations and help you illustrate your point.
-
-
-\subsection*{How to Generate Load and Populate the Data}
-
-To generate load on the system, you will use memtier. When using memtier, you can specify two parameters: the number of threads (CT) and the number of virtual clients per thread (VC). The total number of virtual clients per memtier is CPM=CT*VC. When referring to ``number of clients'' in the system, it is the number of memtier instances times the number of virtual clients per instance, i.e., NumClients=NumMemtier*CPM.
-
-Increasing NumClients for experiments is always done by first fixing the number of virtual machines (VMs) and memtier instances and then changing the VC setting for all memtiers. In most cases it is enough to increase VC in large increments, unless you want to explore the behavior of your system around the inflexion point or other points which are of interest. In this case, you can use more fine-grained steps.
-
-For all experiments, use 2 CT per VM and between 1 and 32 VC per thread. We recommend to choose at least 6 points in this range. You will have to use up to 3 VMs for clients. In case you use a single middleware, set up each memtier instance with 2 CTs. If you use two middlewares, start two memtier instances per VM (each connected to one middleware) with 1 CT each.
-
-For all experiments conducted in this report, the value size has to be 4096\,Bs, and the number of keys 10000 (\texttt{--key-maximum=10000}). Before running experiments, populate the key-value store using a write-only workload long enough to write all keys at least once. All sets should have a long expiry time, to ensure that keys are not evicted during the experiments (e.g., \texttt{--expiry-range=9999-10000}). The loading of the memcached servers is not part of the measured performance, and the middleware has to be restarted after the initial population, before running experiments. 
-
-\subsection*{Plotting Data}
-The readability of your grades will be part of the grade. For all graphs the y-axis should start at 0, always use appropriate error metrics/bars, label both axis with units. For graphs that are related try to keep the same range on the x- and y-axis. Be careful when using log-scale on any of the axis. 
-\newpage
-
 \section{System Overview (75 pts)}
 
 I structure my project (code only) into the following folders.
@@ -131,15 +112,17 @@ If none of the above cases hold, an error happened (we exit gracefully, as this 
 This is the entrypoint of how the Middleware is called.
 The datastructure we use to connect to the individual clients is the \textbf{nio.Selector}. 
 The \textbf{nio.Selector} can hold multiple connections from different clients conneting. 
-Furthermore, it can parse packages that don't immediately fit into the bytebuffer 
+Furthermore, it can parse packages that don't immediately fit into the bytebuffer.
+The backlog size is bigger than 0 such that multiple requests can made to the same channel at the same time (and these requests are backlogged).
 
-This class is responsible for fetching the individual requests (spawned as a \textit{SingleRequest} object)using non-blocking IO, putting it to a queue, and spawning \textit{MiddlewareWorker}'s within a \textit{ThreadPool} to act upon these requests.
+
+This class is responsible for fetching the individual requests (spawned as a \textit{SingleRequest} object)using non-blocking IO, putting it to a queue, and spawning \textit{MiddlewareWorker}'s within a \textbf{\textit{ThreadPool}} to act upon these requests.
 We use the NIO selector to handle all connections.
 The entire logic of this .java class runs in on the main thread of the class, which I may refer to as "Network Thread".
 This allows for multiple clients to connect to the server in a non-blocking fashion.
 Whenever a connection is compelte (i.e. the request is complete), this selector spawns a \textit{MiddlewareWorker} and a \textit{SingleRequest}.
 
-The following diagram symbolizes how this works.
+The diagram above symbolizes how this works.
 
 \item \textbf{MiddlewareWorker.java} \\
 The \textit{MiddlewareWorker} takes a \textit{SingleRequest} and passes it to the server(s). 
@@ -159,7 +142,9 @@ The string of the \textit{SingleRequest} is used to calculate a hash for the ind
 This hash is then modulo-ed with the number of server that we can send the request to.
 The modulo operation decides which server to send it to.
 This has \textbf{provenly uniformly at random distribution}  behavior (proof at: \href{https://eprint.iacr.org/2016/985.pdf, https://en.wikipedia.org/wiki/K-independent_hashing, https://www.akamai.com/es/es/multimedia/documents/technical-publication/consistent-hashing-and-random-trees-distributed-caching-protocols-for-relieving-hot-spots-on-the-world-wide-web-technical-publication.pdf}).
-In short, this proof relies on the fact that hashing is pseudorandom, and that pseudorandomity is means that for any input, all output values are uniformly at random distributed.
+In short, this proof relies on the fact that hashing is pseudorandom, and that pseudorandomity means that for any input, all output values are uniformly at random distributed.
+Pseudorandomity keeps it's properties when applied with the modulo operator. 
+Because all operations preserve pseudorandomity, the final operation - and thus the server chosen - is also uniformly at random.
 
 \item case MULTIGET (nonsharded):
 The nonsharded multiget acts exactly like the GET case.
@@ -168,21 +153,23 @@ Again, the uniformly at random assumption is guaranteed because the hashing algo
 \item case MULTIGET (sharded):
 The sharded MULTIGET case acts as follows. The MULTIGET request is first split up into $n = max(keys, buckets)$ where $buckets$ is the number of servers in total, and $keys$ is the number of keys in total.
 Each individual split up request is then treated as an individual GET request.
-When the memcached server responds, all the answers are concatenated in a sequential fashion and sent back to the client.
+When the memcached server responds, all the answers are concatenated in a sequential fashion and sent back to the client. 
+Errors are handled and also reduced to the first occuring error if this is the case.
 \end{itemize}
 
 
 \item \textbf{LoggerUtils.java} \\
 A helper class.
 Includes all the logic that is needed to log the requests to hard disk.
-All the request logic is accumulated to a list, and at the very end, flushed to disk (using this logger class and some logic from the middleware worker).
-The logging happens in such a way that each individual \textit{MiddlewareWorker} has it's list of requests to be logged at.
-Once no more incoming requests get in for more than a few seconds (as decided by the \textit{MyMiddleware}), all the logs are flushed to disk (and then downloaded to local for further processing).
-This way, there are no issues with multithreading as there is no concurrent data access. \\
+All the request logic is accumulated to variables, and the mean is flushed to disk every few minutes.
+For GET requests (and in the interest of experiment 5), GET requests are accumulated into a list, and flushed to disk every 5 seconds.
+The logging happens in such a way that each individual \textit{MiddlewareWorker} has it's list of requests and all accumulater objects (inside the LoggerUtils.java) to be logged.
+Because there is a separate Logger for each thread, there are no issues with multithreading as there is no concurrent data access. \\
 
 Every single request keeps track of the following values, 
 which is then flushed to the LoggerUtils.java (and thus to the file)
 object when the request has been successfully.
+All the information in SingleRequest is used to create the following log-informations.
 
 \begin{enumerate}
 \item timeRealOffset
@@ -195,14 +182,15 @@ object when the request has been successfully.
 \end{enumerate}
 
 \item \textbf{RequestType.java} \\
-A helper struct definition, which defines the two possible input types (Multi-gets are decided on the fly at a different point)
+A helper struct definition, which defines the two possible input types (Multi-gets are decided on the fly at a different point as described in \textit{SingleRequest.java})
 
 \end{enumerate}
 
 \end{enumerate}
 
 \subsection{Lifetime of a request}
-In the following I will talk about how requests enter the middleware, how they are parsed, how they get distributed to servers, and how the middleware communicates these values back to the clients. \\
+In the following I will talk about how requests enter the middleware, how they are parsed, how they get distributed to servers, and how the middleware communicates these values back to the clients. 
+This is a more detailed version of the above diagram.\\
 
 \begin{enumerate}
 \item \textbf{Request coming from client to middleware:}\\
@@ -217,7 +205,7 @@ To distinguish between \textit{multi-get} and \textit{gets}, we later on split t
 If the number of elements after splitting is bigger than 2 (the "get" keyword, and the key), then I parse a multi-get.
 Else, I parse a get.
 \item \textbf{The incoming request spawns a SingleRequest object:}\\
-The SingleRequest object is specified in the \textbf{SingleRequest.java} java file and implements a java \textbf{Runnable} on which I later on call \textbf{submit} using a \textbf{ThreadPoolExecutor}. 
+The SingleRequest object is specified in the \textbf{SingleRequest.java} java file and is wrapped around a \textbf{MiddlewareWorker.java} object which implements a java \textbf{Runnable} on which I later on call \textbf{submit} using a \textbf{ThreadPoolExecutor}. 
 This file keeps track of the statistics described in the LoggerUtils.java class for logging.
 The SingleRequest takes over the \textbf{ByteBuffer} which was created while \textbf{nio.channels.Selector} was listening for a complete network packet.
 This ByteBuffer will later on be passed to the individual server(s) (after some processing).
@@ -226,22 +214,43 @@ I use the SingleRequest that was generate before, and spawn a new MiddlewareWork
 This MiddlewareWorker can then be submitted to the java \textbf{ThreadPoolExecutor} which contains the number of middleware-threads (as specified per experiment).
 Each individual middlewareworker contains one instantiated \textbf{LoggerUtils} class per thread and thus is threadsafe.
 \item \textbf{Sending the server response back to the client}: \\
+Each middlewareworker, and thus each individual thread, has a connection to the client that the request came from, and a hashmap of sockets to connect to all the servers.
 The response is sent back to the client using the description in the previous sub-section.
 In any case, this goes through the individual middleware-worker thread, and does \textbf{not} go through the initial nio.channel.Selector again.
 \end{enumerate}
 
-\subsection{General numbers observed w.r.t. clients, middlewares and server}
+\subsection{Some statistics, and observed bandwidths amongst different VMs}
 Some general observations include the following approximate maximum throughput. 
 I did not include graphs to this, as all these experiments just involve scalars. \\
 
-Each VM in the azure network has a maximum throughput of approximately 200Mbit/s (between 215 and 192Mbit/s) as determined by the program \textbf{iperf}.
-Because we are dealing with packages of size 4096 bytes (i.e. 4kbytes or 32 Kbits), this means that there the maximum upload capacity of a single virtual machine is approximately $$ \frac{200Mbit/s}{32Kbit} \approx 6'250 ops/s$$.\\
+I use the program \textit{iperf -c 'VM Address'} to arrive at these statistics.
+I arrive at the theoretical maximum throughput by checking how many packages could possibly fit in the bandwidth, where the message size is 4KB, and the bandwidth is specified by the value before that.
+I divide the bandwidth by the packet size to arrive at the theoretical maximum throughput per single VM.
 
-Intuitively, this means that if we have 3 clients and one server, the server must be a bottleneck, and that the clients share the $6'250 ops/s$ (approximately $2'000ops/s$ per client).
-I will use these numbers to derive some explanations later on.\\
+\begin{center}
+    \begin{tabular}{| l | l | l | l |}
+    \hline
+    VM From & VM To & Bandwidth & Theoretical Maximum Throughput per VM (ops/sec)\\ \hline
+    Client & Middleware & 201 Mbits/sec &  6'250 \\ \hline
+    Client & Server & 201 Mbits/sec & 6'250 \\ \hline
+    Middleware & Client & 804 Mbits/sec & 25'000 \\ \hline
+    Middleware & Server & 804 Mbits/sec & 25'000 \\ \hline
+    Server & Client & 101 Mbits/sec &  3'125 \\ \hline
+    Server & Middleware & 101 Mbits/sec & 3'125 \\
+    \hline
+    \end{tabular}
+\end{center}
 
-For all experiments, I will take the mean and standard deviation amongst three individual trials / repetitions.
-The mean $\mu$ and standard deviation ($\sigma$) are calculated as follows:
+Intuitively, this means that if we have 3 clients and one server, the server must be a bottleneck, and that the clients share the $3'125 ops/s$ (approximately $1'000ops/s$ per client).
+\textbf{I will use these numbers to derive some explanations later on}.\\
+
+In addition to the vanilla experiments, I am now talking about my statistical methods of how I analyse the experiments.
+Each plotted value for each experiment in the subsequent report was generating using \textbf{three repetitions}, each including a \textbf{warm-up}, and a \textbf{cool-down} phase of 15 seconds (where the core-length of the experiment was 60 seconds.
+To arrive at a single rate amongst rates, I use the \textbf{arithmetic mean}.
+As an \textbf{error mesaure}, I use the standard deviation.
+These are common statistical tools, and according to the \textbf{law of large numbers}, will approximate any distribution truthfully when the number of samples go against infinity, which is why I chose these two measures.
+
+The mean $\mu$ and standard deviation $\sigma$ are calculated as follows:
 
 \begin{equation}
 \mu = \frac{\sum_i^n x_i} {n}
@@ -251,16 +260,16 @@ The mean $\mu$ and standard deviation ($\sigma$) are calculated as follows:
 \sigma = \sqrt{ \frac{\displaystyle\sum_{i=1}^{n}(x_i - \mu)^2} {n} }
 \end{equation}
 
+I will now proceed with the experiments.
 
-
-%TODO 
-\textbf{??????}
-Include illustrations that show how requests of different types are handled (e.g., components involved in processing the request and method calls). 
+\newpage
 
 \section{Baseline without Middleware (75 pts)}
 These experiments don't use the middleware, and only consist of memtier client instances, and memcached server instances.
 
 \subsection{One Server}
+
+I use the following setup:
 
 \begin{center}
 	\scriptsize{
@@ -279,18 +288,19 @@ These experiments don't use the middleware, and only consist of memtier client i
 
 I will test out the response time and latency for a different number of virtual clients per thread on the client-side (per memtier instance), namely [1, 2, 4, 8, 16, 32].
 I will have two different subsections for read-only operations, and write-only operations.
-As there is no difference in pre-populating the servers in the case of writes, for both experiments I pre-populate the server the same way as in experiment 2.1 (Baseline without middleware and 3 clients).
-The clients and servers don't use multi-gets, and there is no middleware involved.
-I run 3 repetitions of each configuration, each having a length of 90 seconds (such that the warm-up and cool-down times even out).
+As there is no difference in pre-populating the servers in the case of writes, for both experiments I pre-populate the server the same way as in experiment 2.1 (Baseline without middleware and 3 clients) using the following command, which sequentially generates and stores each key in the server.
+\textbf{Wheneverin future experiment setups  I refer to prepopulating the server, I will refer to this command}:
 
-For read-only workloads, I pre-populate the server using the following memtier command. 
-In future, if I ever refer to populating the server(s), I use this same command:
 \begin{spverbatim}
       memtier_benchmark -s {SERVER_IP} -p {PORT}
       --protocol=memcache_text --clients={VIRTUAL_CLIENTS_PER_THREAD} --threads={THREADS}
       --requests=15000 --ratio=1:0 --data-size=4096
      --expiry-range=9999-10000 --key-maximum=10000 --key-pattern=S:S
 \end{spverbatim}
+.\\
+
+The clients and servers don't use multi-gets, and there is no middleware involved.
+I run 3 repetitions of each configuration, each having a length of 90 seconds (such that a warm-up and cool-down time of 15 seconds respectively evens out).
 
 I run 3 repetitions of each configuration, each having a length of 90 seconds (such that the warm-up and cool-down times even out).
 
@@ -298,6 +308,8 @@ I run 3 repetitions of each configuration, each having a length of 90 seconds (s
 
 I first present the graph. 
 The throughput reached approximately almost $3000ops/s$, which conforms to the observation of the maximum throughput per server in section 1. 
+Please notice that the error is very small, and thus for some points intersects with the measured points.
+The error metric is explained in section 1.
 
 \begin{figure}[H]
 \centering
@@ -318,19 +330,23 @@ The throughput reached approximately almost $3000ops/s$, which conforms to the o
 \end{figure}
 
 For read-only operations, the bottleneck is the upload bandwidth of the server,
-as 3 clients are trying to download a load of 200Mbit/s, and thus must each share appr. 66Mbit/s.
-The total upload bandwidth of 6000ops/sec (which was empirically proven in section 1 through an additional experiment), is thus divided amongst  three servers.
-The clients are able to generate enough load with even 1 virtual thread, such that with 1 virtual thread the network bandwidth is saturated.
+as 3 clients are trying to download a load of 100Mbit/s, and thus must each share appr. 33Mbit/s.
+This corresponds to the total upload bandwidth of $3000ops/sec$ (which was empirically proven in section 1 through an additional experiment), is thus divided amongst  three servers.
+The missing ops/sec (between our observers ops/sec and $3000$ comes from network overhead.
+This also proves to be a valuable sanity check.
+The clients are able to generate enough load with even 1 virtual thread per thread, such that with 1 virtual client per thread the network bandwidth is saturated (and stays like this for an increasing number of virtual clients per thread).
 As the number of threads increases, more requests are able to be generated.
-Because the network bandwidth stays constant, the round-trip time of individual requests increases.
-This implies an increase in latency, as can be seen from the graph.
+Because the network bandwidth stays constant, but we introduce more virtual clients, the round-trip time of individual requests increases.
+This implies a linear increase in latency, as can be seen from the graph.
+This linear increase in the response time provides a second sanity check
+\\
 
-
-The latency increases linearly.
 
 \subsubsection{Write-only}
 Again, I first present the graph.
-The throughput reached approximately almost $18000ops/s$, which is conforms to the observation of the maximum throughput per server in section 1.
+The throughput reached approximately almost $18000ops/s$, which conforms to the observation of the maximum throughput per server in section 1.
+Please notice that the error is again very small, and thus barely readable around the measured points.
+The error metric is explained in section 1.
 
 \begin{figure}[H]
 \centering
@@ -350,15 +366,18 @@ The throughput reached approximately almost $18000ops/s$, which is conforms to t
 \label{fig:test}
 \end{figure}
 
-The single server is fast enough to respond to all individual client requests, as the server is only responding with the message "STORED" each time.
-However, at some point, the number of requests is so high, that either the individual client output bandwidth, or storing the actual requests on the hard-ware side becomes the bottleneck.
+For write-only operations, the bottleneck is the upload bandwidth of the thee clients,
+as 3 clients are trying to upload a load of 200Mbit/s each.
+The server only responds with message suchs \textit{STORED}, which take up almost no bandwidth compared to the actual message itself.
+Thus, the total bandwidth is the additive bandwidth of each individual client, which means approximately $ 3 \times 200 Mbit/s = 600 Mbit/s $, which corresponds to approximately $18000 ops/sec $ (same calculation as in section 1.2). 
+The missing ops/sec (between our observers ops/sec and $18000$ comes from network overhead.
+This also proves to be a valuable sanity check.
+I know that storing the individual requests is not the bottleneck, as a local docker experiment proves that higher throughputs can be achieved locally.
+The clients are not able to generate enough load with 1, 2 or 4 virtual clients per thread, and only generate a maximum load with 16 virtual clients per threads, which saturates the upload bandwidth of the client VMs.
 This can be seen as the throughput grows square-root like, and then saturates.
-The throughput graph, which means out with 16 virtual clients per thread, proves this point.
-To decide whether the network is the bandwidth is the bottleneck, I repeat this experiment locally with virtual docker containers.
-These plateau at a later stage, which proves that the maximum network bandwidth is reached with 16 virtual clients per thread.
-
-%TODO :
-Latency and throughput correlate in the following way: \textbf{???}
+This can also be seen from the graph, which plateaus around 16 virtual clients per thread.
+As a sanity check, the latency graph shows how the latency does not increase for adding additional virtual clients per thread (although this should increase linearly). 
+Only after the 4th virtual client per thread, does the response time increase linearly, which underlines the saturation phase.
 
 \subsection{Two Servers}
 
@@ -387,10 +406,14 @@ I run 3 repetitions of each configuration, each having a length of 90 seconds (s
 
 \subsubsection{Read-only}
 
-I first present the graph. 
-The throughput reached approximately almost $6000ops/s$, which conforms to the observation of the maximum throughput per virtual machine in section 1.
-This means that the client virtual machine is using its maximum capacity to download all the values that are uploaded by the server virtual machines.
 
+I first present the graph. 
+The throughput reached approximately almost $6000ops/s$, which conforms to the observation of the maximum throughput per server machine in section 1.
+This means that both server virtual machine, are using their maximum capacity to upload all the values that are uploaded by the server virtual machines.
+The combined throughput of the two servers is $2 \times 100Mbit/s$ which corresponds to a compound $200Mbit/s$.
+This conform to the $6000ops/sec$ when using the same calculation as in section 1.2.
+Please notice that the error is again very small, and thus intersects with the measured points.
+The error metric is explained in section 1.
 
 \begin{figure}[H]
 \centering
@@ -410,15 +433,20 @@ This means that the client virtual machine is using its maximum capacity to down
 \label{fig:test}
 \end{figure}
 
-For read-only operations, the bottleneck is the download bandwidth of the client virtual machine,
-as 1 client is trying to download 200Mbit/s.
-The total upload bandwidth of 6000ops/sec (which was empirically proven in section 1 through an additional experiment), is thus divided amongst amongst two memtier servers.
-The clients are able to generate enough load with even 1 virtual thread, such that with 1 virtual thread the network bandwidth is saturated.
-The system does not become instable after an increase of virtual client threads, as can be seen from the plot which indicates that there is no oversaturation (there is a saturation phase instead).
-As the number of threads increases, more requests are able to be generated.
-Because the network bandwidth stays constant, the round-trip time of individual requests increases.
-This implies an increase in latency, as can be seen from the graph.
+For read-only operations, the bottleneck is the upload bandwidth of the server virtual machines,
+as each server is uploading 100Mbit/s each, which compounds to 200Mbit/s together.
+The total upload bandwidth of 6000ops/sec (which was empirically proven in section 1 through an additional experiment), is thus divided amongst amongst two memtier servers and thus two memtier instances on the same machine.
+This also proves to be a valuable sanity check.
+
+The server can respond fast enough to all requests by the clients, as long as there is only up to 4 virtual clients per thread.
+Once the client spawns 4 virtual clients per thread, the server VM bandwidth starts to saturate.
+The system does not become stable but saturated after an increase of virtual client threads, as can be seen from the plot which indicates that there is no oversaturation.
+Because the network bandwidth stays constant, the round-trip time of individual requests increases, except for up to 4 virtual clients per thread.
+For 4 virtual clients per threads, the response time stays constant, simply due to the fact that the bandwidth is not saturated, and the requests don't have to wait on each other to be processed (but can be processed in parallel).
+This implies an almost constant latency for up to 4 virtual clients per thread, and then an increase in latency, as can be seen from the graph.
 The latency and throughput graphs show a correct, inverse correlation.
+This almost constant, and linear increase in the response time as seen on the graph provides a second sanity check.
+\\
 
 \subsubsection{Write-only}
 
@@ -955,7 +983,7 @@ Run multi-gets with 1, 3, 6 and 9 keys (memtier configuration) with sharding ena
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth]{img/exp5_1/exp5_1_percentile_plots_sharded_True.png}
+\includegraphics[width=\textwidth]{img/exp5_1/exp5_1_client_percentile_plots_sharded_True.png}
 \caption{Exp3.2: Latency and throughputs as measures by the middlewares}
 \label{fig:test}
 \end{figure}
@@ -1007,7 +1035,7 @@ Run multi-gets with 1, 3, 6 and 9 keys (memtier configuration) with sharding dis
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth]{img/exp5_1/exp5_1_percentile_plots_sharded_False.png}
+\includegraphics[width=\textwidth]{img/exp5_1/exp5_1_client_percentile_plots_sharded_False.png}
 \caption{Exp3.2: Latency and throughputs as measures by the middlewares}
 \label{fig:test}
 \end{figure}

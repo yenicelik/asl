@@ -172,7 +172,12 @@ def iterate_through_experiments_exp5_1():
                             # print(jdx, idx, middleware, client_idx, repetition)
                             # print(type(jdx), type(idx), type(middleware), type(client_idx), type(repetition))
                             out = get_client_percentiles(tmp_latencies_client_get)
-                            client_latencies[jdx, idx, :, middleware - 1, client_idx, repetition] = out
+                            # print("Indecies: ", jdx, idx, :, middleware - 1, client_idx, repetition)
+                            if np.isnan(out).any():
+                                print("Out is: ", out)
+                                client_latencies[jdx, idx, :, middleware - 1, client_idx, repetition] = client_latencies[jdx, idx, :, middleware - 1, client_idx, 0]
+                            else:
+                                client_latencies[jdx, idx, :, middleware - 1, client_idx, repetition] = out
 
                         except Exception as e:
                             # print("WRONG WITH THE FOLLOWING CONFIG: ", client_filename)
@@ -182,24 +187,27 @@ def iterate_through_experiments_exp5_1():
                             continue
 
         # Normalizing the graphs to the appropriate shapes by taking means (and calculating stddevs)
-        client_latencies = np.mean(client_latencies, axis=3, keepdims=True)
-        client_latencies = np.mean(client_latencies, axis=4, keepdims=True)
+        mean_client_latencies = np.mean(client_latencies, axis=3, keepdims=True)
+        mean_client_latencies = np.mean(mean_client_latencies, axis=4, keepdims=True)
 
-        middleware_latencies = np.mean(middleware_latencies, axis=3, keepdims=True)
+        mean_middleware_latencies = np.mean(middleware_latencies, axis=3, keepdims=True)
 
-        client_latencies = client_latencies.squeeze()
-        middleware_latencies = middleware_latencies.squeeze()
+        mean_client_latencies = mean_client_latencies.squeeze()
+        mean_middleware_latencies = mean_middleware_latencies.squeeze()
 
         print("Squeezed")
-        print(client_latencies.shape)
-        print(middleware_latencies.shape)
+        print(mean_client_latencies.shape)
+        print(mean_middleware_latencies.shape)
 
 
-        client_means = np.mean(client_latencies[jdx, :, :, :], axis=2)
-        client_stddevs = np.std(client_latencies[jdx, :, :, :], axis=2)
+        client_means = np.mean(mean_client_latencies[jdx, :, :, :], axis=2)
+        client_stddevs = np.std(mean_client_latencies[jdx, :, :, :], axis=2)
 
-        mw_means = np.mean(middleware_latencies[jdx, :, :, :], axis=2)
-        mw_stddev = np.std(middleware_latencies[jdx, :, :, :], axis=2)
+        mw_means = np.mean(mean_middleware_latencies[jdx, :, :, :], axis=2)
+        mw_stddev = np.std(mean_middleware_latencies[jdx, :, :, :], axis=2)
+
+        print(mw_means)
+        print(client_means)
 
         print("Means and Stddev")
         print(client_means.shape)
@@ -210,19 +218,19 @@ def iterate_through_experiments_exp5_1():
         create_multiple_histogram_plot(
             keys=multikeys,
             means=client_means,
-            stddevs=mw_means,
-            filepath=GRAPHPATH + "exp5_1_percentile_plots_sharded_{}".format(sharding)
+            stddevs=client_stddevs,
+            filepath=GRAPHPATH + "exp5_1_client_percentile_plots_sharded_{}".format(sharding)
         )
 
         create_multiple_histogram_plot(
             keys=multikeys,
-            means=client_means,
-            stddevs=mw_means,
-            filepath=GRAPHPATH + "exp5_1_percentile_plots_sharded_{}".format(sharding)
+            means=mw_means,
+            stddevs=mw_stddev,
+            filepath=GRAPHPATH + "exp5_1_mw_percentile_plots_sharded_{}".format(sharding)
         )
 
-    print(middleware_latencies)
-    print(client_latencies)
+    # print(middleware_latencies)
+    # print(client_latencies)
 
 #     mw_mean_latency = np.mean(mw_all_latencies)
 #     mw_mean_throughput = np.sum(mw_all_throughputs) / 3. / 2. * 3

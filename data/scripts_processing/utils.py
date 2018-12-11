@@ -114,7 +114,7 @@ def render_lineargraph_errorbars(
     max_ele = np.nanmax(mean_array + 2*stddev_array) * 1.1
 
     plt.errorbar(labels, mean_array, stddev_array, linestyle='--',
-                 marker='.', markersize=10)
+                 marker='.', markersize=7, capsize=5)
 
     plt.ylim(ymin=0, ymax=max_ele)
     plt.xlim(xmin=0)
