@@ -38,7 +38,7 @@ class BaseExperimentRunner:
                 read_ratio=read_ratio,
                 virtual_clients_per_thread=virtual_clients_per_thread,
                 threads=threads
-            ), sync=True)
+            ), sync=False)
             print("Ending ... ")
         print("Boomm... ")
 

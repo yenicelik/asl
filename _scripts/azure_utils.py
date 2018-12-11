@@ -21,7 +21,8 @@ def pipe_command_locally(bashcommand, sync):
     if sync:
         result = subprocess.run(shlex.split(bashcommand))
     else:
-        os.system(bashcommand)
+        os.spawnl(os.P_DETACH, bashcommand)
+        # os.system(bashcommand)
 
     return result
 
@@ -34,7 +35,12 @@ def pipe_command_into_ssh(ip, bashcommand, sync):
     if sync:
         result = subprocess.call(q, shell=True)
     else:
-        os.system(q)
+        result = subprocess.call(q + " & ", shell=True)
+
+        # os.spawnl(os.P_DETACH, bashcommand)
+        #
+        # os.system(q)
+        # result = None
 
     return result
 

@@ -129,7 +129,6 @@ class ExperimentBaseline2(BaseExperimentRunner, Exp2_2):
                             start_time = time.time()
 
                             # print("Running right now (first) ...", )
-
                             print("Running memtier on the server 1!")
                             # TODO: Testing this with one-to-one to check if replicate is the case
                             self.run_memtiered_servers(
