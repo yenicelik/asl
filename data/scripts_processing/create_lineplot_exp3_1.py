@@ -99,7 +99,7 @@ def iterate_through_experiments_exp3_1():
                     try:
                         df = parse_log(BASEPATH + middleware_filename)
                         mw_throughput, mw_latency = get_latency_log_dataframe(df)
-                        mw_throughput *= mt * 1000 # bcs this gives us throughput per millisecond
+                        mw_throughput *= mt * 1000 # bcs this gives us overall throughput per millisecond, and not per thread anymore
 
                         mw_all_throughputs.append(mw_throughput)
                         mw_all_latencies.append(mw_latency)

@@ -31,7 +31,10 @@ SERVER = {
 }
 
 SERVER_IP = {
-    'Server1': "10.0.0.5",
-    'Server2': "10.0.0.9",
-    'Server3': "10.0.0.4"
+    # 'Server1': "10.0.0.5",
+    # 'Server2': "10.0.0.9",
+    # 'Server3': "10.0.0.4"
+    'Server1': "Server1",
+    'Server2': "Server2",
+    'Server3': "Server3"
 }

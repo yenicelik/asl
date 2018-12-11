@@ -41,7 +41,7 @@ class Exp2_2:
         self.instances_of_memtier_per_machine = 2
         self.threads_per_memtier_instance = 1
         # self.virtual_clients_per_thread = [(2 ** x) for x in range(0, 6)]
-        self.virtual_clients_per_thread = [(2 ** x) for x in range(0, 6)]
+        self.virtual_clients_per_thread = [(2 ** x) for x in range(4, 6)]
 
         # Multi-Get parameters
         self.multiget = False  # So all other parameters disappear
@@ -126,7 +126,12 @@ class ExperimentBaseline2(BaseExperimentRunner, Exp2_2):
 
                             print("CONFIGURATION : ", logfile)
 
+                            start_time = time.time()
+
+                            # print("Running right now (first) ...", )
+
                             print("Running memtier on the server 1!")
+                            # TODO: Testing this with one-to-one to check if replicate is the case
                             self.run_memtiered_servers(
                                 client_ips=[CLIENT[client_number]],
                                 server_ip=SERVER_IP['Server1'],
@@ -150,6 +155,8 @@ class ExperimentBaseline2(BaseExperimentRunner, Exp2_2):
                                 virtual_clients_per_thread=virtual_client_threads,
                                 threads=self.threads_per_memtier_instance
                             )
+                            print("Running right now (second) ...", time.time() - start_time)
+
                             print("Done running memtier on the server!")
 
                         p = Process(target=runner_function)

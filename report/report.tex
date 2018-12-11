@@ -304,6 +304,26 @@ I run 3 repetitions of each configuration, each having a length of 90 seconds (s
 
 I run 3 repetitions of each configuration, each having a length of 90 seconds (such that the warm-up and cool-down times even out).
 
+%TODO Merge the next two subsections
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}{.5\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{img/exp2_1/exp2_1__latency_client_read_write.png}
+    \caption{Latency write only}
+    \label{fig:mesh1}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+      \centering
+    \includegraphics[width=\textwidth]{img/exp2_1/exp2_1__throughput_client_read_write.png}
+    \caption{Throughput write only}
+    \label{fig:mesh1}
+\end{subfigure}
+\caption{Exp.2.1: A figure with two subfigures}
+\label{fig:test}
+\end{figure}
+
 \subsubsection{Read-only}
 
 I first present the graph. 
@@ -404,8 +424,28 @@ As there is no difference in pre-populating the servers in the case of writes, f
 The clients and servers don't use multi-gets, and there is no middleware involved.
 I run 3 repetitions of each configuration, each having a length of 90 seconds (such that the warm-up and cool-down times even out).
 
-\subsubsection{Read-only}
+%TODO Merge the next two subsections
 
+\begin{figure}[H]
+\centering
+\begin{subfigure}{.5\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{img/exp2_2/exp2_2__latency_client_read_write.png}
+    \caption{Latency write only}
+    \label{fig:mesh1}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+      \centering
+    \includegraphics[width=\textwidth]{img/exp2_2/exp2_2__throughput_client_read_write.png}
+    \caption{Throughput write only}
+    \label{fig:mesh1}
+\end{subfigure}
+\caption{Exp.2.1: A figure with two subfigures}
+\label{fig:test}
+\end{figure}
+
+
+\subsubsection{Read-only}
 
 I first present the graph. 
 The throughput reached approximately almost $6000ops/s$, which conforms to the observation of the maximum throughput per server machine in section 1.
@@ -449,9 +489,13 @@ This almost constant, and linear increase in the response time as seen on the gr
 \\
 
 \subsubsection{Write-only}
-
 Again, I first present the graph.
-The throughput reached approximately almost $12000ops/s$, which conforms to the observation of the maximum throughput per virtual machine (in this case the server) in section 1.
+The throughput reached approximately almost $6000ops/s$, which conforms to the observation of the maximum throughput per client machine in section 1.
+This means that both client virtual machine, are using their maximum capacity to upload all the values to the server virtual machines.
+The combined throughput of the two servers is $2 \times 100Mbit/s$ which corresponds to a compound $200Mbit/s$.
+This conform to the $6000ops/sec$ when using the same calculation as in section 1.2.
+Please notice that the error is again very small, and thus intersects with the measured points.
+The error metric is explained in section 1.
 
 \begin{figure}[H]
 \centering
@@ -471,21 +515,33 @@ The throughput reached approximately almost $12000ops/s$, which conforms to the 
 \label{fig:test}
 \end{figure}
 
-The two servers are fast enough to save all the set requests.
-The download speed of the individual servers virtual machines can handle enough requests until 8 virtual client threads.
-One can see this for that the graph shows a plateau, which indicates a saturation phase at 8 virtual client threads.
-The upload bandwidth of the client is also sufficient to populate the individual servers, until the two servers cannot respond to the individual requests any faster.
-The single server is fast enough to respond to all individual client requests, as the server is only responding with the message "STORED" each time.
-However, at some point, the number of requests is so high, that either the individual client output bandwidth, or storing the actual requests on the hard-ware side becomes the bottleneck.
-This can be seen as the throughput grows square-root like, and then saturates.
-The throughput graph, which means out with 8 virtual clients per thread, proves this point.
-To decide whether the network is the bandwidth is the bottleneck, I repeat this experiment locally with virtual docker containers.
-These plateau at a later stage, which proves that the maximum network bandwidth is reached with 16 virtual clients per thread. \\
+For write-only operations, the bottleneck is the upload bandwidth of the client virtual machines, as the single client is uploading 200Mbit/s each, which compounds to 200Mbit/s together.
+The sane expectation would be a throughput of 6'000 ops/sec (as given per the bandwidth of the client virtual machine).
+However, notice that the memtier client json files return values of 6'000 ops/sec each. 
+However, the throughput of this operation is at 12'000 ops/sec as measure by the client, which does not immediately make sense, and is an issue that is very difficult to debug.
+
+After careful analysis, I arrive at the conclusion that this may be due to one of the following two factors. 
+1. When I replicate the memtier-instances, the confirmation is sent from the server to both memtier-instances (which would mean that the throughput is doubled).
+I run one additional test to check what would happen when we have a single server.
+The total throughput of the system halves (as we have halved the servers).
+This indicates that the replicated confirmaitons may indeed be an issue causing the higher-than-expected throughput.
+This is unfortunately one factor that I cannot solve without changing the program of memtier, or modifying the virtual-machine setups.
+2. Microsoft Azure may be responsible for some internal handling of the virtual-machine resource allocations, allowing for a higher bandwidth.
+Unfortunately, I cannot analyse this effectively as I do not have access to Microsoft Azure's policy of resource allocation, so explanation 1. is the only good explanation for this unexpected behavior. \\
+
+The server can respond fast enough to all requests by the clients, as long as there is only up to 8 virtual clients per thread, because the response message (which is usually "STORED") consumes almost none of the bandwidth.
+Once the client spawns 8 virtual clients per thread, the server VM bandwidth starts to saturate as the client upload bandwidth of 200Mbit/s is reached.
+The system becomes saturated after an increase of virtual client threads, as can be seen from the plot which indicates that there is no oversaturation.
+Because the network bandwidth stays constant, the round-trip time of individual requests increases, except for up to 4 virtual clients per thread.
+For 4 virtual clients per threads, the response time stays constant, simply due to the fact that the bandwidth is not saturated, and the requests don't have to wait on each other to be processed (but can be processed in parallel).
+This implies an almost constant latency for up to 4 virtual clients per thread, and then an increase in latency, as can be seen from the graph.
+The latency and throughput graphs show a correct, inverse correlation.
+This almost constant, and linear increase in the response time as seen on the graph provides a second sanity check.
 
 Latency and throughput correlate in the following way. 
 The latency is inversely proportional to the throughput.
 One can see clearly that this explanation is supported by the two graphs, which show that overall trend of the latency is exponential, while the overall trend of the throughput is logarithmic.
-These are inverse functions of each other.
+These are inverse functions of each other, as as such provide a sanity check that the experiments go as expected.
 
 \subsubsection{Explanation}
 
@@ -562,8 +618,12 @@ I also allow for a 15 second warm-up and 15 second cool-down time, and disregard
 The throughput reached approximately almost $3000ops/s$, which conforms to the observation of the maximum throughput per server in section "Baseline without Middleware and 1 server". \\
 
 \subsubsection{Read-only and Explanation}
+
 I will first plot the latency (response time) and the throughput as measured on the middleware.
-I will the show some plots generated by the logs of the client-machine which underline a correct measurement.
+The throughput reached approximately almost $3000ops/s$, which conforms to the observation of the maximum throughput per server in section 1.
+Please notice that the error is again very small, and thus barely readable around the measured points.
+The error metric is explained in section 1.
+I will later show some plots generated by the logs of the client-machine which underline a correct measurement.
 
 \begin{figure}[H]
 \centering
@@ -583,11 +643,18 @@ I will the show some plots generated by the logs of the client-machine which und
 \label{fig:test}
 \end{figure}
 
-For read-only operations, the bottleneck is the upload bandwidth of the server,
+For read-only operations, the bottleneck is the upload bandwidth of the client,
 as 3 clients are trying to download a load of 200Mbit/s, and thus must each share appr. 66Mbit/s.
+The client is a bottleneck before the middleware, which means that the middleware can easily manage all the read operations from the clients.
 The middleware virtual machine does not slow this down, as all GET requests are very short simple requests that all fit into the buffer.
-The total upload bandwidth of 6000ops/sec (which was empirically proven in section 1 through an additional experiment), is thus divided amongst  three servers.
-The clients are able to generate enough load with even 1 virtual thread, such that with 1 virtual thread the network bandwidth is saturated.
+Also, the IO that serves as input to the middleware is non-blocking, which means that it can accept many such small requests simultaneously.
+This can be seen as increasing the number of middleware threads does not affect performance, as the client-side is bottlenecked.
+Each individual request is sent back to the client through it's designed thread, which does not block the response operation due to a large datasize.
+The total upload bandwidth of $3000ops/sec$ (which was empirically proven in section 1 through an additional \textit{iperf} experiment), is thus divided amongst  three clients.
+This also proves to be a valuable sanity check.
+The difference in the ops/sec (difference between our observers ops/sec and $3'125 ops/sec$ is a reasonable network overhead. 
+
+The clients are able to generate enough load with even 1 virtual client per thread, such that with 1 virtual thread the network bandwidth is saturated.
 As the number of threads increases, more requests are able to be generated.
 Because the network bandwidth stays constant, the round-trip time of individual requests increases.
 This implies an increase in latency.
@@ -616,11 +683,42 @@ Another sanity check is that the interactive law holds, which states that the re
 
 The client and middleware graphs deviate sligthly.
 As one can see, the middleware graph seems more stable.
-This is because the middleware graph only shows the performance \textbf{excluding} the warm-up and cool-down phase, whereas the client graphs do not exclude these measurements.
-
-I now proceed with the same experiment but for write-only operations only.
+This is because the middleware graph only shows the performance \textbf{excluding} the warm-up and cool-down phase (each of which take approximately 15 seconds), whereas the client graphs do not exclude these measurements.
 
 \subsubsection{Write-only and Explanation}
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}{.5\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{img/exp3_1/exp3_1__latency_middleware_write_1.png}
+    \caption{Latency write only}
+    \label{fig:mesh1}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+      \centering
+    \includegraphics[width=\textwidth]{img/exp3_1/exp3_1__throughput_middleware_write_1.png}
+    \caption{Throughput write only}
+    \label{fig:mesh1}
+\end{subfigure}
+\caption{Exp3.1: Latency and throughputs as measures by the middlewares}
+\label{fig:test}
+\end{figure}
+
+The single server is fast enough to respond to all individual client requests, as the server is only responding with the message "STORED" each time.
+However, at some point, the number of requests is so high, that either the individual client output bandwidth, or storing the actual requests on the hard-ware side becomes the bottleneck.
+This can be seen as the throughput grows square-root like, and then saturates.
+The throughput graph, which means out with 16 virtual clients per thread, proves this point.
+To decide whether the network is the bandwidth is the bottleneck, I repeat this experiment locally with virtual docker containers.
+These plateau at a later stage, which proves that the maximum network bandwidth is reached with 16 virtual clients per thread.
+
+%TODO :
+Latency and throughput correlate in the following way: \textbf{???}
+
+The following graphs are created using the logs of the client for the throughput and the latency, and underline that the values are sane.
+
+As a sanity check, I present the throughput and latency plots from the client machines, which all conform to the throughputs and latencies as caluclated in the middleware.
+Another sanity check is that the interactive law holds, which states that the response-time \textbf{per request}  is related inversely-linearly proportional to the throughput.
 
 \begin{figure}[H]
 \centering
@@ -641,39 +739,7 @@ I now proceed with the same experiment but for write-only operations only.
 \end{figure}
 
 
-The single server is fast enough to respond to all individual client requests, as the server is only responding with the message "STORED" each time.
-However, at some point, the number of requests is so high, that either the individual client output bandwidth, or storing the actual requests on the hard-ware side becomes the bottleneck.
-This can be seen as the throughput grows square-root like, and then saturates.
-The throughput graph, which means out with 16 virtual clients per thread, proves this point.
-To decide whether the network is the bandwidth is the bottleneck, I repeat this experiment locally with virtual docker containers.
-These plateau at a later stage, which proves that the maximum network bandwidth is reached with 16 virtual clients per thread.
 
-%TODO :
-Latency and throughput correlate in the following way: \textbf{???}
-
-The following graphs are created using the logs of the client for the throughput and the latency, and underline that the values are sane.
-
-As a sanity check, I present the throughput and latency plots from the client machines, which all conform to the throughputs and latencies as caluclated in the middleware.
-Another sanity check is that the interactive law holds, which states that the response-time \textbf{per request}  is related inversely-linearly proportional to the throughput.
-
-
-\begin{figure}[H]
-\centering
-\begin{subfigure}{.5\textwidth}
-    \centering
-    \includegraphics[width=\textwidth]{img/exp3_1/exp3_1__latency_middleware_write_1.png}
-    \caption{Latency write only}
-    \label{fig:mesh1}
-\end{subfigure}%
-\begin{subfigure}{.5\textwidth}
-      \centering
-    \includegraphics[width=\textwidth]{img/exp3_1/exp3_1__throughput_middleware_write_1.png}
-    \caption{Throughput write only}
-    \label{fig:mesh1}
-\end{subfigure}
-\caption{Exp3.1: Latency and throughputs as measures by the middlewares}
-\label{fig:test}
-\end{figure}
 
 The client and middleware graphs deviate sligthly.
 As one can see, the middleware graph seems more stable.
@@ -866,11 +932,34 @@ Based on the data provided in these tables, write at least two paragraphs summar
 \section{Throughput for Writes (90 pts)}
 
 \subsection{Full System}
+I am connecting three load generating client VMs to two middlewares.
+These middlewares are connected to three memcached server VMs each.
+I have the following setup.
 
-Connect three load generating VMs to two middlewares and three memchached servers. Run a write-only experiment. 
-You need to plot throughput and response time measured on the middleware as a function of number of clients. The measurements have to be performed for 8, 16, 32 and 64 worker threads inside each middleware.
+\begin{center}
+	\scriptsize{
+		\begin{tabular}{|l|c|}
+			\hline Number of servers                & 3          \\ 
+			\hline Number of client machines        & 3          \\ 
+			\hline Instances of memtier per machine & 2          \\ 
+			\hline Threads per memtier instance     & 1          \\
+			\hline Virtual clients per thread       & [1..32]    \\ 
+			\hline Workload                         & Write-only \\
+			\hline Number of middlewares            & 2          \\
+			\hline Worker threads per middleware    & [8..64]    \\
+			\hline Repetitions                      & 3 or more (at least 1 minute each)  \\ 
+			\hline 
+		\end{tabular}
+	} 
+\end{center}
 
-This experiment only consists of write-only operations, so we don't subdivide this experiment into "write-only" and "read-only".
+During this experiment, I iterate over all possible permutations of virtual clients per thread (in the range of [1, 2, 4, 8, 16, 32]), and worker threads per middlewares (in the range of [8, 16, 32, 64]).
+I run each experiment for 90 seconds (which includes a 15 second warm-up and a 15 second cool-down time). 
+Each experiment again consists of three trials from which we measure the mean and the standard deviation.
+This section only covers write-only experiments.
+I cover response time (latency) , and throughput. \\
+
+The following are graphs from the middleware.
 
 \begin{figure}[H]
 \centering
@@ -907,26 +996,6 @@ This experiment only consists of write-only operations, so we don't subdivide th
 \caption{Exp3.2: Latency and throughputs as measures by the clients}
 \label{fig:test}
 \end{figure}
-
-
-\begin{center}
-	\scriptsize{
-		\begin{tabular}{|l|c|}
-			\hline Number of servers                & 3          \\ 
-			\hline Number of client machines        & 3          \\ 
-			\hline Instances of memtier per machine & 2          \\ 
-			\hline Threads per memtier instance     & 1          \\
-			\hline Virtual clients per thread       & [1..32]    \\ 
-			\hline Workload                         & Write-only \\
-			\hline Multi-Get behavior               & N/A        \\
-			\hline Multi-Get size                   & N/A        \\
-			\hline Number of middlewares            & 2          \\
-			\hline Worker threads per middleware    & [8..64]    \\
-			\hline Repetitions                      & 3 or more (at least 1 minute each)  \\ 
-			\hline 
-		\end{tabular}
-	} 
-\end{center}
 
 \subsubsection{Explanation}
 

@@ -5,7 +5,8 @@ import os
 import numpy as np
 
 from utils import get_throughput_latency_default_memtier, \
-    create_datadir_if_not_exists, render_lineargraph_errorbars
+    create_datadir_if_not_exists, render_lineargraph_errorbars, \
+    render_lineargraph_multiple_errorbars
 
 # Do it for experiment 1 for now
 
@@ -36,16 +37,21 @@ def iterate_through_experiments_exp2_2():
 
     create_datadir_if_not_exists(GRAPHPATH)
 
-    for write in ["0", "1"]:
+    vc_array = [(2 ** x) for x in range(0, 6)]
+    total_virtual_clients = len(vc_array)
 
-        labels = []
-        throughput_means = []
-        throughput_stddevs = []
-        latency_means = []
-        latency_stddevs = []
+    client_throughput_means = np.zeros((total_virtual_clients, 2)) # (virtualclients, number of server, number of read/writes)
+    client_latency_means = np.zeros((total_virtual_clients, 2))
+    client_throughput_stddev = np.zeros((total_virtual_clients, 2))
+    client_latency_stddev = np.zeros((total_virtual_clients, 2))
 
-        for virtual_client_threads in [(2 ** x) for x in range(0, 6)]:
-            all_throughputs = []  # From here on, we average over all values
+    labels = [(2 ** x) for x in range(0, 6)]
+
+    for idx, write in enumerate(["0", "1"]):
+
+        for jdx, virtual_client_threads in enumerate(vc_array):
+
+            all_throughputs = []
             all_latencies = []
 
             for repetition in range(3):
@@ -58,42 +64,39 @@ def iterate_through_experiments_exp2_2():
                         all_throughputs.append(throughput)
                         all_latencies.append(latency)
 
-            labels.append(virtual_client_threads)
+            if write == "1":
+                client_throughput_means[jdx, idx] = np.sum(all_throughputs) / 3. # Because we have two servers, and the results replicate
+                client_throughput_stddev[jdx, idx] = np.std(all_throughputs)
 
-            throughput_mean = np.sum(all_throughputs)  / 3. # Divide by 2, because we have two clients
-            throughput_stddev = np.std(all_throughputs)
-            # Append to arrays
-            throughput_means.append(throughput_mean)
-            throughput_stddevs.append(throughput_stddev)
+            else:
+                client_throughput_means[jdx, idx] = np.sum(all_throughputs) / 3. # Because we have two servers, and the results replicate
+                client_throughput_stddev[jdx, idx] = np.std(all_throughputs)
 
-            latency_mean = np.sum(all_latencies) / 3. # Divide by 2, because we have two clients
+            latency_mean = np.mean(all_latencies) # Divide by 2, because we have two clients
             latency_stddev = np.std(all_latencies)
-            # Append to arrays
-            latency_means.append(latency_mean)
-            latency_stddevs.append(latency_stddev)
 
-            print("NEXT")
-            print(throughput_mean, latency_mean)
+            client_latency_means[jdx, idx] = latency_mean
+            client_latency_stddev[jdx, idx] = latency_stddev
 
-        print("###write", write, throughput_means)
         ###write 0 [2173.206666666667, 4134.1466666666665, 5830.243333333333, 5885.3, 5872.653333333333, 5831.44]
         ###write 1 [2067.6566666666668, 3963.2400000000002, 7176.743333333333, 11750.013333333334, 11814.659999999998, 11859.336666666668]
 
-        # Plot the latency and throughput measures
-        render_lineargraph_errorbars(
-            labels=labels,
-            mean_array=throughput_means,
-            stddev_array=throughput_stddevs,
-            filepath=GRAPHPATH + "exp2_2__throughput_write_{}".format(write),
-            is_latency=False
-        )
-        render_lineargraph_errorbars(
-            labels=labels,
-            mean_array=latency_means,
-            stddev_array=latency_stddevs,
-            filepath=GRAPHPATH + "exp2_2__latency_write_{}".format(write),
-            is_latency=True
-        )
+    render_lineargraph_multiple_errorbars(
+        labels=labels,
+        mean_array=client_throughput_means.T,
+        stddev_array=client_throughput_stddev.T,
+        filepath=GRAPHPATH + "exp2_2__throughput_client_read_write",
+        is_latency=False,
+        is_read_write=True
+    )
+    render_lineargraph_multiple_errorbars(
+        labels=labels,
+        mean_array=client_latency_means.T,
+        stddev_array=client_latency_stddev.T,
+        filepath=GRAPHPATH + "exp2_2__latency_client_read_write",
+        is_latency=True,
+        is_read_write=True
+    )
 
 
 if __name__ == "__main__":
