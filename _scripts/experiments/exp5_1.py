@@ -74,7 +74,7 @@ class Exp5_1:
 
         # Setting the reads to writes ratio
         self.writes = "1"
-        self.reads = ["1", "3", "6", "9"]
+        self.reads = ["6", "9"] # "1", "3",
 
         # Multi-Get parameters
         self.multiget = True  # So all other parameters disappear
@@ -82,7 +82,7 @@ class Exp5_1:
 
         # Meta experiment configurations
         self.repetitions = 3  # 3 should be fine
-        self.time = 60 + 30 # Time in seconds
+        self.time = 60 + 15 # Time in seconds
         # self.time = 10
         self.population_time = 20
         # self.population_time = 1
@@ -195,7 +195,7 @@ class ExperimentSharding(BaseExperimentRunner, Exp5_1):
                         [MIDDLEWARE['Middleware2']],
                         self.remote_logdir
                     )
-                    time.sleep(10)
+                    time.sleep(4)
 
                     start_time = time.time()
 

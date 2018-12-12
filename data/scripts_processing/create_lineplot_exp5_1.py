@@ -153,7 +153,7 @@ def iterate_through_experiments_exp4_1():
                             continue
 
             mw_mean_latency = np.mean(mw_all_latencies)
-            mw_mean_throughput = np.sum(mw_all_throughputs) / 3. / 2. * 3
+            mw_mean_throughput = np.sum(mw_all_throughputs) / 3.
             mw_stddev_latency = np.std(mw_all_latencies)
             mw_stddev_throughput = np.std(mw_all_throughputs)
             # Append to list
@@ -163,7 +163,7 @@ def iterate_through_experiments_exp4_1():
             mw_latency_stddev[idx, jdx] = mw_stddev_latency
 
             client_mean_latency = np.mean(client_all_latencies)
-            client_mean_throughput = np.sum(client_all_throughputs) / 3. * 3
+            client_mean_throughput = np.sum(client_all_throughputs) / 3.
             client_stddev_latency = np.std(client_all_latencies)
             client_stddev_throughput = np.std(client_all_throughputs)
             # Append to list

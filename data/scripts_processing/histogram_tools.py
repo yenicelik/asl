@@ -37,7 +37,7 @@ def create_multiple_histogram_plot(keys, means, stddevs, filepath, is_latency=Fa
 
         # Create a boxplot out of these values now
 
-        plt.bar(keynames, current_mean, label="Keysize {}".format(key), yerr=current_stddev)
+        plt.bar(keynames, current_mean, label="Keysize {}".format(key), yerr=current_stddev, capsize=5)
 
     plt.ylim(ymin=0)
     plt.legend(loc='best')
@@ -52,7 +52,7 @@ def create_multiple_histogram_plot(keys, means, stddevs, filepath, is_latency=Fa
 
 
 
-def plot_histogram_client(df):
+def plot_histogram_client(df, savefile=None):
     """
         Plots the histogram
     :param df:
@@ -63,13 +63,24 @@ def plot_histogram_client(df):
 
     plt.bar(x, y)
 
-    plt.show()
+    if savefile is None:
+        plt.show()
+    else:
+        plt.savefig(savefile)
+    plt.clf()
 
 def get_histogram_of_latencies(raw_df):
     latencies = get_histogram_latency_log_dataframe_middleware(raw_df)
 
-    freq, bins = np.histogram(latencies, bins=100)
+    # Remove all latencies bigger than 12 as these are outliers
+    # latencies[latencies > 15.] = 0.
+
+    latencies = latencies / 1_000_000.
+
+    freq, bins = np.histogram(latencies, bins=10000)
     bins = bins[:-1]
+    # bins = bins / 1_000_000.
+    # freq = np.log(freq)
 
     print("Frequencies and bins")
     print(len(freq))
@@ -91,7 +102,9 @@ def plot_histogram_middleware(bins, frequencies):
 
     plt.figure()
 
-    plt.bar(bins, frequencies, width=0.1, bottom=None)
+    plt.bar(bins, frequencies, bottom=None, width=1)
+    # plt.xticks(bins / 10.)
+    plt.xlim(0, 15)
 
     plt.show()
 
@@ -128,7 +141,7 @@ def get_histogram_latency_log_dataframe_middleware(df):
                     + df['differenceTimeSentToServerAndReceivedResponseFromServer'].astype(float)\
                     + df['differenceTimeReceivedResponseFromServerAndSentToClient'].astype(float)
 
-    df['latency'] /= 1_000_000.
+    df['latency']
 
     ## All throughputs; I can then call "df.plt.histogram" later on
     return df['latency'].to_frame().T
@@ -156,7 +169,7 @@ def read_client_histogram_as_dataframe(filepath, percentage_details=False):
         if x['<=msec'] < 10.0:
             set_tuples.append((
                 x['<=msec'],
-                (x['percent'])
+                (x['percent'] - cumulative_value)
             ))
             cumulative_value = x['percent']
 
@@ -166,7 +179,7 @@ def read_client_histogram_as_dataframe(filepath, percentage_details=False):
         if x['<=msec'] < 10.0:
             get_tuples.append((
                 x['<=msec'],
-                (x['percent'])
+                (x['percent'] - cumulative_value)
             ))
             cumulative_value = x['percent']
 
@@ -184,11 +197,13 @@ def read_client_histogram_as_dataframe(filepath, percentage_details=False):
 if __name__ == "__main__":
     EXAMPLE = "/Users/david/asl-fall18-project/data/raw/exp5_1_backups/__Exp51_multikeysize_6_middleware2__rep_1_client_Client2_sharding_True_middlewarethreads_64.txt"
     set_df, get_df = read_client_histogram_as_dataframe(EXAMPLE)
+    plot_histogram_client(get_df, savefile="/Users/david/asl-fall18-project/report/img/exp5_1/histogram_client_sharded")
 
-    print(set_df)
-    print(get_df)
+    EXAMPLE = "/Users/david/asl-fall18-project/data/raw/exp5_1_backups/__Exp51_multikeysize_6_middleware2__rep_1_client_Client2_sharding_False_middlewarethreads_64.txt"
+    set_df, get_df = read_client_histogram_as_dataframe(EXAMPLE)
+    plot_histogram_client(get_df, savefile="/Users/david/asl-fall18-project/report/img/exp5_1/histogram_client_nonsharded")
 
-    # plot_histogram(set_df)
+
 
     # EXAMPLE = "/Users/david/asl-fall18-project/data/raw/exp5_1_backups/Middleware1_multikeygetsize_1_rep_0__sharding_False__middlewareworkerthreads_64/"
     # df = parse_log_exp5_1(EXAMPLE)

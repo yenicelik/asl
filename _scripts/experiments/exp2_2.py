@@ -40,8 +40,8 @@ class Exp2_2:
         # Explicit variables (as set as parameters inside the experiment code)
         self.instances_of_memtier_per_machine = 2
         self.threads_per_memtier_instance = 1
-        # self.virtual_clients_per_thread = [(2 ** x) for x in range(0, 6)]
-        self.virtual_clients_per_thread = [(2 ** x) for x in range(4, 6)]
+        self.virtual_clients_per_thread = [(2 ** x) for x in range(0, 6)]
+        # self.virtual_clients_per_thread = [(2 ** x) for x in range(4, 6)]
 
         # Multi-Get parameters
         self.multiget = False  # So all other parameters disappear
@@ -62,10 +62,11 @@ class ExperimentBaseline2(BaseExperimentRunner, Exp2_2):
         self.set_configuration()
 
         preliminary_name = "ExperimentBaseline2/"
+        self.name = "_exp2_1_"
 
         # Append logdir with some other stuff
         self.local_logdir += preliminary_name
-        self.remote_logdir += preliminary_name
+        self.remote_logdir += "logs/"
 
     def run(self):
 
@@ -105,7 +106,7 @@ class ExperimentBaseline2(BaseExperimentRunner, Exp2_2):
         self._create_log_directories([CLIENT['Client1']], self.remote_logdir)
 
         # Setting the reads to writes ratio
-        for self.writes in ["1"]:
+        for self.writes in ["0", "1"]:
             self.reads = "1" if self.writes == "0" else "0" # Exactly only reads or writes
 
             for virtual_client_threads in self.virtual_clients_per_thread:
@@ -120,7 +121,7 @@ class ExperimentBaseline2(BaseExperimentRunner, Exp2_2):
                     for client_number in ['Client1']:
 
                         def runner_function():
-                            logfile = self.remote_logdir + "virtualclients_{}__rep_{}_client_{}__writes_{}.txt".format(
+                            logfile = self.remote_logdir + self.name + "virtualclients_{}__rep_{}_client_{}__writes_{}.txt".format(
                                 virtual_client_threads, i, client_number, self.writes)
                             self._create_log_files([CLIENT[client_number]], logfile)
 

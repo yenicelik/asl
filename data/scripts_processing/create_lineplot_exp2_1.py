@@ -80,24 +80,10 @@ def iterate_through_experiments_exp2_1():
             client_latency_means[jdx, idx] = latency_mean
             client_latency_stddev[jdx, idx] = latency_stddev
 
-        ###write 0 [2937.2533333333336, 2935.7933333333335, 2936.99, 2940.6299999999997, 2938.976666666667, 2926.0533333333333]
-        ###write 1 [5791.943333333334, 11381.436666666666, 11744.933333333332, 14595.123333333335, 17632.553333333333, 17632.95666666667]
-
-        # Plot the latency and throughput measures
-        # render_lineargraph_errorbars(
-        #     labels=labels,
-        #     mean_array=throughput_means,
-        #     stddev_array=throughput_stddevs,
-        #     filepath=GRAPHPATH + "exp2_1_throughput_write_{}".format(write),
-        #     is_latency=False
-        # )
-        # render_lineargraph_errorbars(
-        #     labels=labels,
-        #     mean_array=latency_means,
-        #     stddev_array=latency_stddevs,
-        #     filepath=GRAPHPATH + "exp2_1_latency_write_{}".format(write),
-        #     is_latency=True
-        # )
+    print(np.max(client_throughput_means, axis=0))
+    print(np.max(client_throughput_means, axis=1))
+    # [2940.63       17632.95666667]
+    # [5791.94333333 11381.43666667 11744.93333333 14595.12333333 17632.55333333 17632.95666667]
 
     render_lineargraph_multiple_errorbars(
         labels=labels,

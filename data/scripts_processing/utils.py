@@ -59,7 +59,8 @@ def render_lineargraph_multiple_errorbars(
         stddev_array,
         filepath,
         is_latency=False,
-        is_read_write=False
+        is_read_write=False,
+        is_sharded=False
 ):
     """
         Renders and saves the graph to the given filepath.
@@ -75,7 +76,11 @@ def render_lineargraph_multiple_errorbars(
     max_ele = np.nanmax(mean_array + 2*stddev_array) * 1.1
 
     for i in range(mean_array.shape[0]):
-        if is_read_write:
+        if is_sharded:
+            if i == 0:
+                thelabel = "non-sharded"
+            thelabel = 'Middleware threads {}'.format( 2**(i+3) )
+        elif is_read_write:
             if i == 0:
                 thelabel = "read"
             else:

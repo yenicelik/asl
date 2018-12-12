@@ -23,7 +23,7 @@ def get_pattern_exp2_2(virtual_client_threads, repetition, client, server, write
     :param write:
     :return:
     """
-    out = "virtualclients_{}__rep_{}_client_{}__writes_{}.txt_Server{}"
+    out = "_exp2_1_virtualclients_{}__rep_{}_client_{}__writes_{}.txt_Server{}"
     out = out.format(virtual_client_threads, repetition, client, write, 1 if server == "Server1" else 2)
     return BASEPATH + out
 
@@ -78,8 +78,11 @@ def iterate_through_experiments_exp2_2():
             client_latency_means[jdx, idx] = latency_mean
             client_latency_stddev[jdx, idx] = latency_stddev
 
-        ###write 0 [2173.206666666667, 4134.1466666666665, 5830.243333333333, 5885.3, 5872.653333333333, 5831.44]
-        ###write 1 [2067.6566666666668, 3963.2400000000002, 7176.743333333333, 11750.013333333334, 11814.659999999998, 11859.336666666668]
+    print(np.max(client_throughput_means, axis=0))
+    print(np.max(client_throughput_means, axis=1))
+
+    # [5939.12333333 6054.25333333]
+    # [2463.36666667 4491.11666667 5944.5 6054.25333333 5914.99666667 5860.77]
 
     render_lineargraph_multiple_errorbars(
         labels=labels,

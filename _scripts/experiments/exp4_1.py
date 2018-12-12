@@ -66,7 +66,7 @@ class Exp4_1:
         self.instances_of_memtier_per_machine = 2
         self.threads_per_memtier_instance = 1
         # self.virtual_clients_per_thread = [(2 ** x) for x in range(0, 6)]
-        self.virtual_clients_per_thread = [(2 ** x) for x in range(0, 6)]
+        self.virtual_clients_per_thread = [(2 ** x) for x in range(3, 6)]
 
         # Middleware parameters
         self.number_of_middlewares = 2
@@ -82,7 +82,7 @@ class Exp4_1:
 
         # Meta experiment configurations
         self.repetitions = 3  # 3 should be fine
-        self.time = 60 + 30 # Time in seconds
+        self.time = 60 + 15 # Time in seconds
         # self.time = 10
         self.population_time = 20
         # self.population_time = 1
@@ -170,7 +170,7 @@ class ExperimentThroughputWrite(BaseExperimentRunner, Exp4_1):
                     self.stop_middleware_servers(
                         middleware_addresses=[MIDDLEWARE['Middleware2']]
                     )
-                    time.sleep(5)
+                    time.sleep(3)
 
                     # Generating the server strings:
                     print("Setting up the middleware...")
@@ -182,7 +182,7 @@ class ExperimentThroughputWrite(BaseExperimentRunner, Exp4_1):
                         middleware_threads=middleware_workerthread,
                         sharding=self.sharding
                     )
-                    time.sleep(10)
+                    # time.sleep(10)
 
                     self._create_log_directories(
                         [MIDDLEWARE['Middleware1']],
@@ -192,7 +192,7 @@ class ExperimentThroughputWrite(BaseExperimentRunner, Exp4_1):
                         [MIDDLEWARE['Middleware2']],
                         self.remote_logdir
                     )
-                    time.sleep(10)
+                    time.sleep(3)
 
                     start_time = time.time()
 
@@ -239,9 +239,8 @@ class ExperimentThroughputWrite(BaseExperimentRunner, Exp4_1):
                         p = Process(target=runner_function)
                         p.start()
                         all_client_processes.append(p)
-                        time.sleep(1)
 
-                    time.sleep(self.time + self.time // 5)
+                    time.sleep(self.time + self.time // 4)
 
                     # Join all processes again!
                     print("Starting to copy... Took so many seconds", time.time() - start_time)
@@ -266,7 +265,7 @@ class ExperimentThroughputWrite(BaseExperimentRunner, Exp4_1):
                     time.sleep(10)
 
                     # Join all processes again!
-                    [p.join(self.time // 4) for p in all_client_processes]
+                    [p.join(self.time + self.time // 10) for p in all_client_processes]
 
                     print("Starting to copy... Took so many seconds", time.time() - start_time)
 

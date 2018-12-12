@@ -73,7 +73,7 @@ class Exp6_1:
         self.virtual_clients_per_thread = 32
 
         # Middleware parameters
-        self.number_of_middlewares = [1, 2] # [1, 2]
+        self.number_of_middlewares = [2] # [1, 2]
         # self.worker_threads_per_middleware = [(2 ** x) for x in range(3, 7)]
         self.worker_threads_per_middleware = [8, 32] # 8
 

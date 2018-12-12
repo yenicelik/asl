@@ -229,65 +229,6 @@ def iterate_through_experiments_exp5_1():
             filepath=GRAPHPATH + "exp5_1_mw_percentile_plots_sharded_{}".format(sharding)
         )
 
-    # print(middleware_latencies)
-    # print(client_latencies)
-
-#     mw_mean_latency = np.mean(mw_all_latencies)
-#     mw_mean_throughput = np.sum(mw_all_throughputs) / 3. / 2. * 3
-#     mw_stddev_latency = np.std(mw_all_latencies)
-#     mw_stddev_throughput = np.std(mw_all_throughputs)
-#     # Append to list
-#     mw_throughput_means[idx, jdx] = mw_mean_throughput
-#     mw_latency_means[idx, jdx] = mw_mean_latency
-#     mw_throughput_stddev[idx, jdx] = mw_stddev_throughput
-#     mw_latency_stddev[idx, jdx] = mw_stddev_latency
-#
-#     client_mean_latency = np.mean(client_all_latencies)
-#     client_mean_throughput = np.sum(client_all_throughputs) / 3. * 3
-#     client_stddev_latency = np.std(client_all_latencies)
-#     client_stddev_throughput = np.std(client_all_throughputs)
-#     # Append to list
-#     client_throughput_means[idx, jdx] = client_mean_throughput
-#     client_latency_means[idx, jdx] = client_mean_latency
-#     client_throughput_stddev[idx, jdx] = client_stddev_throughput
-#     client_latency_stddev[idx, jdx] = client_stddev_latency
-#
-# # Middleware
-# render_lineargraph_errorbars(
-#     labels=multikeys,
-#     mean_array=mw_latency_means[:,jdx],
-#     stddev_array=mw_latency_stddev[:,jdx],
-#     filepath=GRAPHPATH + "exp5_1__mw_latency_sharding_{}".format(sharding),
-#     is_latency=True
-# )
-#
-# # Client
-# render_lineargraph_errorbars(
-#     labels=multikeys,
-#     mean_array=client_latency_means[:,jdx],
-#     stddev_array=client_latency_stddev[:,jdx],
-#     filepath=GRAPHPATH + "exp5_1__client_latency_sharding_{}".format(sharding),
-#     is_latency=True
-# )
-#
-# # Middleware
-# render_lineargraph_errorbars(
-#     labels=multikeys,
-#     mean_array=mw_throughput_means[:,jdx],
-#     stddev_array=mw_throughput_stddev[:,jdx],
-#     filepath=GRAPHPATH + "exp5_1__mw_throughput_sharding_{}".format(sharding),
-#     is_latency=False
-# )
-#
-# # Client
-# render_lineargraph_errorbars(
-#     labels=multikeys,
-#     mean_array=client_throughput_means[:,jdx],
-#     stddev_array=client_throughput_stddev[:,jdx],
-#     filepath=GRAPHPATH + "exp5_1__client_throughput_sharding_{}".format(sharding),
-#     is_latency=False
-# )
-
 
 if __name__ == "__main__":
     print("Starting to prepare the percentile-plots")
