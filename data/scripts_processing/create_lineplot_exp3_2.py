@@ -143,7 +143,7 @@ def iterate_through_experiments_exp3_2():
                 print("NEW VC and MT ", (_mt, _vc))
 
                 mw_mean_latency = np.mean(mw_all_latencies)
-                mw_mean_throughput = np.sum(mw_all_throughputs) / 3. / 2. # because we have 3 repeats, and two middlewares
+                mw_mean_throughput = np.sum(mw_all_throughputs) / 3. / 2. # because we have 3 repeats, and two middlewares (throughput per middleware is calculated as the total throughput)
                 mw_stddev_latency = np.std(mw_all_latencies)
                 mw_stddev_throughput = np.std(mw_all_throughputs)
                 # Append to list

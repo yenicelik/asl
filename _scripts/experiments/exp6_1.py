@@ -63,18 +63,16 @@ class Exp6_1:
 
     def set_configuration(self):
         # Implicit variables (as set by the experiment setup)
-        self.number_of_servers = [3] # 1
+        self.number_of_servers = [1, 3] # 3
         self.number_of_client_machines = 3
 
         # Explicit variables (as set as parameters inside the experiment code)
         self.instances_of_memtier_per_machine = 2
         # self.threads_per_memtier_instance = 1 or 2
-        # self.virtual_clients_per_thread = [(2 ** x) for x in range(0, 6)]
         self.virtual_clients_per_thread = 32
 
         # Middleware parameters
-        self.number_of_middlewares = [2] # [1, 2]
-        # self.worker_threads_per_middleware = [(2 ** x) for x in range(3, 7)]
+        self.number_of_middlewares = [1, 2] # [1, 2]
         self.worker_threads_per_middleware = [8, 32] # 8
 
         # Setting the reads to writes ratio
@@ -337,7 +335,7 @@ class Experiment2KOneMiddleware(BaseExperimentRunner, Exp6_1):
 
             for middlewares in self.number_of_middlewares:
 
-                for self.writes in ["1"]: # "0"
+                for self.writes in ["0", "1"]: # "0"
                     self.reads = "1" if self.writes == "0" else "0"  # Exactly only reads or writes
 
                     for middleware_workerthread in self.worker_threads_per_middleware:

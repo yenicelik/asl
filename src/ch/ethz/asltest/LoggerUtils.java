@@ -48,6 +48,7 @@ public class LoggerUtils {
     private long accTimeBetweenSentToServerAndReceivedResponseFromServer;
     private long accTimeBetweenReceivedResponseFromServerAndTimeSentToClient;
     private long accTimeRealDoneOffset;
+    private long queueSize = 0;
 
     public void resetAccumulators() {
         this.totalNum = 1;
@@ -70,7 +71,8 @@ public class LoggerUtils {
             long timeBetweenSentToServerAndReceivedResponseFromServer,
             long timeBetweenReceivedResponseFromServerAndTimeSentToClient,
             long timeRealDoneOffset,
-            RequestType requestType
+            RequestType requestType,
+            long queueSize
     ) {
 
         this.totalNum += 1;
@@ -83,16 +85,17 @@ public class LoggerUtils {
         this.accTimeBetweenSentToServerAndReceivedResponseFromServer += timeBetweenSentToServerAndReceivedResponseFromServer;
         this.accTimeBetweenReceivedResponseFromServerAndTimeSentToClient += timeBetweenReceivedResponseFromServerAndTimeSentToClient;
         this.accTimeRealDoneOffset += timeRealDoneOffset;
+        this.queueSize = queueSize;
 
         // if it's a multi-get, append to all the possible multi-gets
         if (requestType == RequestType.GET) {
 
-            // I modified this line only for multiget requests and experiment 5
-            // (because else we don't have multi-gets,
-            // and this would be equivalent to also just implementing
-            // a "is-multikey" flag!)
-
-            // Create the message which will be written to file
+//             I modified this line only for multiget requests and experiment 5
+//             (because else we don't have multi-gets,
+//             and this would be equivalent to also just implementing
+//             a "is-multikey" flag!)
+//
+//             Create the message which will be written to file
             String message = "-|-| " +
                     Long.toString(timeRealOffset) + ", " +
                     Long.toString(timeBetweenCreatedAndEnqueued) + ", " +
@@ -138,7 +141,8 @@ public class LoggerUtils {
                 Long.toString(this.accTimeBetweenReceivedResponseFromServerAndTimeSentToClient / this.totalNum) + ", " +
                 Long.toString(this.accTimeRealDoneOffset / this.totalNum) + ", " +
                 Long.toString(this.totalNum) + ", " +
-                Double.toString(throughput);
+                Double.toString(throughput) + ", " +
+                Long.toString(queueSize);
 
         // System.out.println(message);
         LOGGER.severe(message);

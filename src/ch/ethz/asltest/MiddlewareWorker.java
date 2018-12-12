@@ -115,10 +115,11 @@ public class MiddlewareWorker implements Runnable {
     }
 
     private boolean responseIsComplete(ByteBuffer byteBuffer) {
-        String request = new String(byteBuffer.array(), 0, byteBuffer.position(), Charset.forName("UTF-8"));
-        /*if (request.length() > 0) {
-            return false;
-        }*/
+        String request = new String(byteBuffer.array(), 0, byteBuffer.position());
+        // TODO This changed (previously uncommented!
+//        if (request.length() > 5) {
+//            return false;
+//        }
         return request.endsWith("END\r\n");
     }
 
@@ -126,7 +127,7 @@ public class MiddlewareWorker implements Runnable {
 
         // Create a new byteBuffer to read in the response into
 
-        byteBuffer = ByteBuffer.allocate(20 * 4 * 1024);
+        byteBuffer = ByteBuffer.allocate(15 * 4 * 1024);
 
         boolean isComplete;
         while (!(isComplete = responseIsComplete(byteBuffer))) {
@@ -356,7 +357,7 @@ public class MiddlewareWorker implements Runnable {
             SocketChannel socketChannel = this.getSocketChannel(bucketID);
 
             byteBuffer.clear();
-            byteBuffer = ByteBuffer.allocate(20 * 4 * 1024);
+            byteBuffer = ByteBuffer.allocate(15 * 4 * 1024);
 
             socketChannel.read(byteBuffer);
 

@@ -35,6 +35,8 @@ public class MyMiddleware {
     private int numberOfThreads; // Why is this not recognized?
     private boolean readSharded;
 
+    private Integer carriageReturnLength = "\r\n".length();
+
     private LinkedList<Semaphore> inputLockList = new LinkedList<>();
     private LinkedList<Semaphore> outputLockList = new LinkedList<>();
 
@@ -107,23 +109,20 @@ public class MyMiddleware {
      */
     private boolean requestIsComplete(ByteBuffer byteBuffer) throws java.lang.StringIndexOutOfBoundsException {
 
-        int latestIndex = 0;
+        int foundPosition = 0;
         int number_of_newlines = 0;
 
-        String request = new String(byteBuffer.array(), 0, byteBuffer.limit());
+        String request = new String(byteBuffer.array(), 0, byteBuffer.position());
 
         char firstCharacter = request.charAt(0);
 
-
         while(true){
-            latestIndex = request.indexOf("\r\n", latestIndex);
+            foundPosition = request.indexOf("\r\n", foundPosition);
 
-            if(latestIndex >= 0){
+            if(foundPosition >= 0){
                 number_of_newlines += 1;
-                latestIndex += 2;
-            }
-
-            if (latestIndex < 0){
+                foundPosition += this.carriageReturnLength; // Add
+            } else if (foundPosition < 0) {
                 break;
             }
 
@@ -205,7 +204,7 @@ public class MyMiddleware {
                         byteBuffer = (ByteBuffer) key.attachment();
                     } else {
 //                        System.out.println("Checkpotin 7.2");
-                        byteBuffer = ByteBuffer.allocate(20 * 4 * 1024); // Is this buffer big enough?
+                        byteBuffer = ByteBuffer.allocate(15 * 4 * 1024);
                     }
 
                     socketChannel = (SocketChannel) key.channel();
@@ -245,7 +244,7 @@ public class MyMiddleware {
 //                        System.out.println("Queuing...");
 
                         // Do whatever you have to do with the channel;
-                        singleRequest = new SingleRequest(byteBuffer, socketChannel, this.readSharded);
+                        singleRequest = new SingleRequest(byteBuffer, socketChannel, this.readSharded, workQueue.size());
 
                         MiddlewareWorker worker = new MiddlewareWorker(
                                 readSharded,

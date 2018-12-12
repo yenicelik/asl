@@ -27,6 +27,7 @@ public class SingleRequest {
     public Instant timeReceivedResponseFromServer;
     public Instant timeSentToClient;
     public long timeRealDoneOffset;
+    public long queueSize;
 
      private long threadId;
 
@@ -37,9 +38,10 @@ public class SingleRequest {
 
     // Measuring everything possilbe
     // All the operations which set the corresponding times
-    public void setTimeCreated() {
+    public void setTimeCreated(Integer queueSize) {
         this.timeRealOffset = System.currentTimeMillis();
         this.timeCreated = Instant.now();
+        this.queueSize = queueSize.longValue();
     }
     public void setTimeEnqueued() {
         this.timeEnqueued = Instant.now();
@@ -82,7 +84,8 @@ public class SingleRequest {
     public SingleRequest(
             ByteBuffer byteBuffer,
             SocketChannel socketChannel,
-            boolean sharded
+            boolean sharded,
+            Integer queueSize
     ) {
 
         this.byteBuffer = byteBuffer;
@@ -93,7 +96,7 @@ public class SingleRequest {
         this.sharded = sharded;
 
         // Record when exactly the SingleRequest is created TODO LOGGER
-        this.setTimeCreated();
+        this.setTimeCreated(queueSize);
 
     }
 
@@ -133,8 +136,9 @@ public class SingleRequest {
                 Duration.between(timeSentToServer, timeReceivedResponseFromServer).getNano(),
                 Duration.between(timeReceivedResponseFromServer, timeSentToClient).getNano(),
                 timeRealDoneOffset,
-                requestType
-        );
+                requestType,
+                this.queueSize
+                );
 
         loggerUtils.possibleFlush();
 

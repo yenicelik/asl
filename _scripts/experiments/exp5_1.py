@@ -74,7 +74,7 @@ class Exp5_1:
 
         # Setting the reads to writes ratio
         self.writes = "1"
-        self.reads = ["6", "9"] # "1", "3",
+        self.reads = ["1", "3", "6", "9"]
 
         # Multi-Get parameters
         self.multiget = True  # So all other parameters disappear

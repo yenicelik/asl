@@ -601,20 +601,34 @@ This is because the middleware graph only shows the performance \textbf{excludin
 \label{fig:test}
 \end{figure}
 
-The single server is fast enough to respond to all individual client requests, as the server is only responding with the message "STORED" each time.
+The write-only operations reach a high throughput of approximately $8'000 ops/sec$.
+Compared to the maximum possible throughput without the middleware of $18'000 ops/sec$, this tells us that the middleware is a hard delimiting factor.
+
+%TODO get numbers from code profiling
+
+Some code-profiling shows us that the java \textbf{.split} function heavily discounts the times, and makes writes slower than when used without the middleware.
+In addition to that, the write-loads occupy the \textit{byteBuffers} inside my middleware.
+This means that the middleware has an additional set of memory-allocations, which is known to be the bottleneck for most modern programs. 
+
+One can see that the bottleneck is the middleware, as the performance increases until 8 virtual clients per threads, and then sharply drops due to the oversaturation of the incoming requests.
+For 8 middleware threads, this oversaturation takes place with even only 4 virtual clients per thread. 
+In addition to making it slower, the many memory allocations makes the variance high 
+This can be seen by the error bars which are significantly higher than in experiment 2.1.
+\\
+
+From experiment 2.1, we know that the single server is fast enough to respond to all individual client requests, as the server is only responding with the message "STORED" each time.
 However, at some point, the number of requests is so high, that either the individual client output bandwidth, or storing the actual requests on the hard-ware side becomes the bottleneck.
 This can be seen as the throughput grows square-root like, and then saturates.
-The throughput graph, which means out with 16 virtual clients per thread, proves this point.
-To decide whether the network is the bandwidth is the bottleneck, I repeat this experiment locally with virtual docker containers.
-These plateau at a later stage, which proves that the maximum network bandwidth is reached with 16 virtual clients per thread.
+In contrast, for this experiment, instead of growing and reaching a stable plateau phase, the system oversaturations, as it is instable to so be exposed to so many requests.
+I rule out that the network bandwidth is a delimiting factor for this, as we know from experiment 2.1 that the client maximum throughput for this specific configuration would usually almost be $18'000 ops/sec$, and also because I know that the server only responds with "STORED", which take up almost no bandwidth at all.
 
-%TODO :
-Latency and throughput correlate in the following way: \textbf{???}
+To apply some sanity checks, I observers the latency and throughput graphs as measured by the client.
+Because the latency is much lower within a local system, the latencies within the middleware are lower than the latencies as measured in the client (which include the network-round-trip time from client to middleware virtual machines).
+However, the latencies in both cases increase, and throughput decreases, which means that the interactive law applies.
+Furthermore, removing the warm-up and cool-down time makes the experiment is more stable, as can be seen by comparing the throughput graphs of the client and middlewares.
+This is because I cannot strip the warm-up and cool-down phases from the client plots.
 
 The following graphs are created using the logs of the client for the throughput and the latency, and underline that the values are sane.
-
-As a sanity check, I present the throughput and latency plots from the client machines, which all conform to the throughputs and latencies as caluclated in the middleware.
-Another sanity check is that the interactive law holds, which states that the response-time \textbf{per request}  is related inversely-linearly proportional to the throughput.
 
 \begin{figure}[H]
 \centering
@@ -634,18 +648,12 @@ Another sanity check is that the interactive law holds, which states that the re
 \label{fig:test}
 \end{figure}
 
-
-
-
-The client and middleware graphs deviate sligthly.
-As one can see, the middleware graph seems more stable.
-This is because the middleware graph only shows the performance \textbf{excluding} the warm-up and cool-down phase, whereas the client graphs do not exclude these measurements.
-
 \subsubsection{Additional Explanation}
 
 %TODO : compare read-only and write-only operations 
+%TODO measure system saturation with dstat? i.e. if 100% at 8 VC and at 32 VC?
 
-Provide a detailed analysis of the results (e.g., bottleneck analysis, component utilizations, average queue lengths, system saturation). Add any additional figures and experiments that help you illustrate your point and support your claims.
+Provide a detailed analysis of the resultscomponent utilizations, average queue lengths). Add any additional figures and experiments that help you illustrate your point and support your claims.
 
 \subsection{Two Middlewares}
 
@@ -668,38 +676,15 @@ Provide a detailed analysis of the results (e.g., bottleneck analysis, component
 
 The setup is exactly the same as in experiment "Baseline without Middleware and 1 server", with the difference that we inject two middlewares between the clients, and the server.
 Another difference is that we allow each individual client to run two memtier instances (each with one thread) to be able to connect to two instances each.
-The throughput reached approximately almost $3000ops/s$, which conforms to the observation of the maximum throughput per server in section "Baseline without Middleware and 1 server". \\
 
-In addition the measuring the throughput and response time for different values of number of virtual clients, we also allow to modify the number of middleware threads as another measureable variable.
+In addition measuring the throughput and response time for different values of number of virtual clients, we also allow to modify the number of middleware threads as another measureable variable.
 This means that I test out the throughput and latency for any permutation of
 virtualthreads=[1, 2, 4, 8, 16, 32] and threads in the middleware=[8, 16, 32, 64].
 I repeat each experiment for 3 times and plot the standard deviation amongst those trials.
 I also allow for a 15 second warm-up and 15 second cool-down time, and disregard these measurements when retrieving the logs about the request times from the middleware.\\
 
-Connect three load generator machines (two instances of memtier with CT=1) to two middlewares and use 1 memcached server. Run a read-only and a write-only workload with increasing number of clients (between 2 and 64) and measure response time \emph{both at the client and at the middleware}, and plot the throughput and response time as measured in the middleware.
-
-Repeat this experiment for different number of worker threads inside the middleware: 8, 16, 32, 64.
-
-\begin{center}
-	\scriptsize{
-		\begin{tabular}{|l|c|}
-			\hline Number of servers                & 1                        \\ 
-			\hline Number of client machines        & 3                        \\ 
-			\hline Instances of memtier per machine & 2                        \\ 
-			\hline Threads per memtier instance     & 1                        \\
-			\hline Virtual clients per thread       & [1..32]                  \\ 
-			\hline Workload                         & Write-only and Read-only \\
-			\hline Multi-Get behavior               & N/A                      \\
-			\hline Multi-Get size                   & N/A                      \\
-			\hline Number of middlewares            & 2                        \\
-			\hline Worker threads per middleware    & [8..64]                  \\
-			\hline Repetitions                      & 3 or more (at least 1 minute each)                \\ 
-			\hline 
-		\end{tabular}
-	} 
-\end{center}
-
 \subsubsection{Read-only}
+I first start with read-only operations.
 
 \begin{figure}[H]
 \centering
@@ -750,6 +735,26 @@ This is because the middleware graph only shows the performance \textbf{excludin
 \centering
 \begin{subfigure}{.5\textwidth}
     \centering
+    \includegraphics[width=\textwidth]{img/exp3_2/exp3_2__latency_middleware_write_1.png}
+    \caption{Latency write only}
+    \label{fig:mesh1}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+      \centering
+    \includegraphics[width=\textwidth]{img/exp3_2/exp3_2__throughput_middleware_write_1.png}
+    \caption{Throughput write only}
+    \label{fig:mesh1}
+\end{subfigure}
+\caption{Exp3.2: Latency and throughputs as measures by the middlewares}
+\label{fig:test}
+\end{figure}
+
+---
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}{.5\textwidth}
+    \centering
     \includegraphics[width=\textwidth]{img/exp3_2/exp3_2__latency_client_write_1.png}
     \caption{Latency write only}
     \label{fig:mesh1}
@@ -766,23 +771,6 @@ This is because the middleware graph only shows the performance \textbf{excludin
 
 %TODO : explanation
 
-\begin{figure}[H]
-\centering
-\begin{subfigure}{.5\textwidth}
-    \centering
-    \includegraphics[width=\textwidth]{img/exp3_2/exp3_2__latency_middleware_write_1.png}
-    \caption{Latency write only}
-    \label{fig:mesh1}
-\end{subfigure}%
-\begin{subfigure}{.5\textwidth}
-      \centering
-    \includegraphics[width=\textwidth]{img/exp3_2/exp3_2__throughput_middleware_write_1.png}
-    \caption{Throughput write only}
-    \label{fig:mesh1}
-\end{subfigure}
-\caption{Exp3.2: Latency and throughputs as measures by the middlewares}
-\label{fig:test}
-\end{figure}
 
 The client and middleware graphs deviate sligthly.
 As one can see, the middleware graph seems more stable.

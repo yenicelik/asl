@@ -65,12 +65,12 @@ class Exp3_1:
         self.instances_of_memtier_per_machine = 1
         self.threads_per_memtier_instance = 2
         # self.virtual_clients_per_thread = [(2 ** x) for x in range(0, 6)]
-        self.virtual_clients_per_thread = [(2 ** x) for x in range(0, 6)]
+        self.virtual_clients_per_thread = [(2 ** x) for x in range(5, 6)]
 
         # Middleware parameters
         self.number_of_middlewares = 1
         # self.worker_threads_per_middleware = [(2 ** x) for x in range(3, 7)]
-        self.worker_threads_per_middleware = [(2 ** x) for x in range(3, 7)]
+        self.worker_threads_per_middleware = [(2 ** x) for x in range(6, 7)]
 
         # Multi-Get parameters
         self.multiget = False  # So all other parameters disappear
@@ -143,10 +143,10 @@ class ExperimentBaseline1(BaseExperimentRunner, Exp3_1):
             self.remote_logdir
         )
 
-        for self.writes in ["0", "1"]: # ["0", "1"]
-            self.reads = "1" if self.writes == "0" else "0" # Exactly only reads or writes
+        for middleware_workerthread in self.worker_threads_per_middleware:
 
-            for middleware_workerthread in self.worker_threads_per_middleware:
+            for self.writes in ["0", "1"]: # ["0", "1"]
+                self.reads = "1" if self.writes == "0" else "0" # Exactly only reads or writes
 
                 for virtual_client_threads in self.virtual_clients_per_thread:
 

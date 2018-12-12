@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 
 
 
-def create_multiple_histogram_plot(keys, means, stddevs, filepath, is_latency=False):
+def create_multiple_histogram_plot(keys, means, stddevs, filepath, is_latency=False, is_queue=False):
     """
 
         Create multiple histograms for the middleware
@@ -24,7 +24,6 @@ def create_multiple_histogram_plot(keys, means, stddevs, filepath, is_latency=Fa
     assert means.shape[0] == len(keys), ("sizes dont match! ", means, keys)
     assert means.shape == stddevs.shape, ("sizes dont match! ", means, stddevs)
 
-    percentile_keys = ["avg", "25", "50", "75", "90", "99"]
 
     plt.figure()
 
@@ -33,11 +32,20 @@ def create_multiple_histogram_plot(keys, means, stddevs, filepath, is_latency=Fa
         current_mean = means[idx, :]
         current_stddev = stddevs[idx, :]
 
-        keynames = ["Keysize: " + key + ": Percentile " + x for x in percentile_keys]
+        if is_queue:
+            time_labels = ['Time to Enqueue', 'Time in Queue', 'Time Queue to Server', 'Time at Server','Time Server to Client']
+            keynames = [("mt: " + str(key) + ": Time " + str(x)) for x in time_labels]
+        else:
+            percentile_keys = ["avg", "25", "50", "75", "90", "99"]
+            keynames = [("Keysize: " + str(key) + ": Percentile " + str(x)) for x in percentile_keys]
+
+        print("Shapes are: ", len(keynames), current_mean.shape, current_stddev.shape)
+
+        # print("sizes are: ", current_stddev.shape, current_mean.shape, len(keynames))
 
         # Create a boxplot out of these values now
 
-        plt.bar(keynames, current_mean, label="Keysize {}".format(key), yerr=current_stddev, capsize=5)
+        plt.bar(keynames, current_mean, label="{}".format(key), yerr=current_stddev, capsize=5)
 
     plt.ylim(ymin=0)
     plt.legend(loc='best')
@@ -193,6 +201,39 @@ def read_client_histogram_as_dataframe(filepath, percentage_details=False):
         return set_df, get_df, set_ops, get_ops
 
     return set_df, get_df
+
+
+def get_average_queue_components(df):
+    """
+        Given a dataframe, extracts the average of the following values:
+
+            "timeRealOffset",
+            "differenceTimeCreatedAndEnqueued",
+            "differenceTimeEnqueuedAndDequeued",
+            "differenceTimeDequeuedAndSentToServer",
+            "differenceTimeSentToServerAndReceivedResponseFromServer",
+            "differenceTimeReceivedResponseFromServerAndSentToClient",
+            "timeRealDoneOffset"
+
+        || 1541677809689, 1872, 490636, 61797, 850187, 31835, 1541677809691, 534, 0.11864030215507665
+
+        corresponding to
+
+
+    :return:
+    """
+
+    # The following are all averages
+    time_to_enqueue = df["differenceTimeCreatedAndEnqueued"].astype(float).mean() / 1_000_000.
+    time_in_queue = df["differenceTimeEnqueuedAndDequeued"].astype(float).mean() / 1_000_000.
+    time_queue_to_server = df["differenceTimeDequeuedAndSentToServer"].astype(float).mean() / 1_000_000.
+    time_at_server = df["differenceTimeSentToServerAndReceivedResponseFromServer"].astype(float).mean() / 1_000_000.
+    time_from_server_to_client = df["differenceTimeReceivedResponseFromServerAndSentToClient"].astype(float).mean() / 1_000_000.
+
+    out = np.asarray(
+        [time_to_enqueue, time_in_queue, time_queue_to_server, time_at_server, time_from_server_to_client])
+
+    return out
 
 if __name__ == "__main__":
     EXAMPLE = "/Users/david/asl-fall18-project/data/raw/exp5_1_backups/__Exp51_multikeysize_6_middleware2__rep_1_client_Client2_sharding_True_middlewarethreads_64.txt"
