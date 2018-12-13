@@ -119,33 +119,34 @@ def iterate_through_experiments_exp4_1():
 
                 for client in ['Client1', 'Client2', 'Client3']:
 
-                    # TODO: Do it for each individual middleware!
-                    # Trying to open and read the file!
-                    client_filename = get_pattern_exp4_1_client(
-                        virtual_client_threads=vc,
-                        middleware=middleware,
-                        middlewareworkerthreads=mt,
-                        repetition=repetition,
-                        client=client,
-                        write=write
-                    )
+                    for middleware in [1, 2]:
 
-                    try:
-                        client_throughput, client_latency = get_throughput_latency_default_memtier(filepath=BASEPATH + client_filename)
-                        client_all_throughputs.append(client_throughput)
-                        client_all_latencies.append(client_latency)
+                        # Trying to open and read the file!
+                        client_filename = get_pattern_exp4_1_client(
+                            virtual_client_threads=vc,
+                            middleware=middleware,
+                            middlewareworkerthreads=mt,
+                            repetition=repetition,
+                            client=client,
+                            write=write
+                        )
 
-                    except Exception as e:
-                        # print("WRONG WITH THE FOLLOWING CONFIG: ", client_filename)
-                        print("WRONG WITH THE FOLLOWING CONFIG: ", middleware_filename)
-                        print(e)
-                        continue
+                        try:
+                            client_throughput, client_latency = get_throughput_latency_default_memtier(filepath=BASEPATH + client_filename)
+                            client_all_throughputs.append(client_throughput)
+                            client_all_latencies.append(client_latency)
+
+                        except Exception as e:
+                            # print("WRONG WITH THE FOLLOWING CONFIG: ", client_filename)
+                            print("WRONG WITH THE FOLLOWING CONFIG: ", middleware_filename)
+                            print(e)
+                            continue
 
             print("VC and MT ", (mt, vc))
             print("NEW VC and MT ", (_mt, _vc))
 
             mw_mean_latency = np.mean(mw_all_latencies)
-            mw_mean_throughput = np.sum(mw_all_throughputs) / 3. / 2.
+            mw_mean_throughput = np.sum(mw_all_throughputs) / 3.
             mw_stddev_latency = np.std(mw_all_latencies)
             mw_stddev_throughput = np.std(mw_all_throughputs)
             # Append to list

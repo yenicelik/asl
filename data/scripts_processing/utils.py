@@ -8,6 +8,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
+def get_average_queuesize(df):
+    average_queuesize = df['queueSize'].astype(float).mean()
+
+    return average_queuesize
+
+
 
 def get_latency_log_dataframe(df):
     """
@@ -60,7 +66,8 @@ def render_lineargraph_multiple_errorbars(
         filepath,
         is_latency=False,
         is_read_write=False,
-        is_sharded=False
+        is_sharded=False,
+        is_queue_size=False
 ):
     """
         Renders and saves the graph to the given filepath.
@@ -79,7 +86,8 @@ def render_lineargraph_multiple_errorbars(
         if is_sharded:
             if i == 0:
                 thelabel = "non-sharded"
-            thelabel = 'Middleware threads {}'.format( 2**(i+3) )
+            else:
+                thelabel = "sharded"
         elif is_read_write:
             if i == 0:
                 thelabel = "read"
@@ -95,7 +103,10 @@ def render_lineargraph_multiple_errorbars(
     plt.legend(loc='best')
     plt.gca().legend()
 
-    if is_latency:
+    if is_queue_size:
+        plt.xlabel('Number of Virtual Clients per Thread')
+        plt.ylabel('Average number of requests in queue')
+    elif is_latency:
         plt.xlabel('Number of Virtual Clients per Thread')
         plt.ylabel('Latency in ms')
     else:

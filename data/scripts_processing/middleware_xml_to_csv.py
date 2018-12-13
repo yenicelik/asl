@@ -119,7 +119,8 @@ def parse_log(directory):
         "differenceTimeReceivedResponseFromServerAndSentToClient",
         "timeRealDoneOffset",
         "totalRequests",
-        "throughput"
+        "throughput",
+        "queueSize"
     ])
 
     return out

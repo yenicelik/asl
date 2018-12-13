@@ -650,10 +650,90 @@ The following graphs are created using the logs of the client for the throughput
 
 \subsubsection{Additional Explanation}
 
+As a further explanation, I also present the average size of the queue per middlewarethread and virtual clients per thread.
+
+For write-operations, the queue contains the message that is to be written.
+This means that if the requests cannot be handled fast enough, the queuesize will increase.
+If the requests can be handled fast enough though, the queue-size will stay at a low constant value.
+This can be easily seen by the below graph, where the average queue-size decreases as we add more middleware-threads.
+Once we hit 16 threads, this queue-size hits a constant rate, as all requests can be handled fast enough.
+
+For read-operations.
+%TODO explanation for ever-lowering queue-sizes
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}{.5\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{img/exp3_1/exp3_1__queuesize_middleware_write_0.png}
+    \caption{Exp2.2: Latency read only}
+    \label{fig:mesh1}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+      \centering
+    \includegraphics[width=\textwidth]{img/exp3_1/exp3_1__queuesize_middleware_write_1.png}
+    \caption{Throughput read only}
+    \label{fig:mesh1}
+\end{subfigure}
+\caption{Exp3.1: Latency and throughputs as measures by the \textbf{middlewares}}
+\label{fig:test}
+\end{figure}
+
 %TODO : compare read-only and write-only operations 
 %TODO measure system saturation with dstat? i.e. if 100% at 8 VC and at 32 VC?
+%TODO talk about respective response times
 
-Provide a detailed analysis of the resultscomponent utilizations, average queue lengths). Add any additional figures and experiments that help you illustrate your point and support your claims.
+\begin{figure}[!ht] 
+  \label{ fig7} 
+  \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=0.7\linewidth]{img/exp3_1/exp3_1_mw_percentile_plots_writes_0__vc_1.png} 
+    \caption{Initial condition} 
+    \vspace{4ex}
+  \end{minipage}%%
+  \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=0.7\linewidth]{img/exp3_1/exp3_1_mw_percentile_plots_writes_1__vc_1.png} 
+    \caption{Rupture} 
+    \vspace{4ex}
+  \end{minipage} 
+  \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=0.7\linewidth]{img/exp3_1/exp3_1_mw_percentile_plots_writes_0__vc_4.png} 
+    \caption{DFT, Initial condition} 
+    \vspace{4ex}
+  \end{minipage}%% 
+  \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=0.7\linewidth]{img/exp3_1/exp3_1_mw_percentile_plots_writes_1__vc_4.png} 
+    \caption{DFT, rupture} 
+    \vspace{4ex}
+  \end{minipage} 
+    \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=0.7\linewidth]{img/exp3_1/exp3_1_mw_percentile_plots_writes_0__vc_16.png} 
+    \caption{DFT, Initial condition} 
+    \vspace{4ex}
+  \end{minipage}%% 
+  \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=0.7\linewidth]{img/exp3_1/exp3_1_mw_percentile_plots_writes_1__vc_16.png} 
+    \caption{DFT, rupture} 
+    \vspace{4ex}
+  \end{minipage} 
+    \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=0.7\linewidth]{img/exp3_1/exp3_1_mw_percentile_plots_writes_0__vc_32.png} 
+    \caption{DFT, Initial condition} 
+    \vspace{4ex}
+  \end{minipage}%% 
+  \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=0.7\linewidth]{img/exp3_1/exp3_1_mw_percentile_plots_writes_1__vc_32.png} 
+    \caption{DFT, rupture} 
+    \vspace{4ex}
+  \end{minipage} 
+\end{figure}
 
 \subsection{Two Middlewares}
 
@@ -778,6 +858,83 @@ This is because the middleware graph only shows the performance \textbf{excludin
 
 \subsubsection{Explanation}
 
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}{.5\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{img/exp3_2/exp3_2__queuesize_middleware_write_0.png}
+    \caption{Exp2.2: Latency read only}
+    \label{fig:mesh1}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+      \centering
+    \includegraphics[width=\textwidth]{img/exp3_2/exp3_2__queuesize_middleware_write_1.png}
+    \caption{Throughput read only}
+    \label{fig:mesh1}
+\end{subfigure}
+\caption{Exp3.1: Latency and throughputs as measures by the \textbf{middlewares}}
+\label{fig:test}
+\end{figure}
+
+%TODO : compare read-only and write-only operations 
+%TODO measure system saturation with dstat? i.e. if 100% at 8 VC and at 32 VC?
+%TODO talk about respective response times
+
+%TODO more threads for 3.2 writes only, to check if saturation is reached (or what the maximum number is going to be?
+
+\begin{figure}[H] 
+  \label{ fig7} 
+  \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=0.7\linewidth]{img/exp3_2/exp3_2_mw_percentile_plots_writes_0__vc_1.png} 
+    \caption{Initial condition} 
+    \vspace{4ex}
+  \end{minipage}%%
+  \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=0.7\linewidth]{img/exp3_2/exp3_2_mw_percentile_plots_writes_1__vc_1.png} 
+    \caption{Rupture} 
+    \vspace{4ex}
+  \end{minipage} 
+  \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=0.7\linewidth]{img/exp3_2/exp3_2_mw_percentile_plots_writes_0__vc_4.png} 
+    \caption{DFT, Initial condition} 
+    \vspace{4ex}
+  \end{minipage}%% 
+  \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=0.7\linewidth]{img/exp3_2/exp3_2_mw_percentile_plots_writes_1__vc_4.png} 
+    \caption{DFT, rupture} 
+    \vspace{4ex}
+  \end{minipage} 
+    \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=0.7\linewidth]{img/exp3_2/exp3_2_mw_percentile_plots_writes_0__vc_16.png} 
+    \caption{DFT, Initial condition} 
+    \vspace{4ex}
+  \end{minipage}%% 
+  \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=0.7\linewidth]{img/exp3_2/exp3_2_mw_percentile_plots_writes_1__vc_16.png} 
+    \caption{DFT, rupture} 
+    \vspace{4ex}
+  \end{minipage} 
+    \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=0.7\linewidth]{img/exp3_2/exp3_2_mw_percentile_plots_writes_0__vc_32.png} 
+    \caption{DFT, Initial condition} 
+    \vspace{4ex}
+  \end{minipage}%% 
+  \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=0.7\linewidth]{img/exp3_2/exp3_2_mw_percentile_plots_writes_1__vc_32.png} 
+    \caption{DFT, rupture} 
+    \vspace{4ex}
+  \end{minipage} 
+\end{figure}
+
 Provide a detailed analysis of the results (e.g., bottleneck analysis, component utilizations, average queue lengths, system saturation). Add any additional figures and experiments that help you illustrate your point and support your claims.
 
 \subsection{Summary}
@@ -811,7 +968,25 @@ Based on the experiments above, fill out the following table. For both of them u
 
 Notice that the miss rate is always zero, because this is 1. a closed system, and all servers are pre-populated before any experiment starts.
 
-Based on the data provided in these tables, write at least two paragraphs summarizing your findings about the performance of the middleware in the baseline experiments.
+Based on the data provided in these tables, write at least two paragraphs summarizing your findings about the performance of the middleware in the baseline experiments. \\
+
+Also, when having only one middleware, the middleware is the bottleneck.
+This can be seen from comparing experiment 2.1 and recognising that for write-only operations, the exact same setup decreases from $18'000 ops/sec$ to $8'000 ops/sec$.
+As such, adding the second middleware doubles this capacity, from $8'000 ops/sec$ to $16'000 ops/sec$, as we now have independelty two servers that can send out these requests.
+The graphs of for write-only operations in section 2.1, and section 3.1 resp. section 3.2 underline these statements. \\
+
+One can see this also from the fact that the middleware may not have enough middleware threads.
+For 3.1 writes-only, the throughput plateaus at almost $8'000 ops/sec$ when we have 64 middleware-threads.
+In 3.2 one can observer, that we now increase the number of middleware-threads to a total of $2 \times 64 = 128$ middlewarethreads (in the entire system). 
+As a result, the throughput also almost doubles, and one cannot recognise a saturation phase.
+This implies that adding more middleware-threads possibly could result at the original, almost $18'000 ops/sec$ calculation. \\
+
+%TODO potentially make this experiment, with one middleware, and 128, and 256 threads? and check if this hypothesis is correct?
+
+%TODO talk more about queue times, queue sizes etc.
+
+
+
 
 \section{Throughput for Writes (90 pts)}
 

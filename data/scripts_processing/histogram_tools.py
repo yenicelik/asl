@@ -35,9 +35,11 @@ def create_multiple_histogram_plot(keys, means, stddevs, filepath, is_latency=Fa
         if is_queue:
             time_labels = ['Time to Enqueue', 'Time in Queue', 'Time Queue to Server', 'Time at Server','Time Server to Client']
             keynames = [("mt: " + str(key) + ": Time " + str(x)) for x in time_labels]
+            plt.bar(keynames, current_mean, label="Middlewarethreads {}".format(key), yerr=current_stddev, capsize=5)
         else:
             percentile_keys = ["avg", "25", "50", "75", "90", "99"]
             keynames = [("Keysize: " + str(key) + ": Percentile " + str(x)) for x in percentile_keys]
+            plt.bar(keynames, current_mean, label="Keysize {}".format(key), yerr=current_stddev, capsize=5)
 
         print("Shapes are: ", len(keynames), current_mean.shape, current_stddev.shape)
 
@@ -45,7 +47,6 @@ def create_multiple_histogram_plot(keys, means, stddevs, filepath, is_latency=Fa
 
         # Create a boxplot out of these values now
 
-        plt.bar(keynames, current_mean, label="{}".format(key), yerr=current_stddev, capsize=5)
 
     plt.ylim(ymin=0)
     plt.legend(loc='best')
