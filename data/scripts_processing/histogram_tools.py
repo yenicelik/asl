@@ -150,13 +150,11 @@ def get_histogram_latency_log_dataframe_middleware(df):
                     + df['differenceTimeSentToServerAndReceivedResponseFromServer'].astype(float)\
                     + df['differenceTimeReceivedResponseFromServerAndSentToClient'].astype(float)
 
-    df['latency']
-
     ## All throughputs; I can then call "df.plt.histogram" later on
     return df['latency'].to_frame().T
 
 
-def read_client_histogram_as_dataframe(filepath, percentage_details=False):
+def read_client_histogram_as_dataframe(filepath, percentage_details=False, cumulative=False):
     """
     :param filepath:
     :return:
@@ -181,6 +179,9 @@ def read_client_histogram_as_dataframe(filepath, percentage_details=False):
                 (x['percent'] - cumulative_value)
             ))
             cumulative_value = x['percent']
+            if cumulative:
+                cumulative_value = 0.
+
 
     cumulative_value = 0.
     get_tuples = []
@@ -191,6 +192,9 @@ def read_client_histogram_as_dataframe(filepath, percentage_details=False):
                 (x['percent'] - cumulative_value)
             ))
             cumulative_value = x['percent']
+            if cumulative:
+                cumulative_value = 0.
+
 
     set_df = pd.DataFrame(set_tuples, columns=["time_since_begin", "total_ops"])
     get_df = pd.DataFrame(get_tuples, columns=["time_since_begin", "total_ops"])
@@ -235,6 +239,40 @@ def get_average_queue_components(df):
         [time_to_enqueue, time_in_queue, time_queue_to_server, time_at_server, time_from_server_to_client])
 
     return out
+
+def get_avg_25_50_75_90_99_percentiles(df):
+
+    df = df.astype(float).sort_values('latency')  # Sort by latency
+
+    avg = np.mean(df['latency'].astype(float).as_matrix().flatten())
+    _25 = np.percentile(df['latency'].astype(float).as_matrix().flatten(), 25)
+    _50 = np.percentile(df['latency'].astype(float).as_matrix().flatten(), 50)
+    _75 = np.percentile(df['latency'].astype(float).as_matrix().flatten(), 75)
+    _90 = np.percentile(df['latency'].astype(float).as_matrix().flatten(), 90)
+    _99 = np.percentile(df['latency'].astype(float).as_matrix().flatten(), 99)
+
+    out = np.asarray([avg, _25, _50, _75, _90, _99])
+
+    return out
+
+def get_client_percentiles(df):
+    """
+        From the client (which is stripped to the top ten minutes), get the percentiles
+    :param df:
+    :return:
+    """
+
+    avg = np.mean(df['time_since_begin'].astype(float).values)
+    _25 = np.max(df[df['total_ops'].astype(float) < 25]['time_since_begin'].astype(float).values)
+    _50 = np.max(df[df['total_ops'].astype(float) < 50]['time_since_begin'].astype(float).values)
+    _75 = np.max(df[df['total_ops'].astype(float) < 75]['time_since_begin'].astype(float).values)
+    _90 = np.max(df[df['total_ops'].astype(float) < 90]['time_since_begin'].astype(float).values)
+    _99 = np.max(df[df['total_ops'].astype(float) < 99]['time_since_begin'].astype(float).values)
+
+    out = np.asarray([avg, _25, _50, _75, _90, _99])
+
+    return out
+
 
 if __name__ == "__main__":
     EXAMPLE = "/Users/david/asl-fall18-project/data/raw/exp5_1_backups/__Exp51_multikeysize_6_middleware2__rep_1_client_Client2_sharding_True_middlewarethreads_64.txt"

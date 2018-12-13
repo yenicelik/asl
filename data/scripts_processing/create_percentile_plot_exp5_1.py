@@ -13,7 +13,8 @@ from utils import get_throughput_latency_default_memtier, \
 
 from histogram_tools import get_histogram_latency_log_dataframe_middleware, \
     create_multiple_histogram_plot, \
-    read_client_histogram_as_dataframe
+    read_client_histogram_as_dataframe, \
+    get_avg_25_50_75_90_99_percentiles, get_client_percentiles
 
 from middleware_xml_to_csv import parse_log
 
@@ -22,12 +23,13 @@ from middleware_xml_to_csv import parse_log
 BASEPATH = "/Users/david/asl-fall18-project/data/raw/exp5_1_backups/"
 GRAPHPATH = "/Users/david/asl-fall18-project/report/img/exp5_1/"
 
+
 def get_pattern_exp5_1_middleware(
         middleware,
         keysize,
         repetition,
         sharding
-    ):
+):
     """
         Gets the filename given the above specification for the middleware threads
     :return:
@@ -46,7 +48,7 @@ def get_pattern_exp5_1_client(
         repetition,
         client,
         sharding
-    ):
+):
     """
         Get's the filename given the above specifications.
         This is for easier handling of the data
@@ -65,37 +67,6 @@ def get_pattern_exp5_1_client(
     out = out.format(keysize, middleware, repetition, client, sharding)
     return out
 
-def get_avg_25_50_75_90_99_percentiles(df):
-
-    df = df.astype(float).sort_values('latency')  # Sort by latency
-
-    avg = np.mean(df['latency'].astype(float).as_matrix().flatten())
-    _25 = np.percentile(df['latency'].astype(float).as_matrix().flatten(), 25)
-    _50 = np.percentile(df['latency'].astype(float).as_matrix().flatten(), 50)
-    _75 = np.percentile(df['latency'].astype(float).as_matrix().flatten(), 75)
-    _90 = np.percentile(df['latency'].astype(float).as_matrix().flatten(), 90)
-    _99 = np.percentile(df['latency'].astype(float).as_matrix().flatten(), 99)
-
-    out = np.asarray([avg, _25, _50, _75, _90, _99])
-
-    return out
-
-def get_client_percentiles(df):
-    """
-        From the client (which is stripped to the top ten minutes), get the percentiles
-    :param df:
-    :return:
-    """
-    avg = np.mean(df['time_since_begin'].astype(float))
-    _25 = np.max(df[df['total_ops'].astype(float) < 25]['time_since_begin'].astype(float))
-    _50 = np.max(df[df['total_ops'].astype(float) < 50]['time_since_begin'].astype(float))
-    _75 = np.max(df[df['total_ops'].astype(float) < 75]['time_since_begin'].astype(float))
-    _90 = np.max(df[df['total_ops'].astype(float) < 90]['time_since_begin'].astype(float))
-    _99 = np.max(df[df['total_ops'].astype(float) < 99]['time_since_begin'].astype(float))
-
-    out = np.asarray([avg, _25, _50, _75, _90, _99])
-
-    return out
 
 #### Iterating through all experiment files, creating the graphs
 def iterate_through_experiments_exp5_1():
@@ -113,8 +84,10 @@ def iterate_through_experiments_exp5_1():
     _number_shardings = len(shardings)
     _number_percentiles = len(["avg", "_25", "_50", "_75", "_90", "_99"])
 
-    middleware_latencies = np.zeros((_number_shardings, _number_keys, _number_percentiles, 2, 3)) # the "two" is for the number of middlewares
-    client_latencies = np.zeros((_number_shardings, _number_keys, _number_percentiles, 2, 3, 3)) # the "two" and "three" is for middlewares and clients respectively
+    middleware_latencies = np.zeros(
+        (_number_shardings, _number_keys, _number_percentiles, 2, 3))  # the "two" is for the number of middlewares
+    client_latencies = np.zeros((_number_shardings, _number_keys, _number_percentiles, 2, 3,
+                                 3))  # the "two" and "three" is for middlewares and clients respectively
 
     # Iterate through keysizes
     for jdx, sharding in enumerate(shardings):
@@ -141,15 +114,14 @@ def iterate_through_experiments_exp5_1():
                         # print("ATT")
                         # print(jdx, idx, middleware, repetition)
                         # print(type(jdx), type(idx), type(middleware), type(repetition))
-                        middleware_latencies[jdx, idx, :, middleware - 1, repetition] = get_avg_25_50_75_90_99_percentiles(tmp_latencies_mw)
+                        middleware_latencies[jdx, idx, :, middleware - 1,
+                        repetition] = get_avg_25_50_75_90_99_percentiles(tmp_latencies_mw)
 
                     except Exception as e:
                         # print("WRONG WITH THE FOLLOWING CONFIG: ", client_filename)
                         print("WRONG WITH THE FOLLOWING CONFIG: ", middleware_filename)
                         print(e)
                         continue
-
-
 
                 # ONCE FOR THE CLIENT
                 for client_idx, client in enumerate(['Client1', 'Client2', 'Client3']):
@@ -167,15 +139,16 @@ def iterate_through_experiments_exp5_1():
                         )
 
                         try:
-                            _, tmp_latencies_client_get = read_client_histogram_as_dataframe(filepath=BASEPATH + client_filename)
+                            _, tmp_latencies_client_get = read_client_histogram_as_dataframe(
+                                filepath=BASEPATH + client_filename, cumulative=True)
                             # print("At")
                             # print(jdx, idx, middleware, client_idx, repetition)
                             # print(type(jdx), type(idx), type(middleware), type(client_idx), type(repetition))
                             out = get_client_percentiles(tmp_latencies_client_get)
                             # print("Indecies: ", jdx, idx, :, middleware - 1, client_idx, repetition)
                             if np.isnan(out).any():
-                                print("Out is: ", out)
-                                client_latencies[jdx, idx, :, middleware - 1, client_idx, repetition] = client_latencies[jdx, idx, :, middleware - 1, client_idx, 0]
+                                client_latencies[jdx, idx, :, middleware - 1, client_idx,
+                                repetition] = client_latencies[jdx, idx, :, middleware - 1, client_idx, 0]
                             else:
                                 client_latencies[jdx, idx, :, middleware - 1, client_idx, repetition] = out
 
@@ -198,7 +171,6 @@ def iterate_through_experiments_exp5_1():
         print("Squeezed")
         print(mean_client_latencies.shape)
         print(mean_middleware_latencies.shape)
-
 
         client_means = np.mean(mean_client_latencies[jdx, :, :, :], axis=2)
         client_stddevs = np.std(mean_client_latencies[jdx, :, :, :], axis=2)
@@ -232,6 +204,5 @@ def iterate_through_experiments_exp5_1():
 
 if __name__ == "__main__":
     print("Starting to prepare the percentile-plots")
-
 
     iterate_through_experiments_exp5_1()

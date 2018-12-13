@@ -80,26 +80,25 @@ def iterate_through_experiments_exp2_2():
 
     print(np.max(client_throughput_means, axis=0))
     print(np.max(client_throughput_means, axis=1))
-
     # [5939.12333333 6054.25333333]
     # [2463.36666667 4491.11666667 5944.5 6054.25333333 5914.99666667 5860.77]
 
-    render_lineargraph_multiple_errorbars(
-        labels=labels,
-        mean_array=client_throughput_means.T,
-        stddev_array=client_throughput_stddev.T,
-        filepath=GRAPHPATH + "exp2_2__throughput_client_read_write",
-        is_latency=False,
-        is_read_write=True
-    )
-    render_lineargraph_multiple_errorbars(
-        labels=labels,
-        mean_array=client_latency_means.T,
-        stddev_array=client_latency_stddev.T,
-        filepath=GRAPHPATH + "exp2_2__latency_client_read_write",
-        is_latency=True,
-        is_read_write=True
-    )
+    # render_lineargraph_multiple_errorbars(
+    #     labels=labels,
+    #     mean_array=client_throughput_means.T,
+    #     stddev_array=client_throughput_stddev.T,
+    #     filepath=GRAPHPATH + "exp2_2__throughput_client_read_write",
+    #     is_latency=False,
+    #     is_read_write=True
+    # )
+    # render_lineargraph_multiple_errorbars(
+    #     labels=labels,
+    #     mean_array=client_latency_means.T,
+    #     stddev_array=client_latency_stddev.T,
+    #     filepath=GRAPHPATH + "exp2_2__latency_client_read_write",
+    #     is_latency=True,
+    #     is_read_write=True
+    # )
 
 
 if __name__ == "__main__":

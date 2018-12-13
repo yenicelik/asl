@@ -139,7 +139,7 @@ def create_all_histograms():
                         # print("At")
                         # print(jdx, idx, middleware, client_idx, repetition)
                         # print(type(jdx), type(idx), type(middleware), type(client_idx), type(repetition))
-                        set_df, get_df = read_client_histogram_as_dataframe(EXAMPLE)
+                        set_df, get_df = read_client_histogram_as_dataframe(tmp_latencies_client_get)
                         # print("Indecies: ", jdx, idx, :, middleware - 1, client_idx, repetition)
                         if np.isnan(out).any():
                             print("Out is: ", out)

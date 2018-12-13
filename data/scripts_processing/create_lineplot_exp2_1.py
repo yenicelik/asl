@@ -82,8 +82,8 @@ def iterate_through_experiments_exp2_1():
 
     print(np.max(client_throughput_means, axis=0))
     print(np.max(client_throughput_means, axis=1))
-    # [2940.63       17632.95666667]
-    # [5791.94333333 11381.43666667 11744.93333333 14595.12333333 17632.55333333 17632.95666667]
+    # [ 2940.63       17632.95666667]
+    # [ 5791.94333333 11381.43666667 11744.93333333 14595.12333333 17632.55333333 17632.95666667]
 
     render_lineargraph_multiple_errorbars(
         labels=labels,
