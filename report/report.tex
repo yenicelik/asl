@@ -551,7 +551,27 @@ But because all threads have designed channels to the respective clients, and be
 
 The system is very stable, as can be noticed by the error which is again very small, and thus barely readable around the measured points.
 As another sanity check, I present the throughput and latency plots from the \textbf{client machines}, which all conform to the throughputs and latencies as caluclated in the middleware.
-\textbf{To keep it concise, and because these graphs heavily look like the middleware graphs, I include these in the appendix}. 
+To keep it concise, and because these graphs heavily look like the middleware graphs, I include these in the appendix. 
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}{.5\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{img/exp3_1/exp3_1__latency_client_write_0.png}
+    \caption{Latency}
+    \label{fig:mesh1}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+      \centering
+    \includegraphics[width=\textwidth]{img/exp3_1/exp3_1__throughput_client_write_0.png}
+    \caption{Throughput}
+    \label{fig:mesh1}
+\end{subfigure}
+\caption{Exp3.1: Latency and throughputs for \textbf{read-only} as measured by the \textbf{clients} (combined throughput)}
+\label{fig:test}
+\end{figure}
+
+
 As the number of threads increases, more requests are able to be generated.
 Because the network bandwidth stays constant, the round-trip time of individual requests increases.
 The clients are able to generate enough load with even 1 virtual client per thread, such that with 1 virtual thread the network bandwidth is saturated at a very early stage with 1 virtual client per memtier thread.
@@ -560,6 +580,7 @@ The linear increase in the latency graph supports this claim.
 As a last sanity check, one can confirm that the interative law holds.
 The throughput flattens out, as the response time increases.
 This claim is supported by the graphs.
+
 
 \subsubsection{Write-only}
 
@@ -600,9 +621,28 @@ The experiments are still stable, but do have higher variance than all previous 
 This can be seen from the higher errobars (compared to previous experiments).
 
 To apply some sanity checks, I observers the latency and throughput graphs as measured by the client. 
-The client takes into account additional network rountrip time, which makes the response graph as measure by the client slightly different.
+The client takes into account additional network roundtrip time, which makes the response graph as measure by the client slightly different.
 The throughput graph confirms the middleware's throughput rates, however.
-For conciseness, I put the graphs as retrieved by the client in the appendix.
+This can be seen in the following graphs.
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}{.5\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{img/exp3_1/exp3_1__latency_client_write_1.png}
+    \caption{Latency}
+    \label{fig:mesh1}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+      \centering
+    \includegraphics[width=\textwidth]{img/exp3_1/exp3_1__throughput_client_write_1.png}
+    \caption{Throughput}
+    \label{fig:mesh1}
+\end{subfigure}
+\caption{Exp3.1: Latency and throughputs for \textbf{write-only} as measures by the \textbf{clients} (one middleware)}
+\label{fig:test}
+\end{figure}
+
 
 As a final sanity check, the throughput increases and then stays constant, while the throughput constantly increases.
 This indicates that the interactive law applies.
@@ -767,7 +807,6 @@ For 8 and 16 middleware threads per middleware instance, the system is under-sat
 For a higher number of middleware-threads per middleware instance, increasing the number of virtual clients per thread almost allows to reach the system the maximum throughput as is given by the compound throughput of the client machines.
 This claim is supported by the graph which shows an evening out of the throughput rate after 16 virtual clients per thread for 8 and 16 middleware threads per middleware instance, and an square-root-like increase in the throughput of the system which have 32 and respectively 64 middleware threads per middleware. \\
 
-
 As a sanity check, one the interactive law applies, as the latency grows although the throughput stays the same, and this with an ever-increasing rate.
 In addition to that, the throughput and response time graphs as measure by the client support the throughputs as observed in the middleware as the following graphs show.
 
@@ -791,98 +830,87 @@ In addition to that, the throughput and response time graphs as measure by the c
 
 \subsubsection{Explanation}
 
+I will now further elaborate the explanation from the above sections, using the some statistics including the average queuesize per configuration, and the time spent in each possible stage of the lifetime of a thread.
+
+First of all, for read-only requests, the queuesize does increase as we have fewer numbers of middleware threads.
+However, because saturation (from the server side) is reached quickly, this has no affect on the performance. 
+
+For write-only requests, the queue-size is more interesting.
+The queue is emptied much faster when as we increase the number of available middleware threads.
+This emptying allows for a higher throughput, as more requests can be handled this way.
+The right graph below supports this claim.
+I will analyse the time of a request spent at each stage even further.
 
 \begin{figure}[H]
 \centering
-\begin{subfigure}{.5\textwidth}
+\begin{subfigure}{.45\textwidth}
     \centering
     \includegraphics[width=\textwidth]{img/exp3_2/exp3_2__queuesize_middleware_write_0.png}
-    \caption{Exp2.2: Latency read only}
+    \caption{Read-only}
     \label{fig:mesh1}
 \end{subfigure}%
-\begin{subfigure}{.5\textwidth}
+\begin{subfigure}{.45\textwidth}
       \centering
     \includegraphics[width=\textwidth]{img/exp3_2/exp3_2__queuesize_middleware_write_1.png}
-    \caption{Throughput read only}
+    \caption{Write-only}
     \label{fig:mesh1}
 \end{subfigure}
-\caption{Exp3.1: Latency and throughputs as measures by the \textbf{middlewares}}
+\caption{Exp3.2: Average Queuesize in middleware \textbf{per} number of middleware threads and \textbf{per} virtual cliens per memtier thread}
 \label{fig:test}
 \end{figure}
 
 %TODO : compare read-only and write-only operations 
-%TODO measure system saturation with dstat? i.e. if 100% at 8 VC and at 32 VC?
-%TODO talk about respective response times
-
 %TODO more threads for 3.2 writes only, to check if saturation is reached (or what the maximum number is going to be?
+
+The following plots allow for a more throughput analysis, supporting the explanations made in the previous subsection (subsection 3.2).
+For a concise analysis, I only show the graphs for the two extreme configurations (virtual clients per memtier thread equals 1 , or equals 32).
+For the other configurations, please view the appendix. \\
+The claim we made before was that - for write-only requests - the number of middleware threads is the bottleneck, which implies that increasing this number lowers the waiting time in the queue.
+The right figures in the following graph support this claim.
+As more middleware threads are added, the relative time spent in the queue decreases compared to the waiting time (time spent to wait for servers response). 
+The graph shows that for 32 virtual clients per memtier thread, the ratio is approximately $16 / 2 = 8$ for 8 middleware threads, whereas this ratio decreases to approximately $ 2 / 5 = 2.5 $ for 64 middleware threads.
+This means much less times is spent in the queue itself, and simply waiting for the memcached server to respond.
+One can also see, that the system is (as claimed before) not saturated with 1 virtual client.\\
 
 \begin{figure}[H] 
   \label{ fig7} 
-  \begin{minipage}[b]{0.5\linewidth}
+  \begin{minipage}[b]{0.45\linewidth}
     \centering
     \includegraphics[width=0.7\linewidth]{img/exp3_2/exp3_2_mw_percentile_plots_writes_0__vc_1.png} 
-    \caption{Initial condition} 
+    \caption{Read-only with 1 virtual client per memtier threads} 
     \vspace{4ex}
   \end{minipage}%%
-  \begin{minipage}[b]{0.5\linewidth}
+  \begin{minipage}[b]{0.45\linewidth}
     \centering
     \includegraphics[width=0.7\linewidth]{img/exp3_2/exp3_2_mw_percentile_plots_writes_1__vc_1.png} 
-    \caption{Rupture} 
+    \caption{Read-only with 32 virtual client per memtier threads} 
     \vspace{4ex}
   \end{minipage} 
-  \begin{minipage}[b]{0.5\linewidth}
-    \centering
-    \includegraphics[width=0.7\linewidth]{img/exp3_2/exp3_2_mw_percentile_plots_writes_0__vc_4.png} 
-    \caption{DFT, Initial condition} 
-    \vspace{4ex}
-  \end{minipage}%% 
-  \begin{minipage}[b]{0.5\linewidth}
-    \centering
-    \includegraphics[width=0.7\linewidth]{img/exp3_2/exp3_2_mw_percentile_plots_writes_1__vc_4.png} 
-    \caption{DFT, rupture} 
-    \vspace{4ex}
-  \end{minipage} 
-    \begin{minipage}[b]{0.5\linewidth}
-    \centering
-    \includegraphics[width=0.7\linewidth]{img/exp3_2/exp3_2_mw_percentile_plots_writes_0__vc_16.png} 
-    \caption{DFT, Initial condition} 
-    \vspace{4ex}
-  \end{minipage}%% 
-  \begin{minipage}[b]{0.5\linewidth}
-    \centering
-    \includegraphics[width=0.7\linewidth]{img/exp3_2/exp3_2_mw_percentile_plots_writes_1__vc_16.png} 
-    \caption{DFT, rupture} 
-    \vspace{4ex}
-  \end{minipage} 
-    \begin{minipage}[b]{0.5\linewidth}
+    \begin{minipage}[b]{0.45\linewidth}
     \centering
     \includegraphics[width=0.7\linewidth]{img/exp3_2/exp3_2_mw_percentile_plots_writes_0__vc_32.png} 
-    \caption{DFT, Initial condition} 
+    \caption{Write-only with 1 virtual client per memtier threads} 
     \vspace{4ex}
   \end{minipage}%% 
-  \begin{minipage}[b]{0.5\linewidth}
+  \begin{minipage}[b]{0.45\linewidth}
     \centering
     \includegraphics[width=0.7\linewidth]{img/exp3_2/exp3_2_mw_percentile_plots_writes_1__vc_32.png} 
-    \caption{DFT, rupture} 
+    \caption{Write-only with 32 virtual client per memtier threads} 
     \vspace{4ex}
   \end{minipage} 
+  \caption{Exp3.2: Time spent at different stages of the lifetime of a request. Each graph distinguished between read-only and write-only operations, as well as the number of virtual clients per memtier-thread (1 or 32)}
 \end{figure}
 
-Provide a detailed analysis of the results (e.g., bottleneck analysis, component utilizations, average queue lengths, system saturation). Add any additional figures and experiments that help you illustrate your point and support your claims.
-
 \subsection{Summary}
-
-Based on the experiments above, fill out the following table. For both of them use the numbers from a single experiment to fill out all lines. Miss rate represents the percentage of GET requests that return no data. Time in the queue refers to the time spent in the queue between the net-thread and the worker threads.
-
 
 \begin{center}
 	{Maximum throughput for one middleware.}
 	\begin{tabular}{|l|p{2cm}|p{2cm}|p{2cm}|p{2cm}|}
 		\hline                                & Throughput & Response time & Average time in queue & Miss rate \\ 
-		\hline Reads: Measured on middleware  & 2933 & 64 &                       &           0 \\ 
-		\hline Reads: Measured on clients     & 2987 & 64 & n/a                   &           0 \\ 
-		\hline Writes: Measured on middleware & 8291 & 7 &                       & n/a       \\ 
-		\hline Writes: Measured on clients    & 7423 & 34 & n/a                   & n/a       \\ 
+		\hline Reads: Measured on middleware  & 3348 & 0.94 ms & 0.086 ms &           0 \\ 
+		\hline Reads: Measured on clients     & 3321 & 1.81 ms & n/a                   &           0 \\ 
+		\hline Writes: Measured on middleware & 7658 & 2.16 ms & 0.824 ms & n/a       \\ 
+		\hline Writes: Measured on clients    & 7629 & 12.57 ms & n/a                   & n/a       \\ 
 		\hline 
 	\end{tabular}
 \end{center}
@@ -1374,34 +1402,84 @@ For each of the two workloads, what is the impact of these parameters on through
 \section{Queuing Model (90 pts)}
 
 In this section I model the workerqueue of the middleware (after the requests come in) using queueing theory to model how the system behaves with an asymptotically increasing number of threads.
-In both subsection I will go use the different number of middleware (specifically, one of [8, 16, 32, 64]) threads to apply this analysis.
-
-\subsection{M/M/1}
-In this subsection I model the behavior of the middleware and it's workerqueue using a M/M/1 queueing model. \\
+In both subsection I will go use the different number of middleware (specifically, one of [8, 16, 32, 64]) threads to apply this analysis. \\
 
 I choose the following input parameters to model the system:
 
-First of all, I define the service rate to the model. 
-For this, I look at the maximum throughput per number of middleware threads (amongst all given number of virtual clients). \\
-From the file \textbf{create\_lineplot\_exp4\_1.py} I read out the respective maximum throughput values: \\
+\begin{enumerate}
+\item Mean arrival rate $\lambda$: I choose the mean arrival rate by the number of virtual clients per memtier thread.
+This rate is given by the \textbf{throughput as measured by the client-side in ops/sec}.
+\item Mean service rate $\mu$: For the M/M/1 case, I choose the mean service rate to be the \textbf{maximum throughput which can possibly be handled by the middleware} within the configuration in section 4.
+This means that I will choose the maximum possible throughput that the middleware experiences.
+\end{enumerate}
+
+%TODO why do you choose it like this?
+
+The following table provides a quick reference to these values.
+as given by the maximum throughput of the middleware (ops/sec) 
+as given by the maximum throughput of the clients (ops/sec) 
 
 \begin{center}
 	\scriptsize{
-		\begin{tabular}{|l|c|}
-			\hline Threads in the middleware & Maximum Throughput (ops/sec)                                     \\ 
-			\hline 8 &   14365.88 \\ 
-			\hline 16 &  18338.97 \\ 
-			\hline 32 &  18828.88 \\
-			\hline 64 &  17984.48 \\
+		\begin{tabular}{|l|c|c|}
+			\hline Threads in the middleware & 
+			$\mu$ Service rate &
+			$\lambda$ Arrival rate \\ 
+			\hline 8 &   8278 & 8120 \\ 
+			\hline 16 &  10491 & 9209 \\ 
+			\hline 32 &  11775 & 11789 \\
+			\hline 64 &  12984 & 12150 \\
 			\hline
 		\end{tabular}
 	} 
 \end{center}
 
 
+
+\subsection{M/M/1}
+In this subsection I model the behavior of the middleware and it's workerqueue using a M/M/1 queueing model. \\
+
+I will predict the traffic intensity, the queue length, the latency and the wait time.
+I will then compare these to the observed values from section 4.1 to arrive at a conclusion if the comparison makes sense.
+The system is stable, as is specified by all the rho values which are all smaller than 1.
+
+\begin{table}[H]
+	\caption{M/M/1 Predicted vs. Observed values for 8 Middlewarethreads}
+	\scriptsize{
+		\begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|}
+					\hline & & & Predicted & Predicted & Predicted & Observed & Observed & Observed &\\ 
+			\hline Middelware threads $\mu$ & $\lambda$ & $\rho$ & Queue length & Latency & Wait time & Queue length & Latency & Wait time \\ 
+			\hline 8 & 8278 & 8120 & 0.9809023 & 50.38 & 0.00632536 & 0.00620456 &  14365.88 \\ 
+			\hline 16 & 10491 & 9209 & 0.87780868 & 6.31 & 0.00078007 & 0.00068475 &  14365.88 \\ 
+			\hline 32 & 11810 & 11789 & 0.99885762 & 1796.46 & 0.15272627 & 0.15264135 &  14365.88 \\ 
+			\hline 64 & 12984 & 12150 & 0.93577961 & 13.63 & 0.00119927 & 0.00112226 &  14365.88 \\ 
+			\hline
+		\end{tabular}
+	} 
+\end{table}
+
+For each configuration of workerthreads, I will proceed with this calculation.
+
+
 your entire system. Motivate your choice of input parameters to the model. Explain for which experiments the predictions of the model match and for which they do not.
 
 \subsection{M/M/m}
+
+
+\begin{table}[H]
+	\caption{M/M/1 Predicted vs. Observed values for 8 Middlewarethreads}
+	\scriptsize{
+		\begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|}
+					\hline & & & Predicted & Predicted & Predicted & Observed & Observed & Observed &\\ 
+			\hline Middelware threads $\mu$ & $\lambda$ & $\rho$ & Queue length & Latency & Wait time & Queue length & Latency & Wait time \\ 
+			\hline 8 & 1034 & 8120 & 0.9809023 & 50.38 & 0.00632536 & 0.00620456 &  14365.88 \\ 
+			\hline 16 & 655 & 9209 & 0.87780868 & 6.31 & 0.00078007 & 0.00068475 &  14365.88 \\ 
+			\hline 32 & 367 & 11789 & 0.99944397 & 1796.46 & 0.15272627 & 0.15264135 &  14365.88 \\ 
+			\hline 64 & 202 & 12150 & 0.93577961 & 13.63 & 0.00119927 & 0.00112226 &  14365.88 \\ 
+			\hline
+		\end{tabular}
+	} 
+\end{table}
 
 Build an M/M/m model based on Section 4, where each middleware worker thread is represented as one service.  Motivate your choice of input parameters to the model. Explain for which experiments the predictions of the model match and for which they do not.
 
@@ -1413,43 +1491,6 @@ Based on Section 3, build a network of queues which simulates your system. Motiv
 
 \subsection{Experiment 3.1 - Baseline with one middleware}
 For read-only experiments, I have the following throughput and response graph derivated from the values of the client:
-
-\begin{figure}[H]
-\centering
-\begin{subfigure}{.5\textwidth}
-    \centering
-    \includegraphics[width=\textwidth]{img/exp3_1/exp3_1__latency_client_write_0.png}
-    \caption{Latency}
-    \label{fig:mesh1}
-\end{subfigure}%
-\begin{subfigure}{.5\textwidth}
-      \centering
-    \includegraphics[width=\textwidth]{img/exp3_1/exp3_1__throughput_client_write_0.png}
-    \caption{Throughput}
-    \label{fig:mesh1}
-\end{subfigure}
-\caption{Exp3.1: Latency and throughputs for \textbf{read-only} as measured by the \textbf{clients} (combined throughput)}
-\label{fig:test}
-\end{figure}
-
-\begin{figure}[H]
-\centering
-\begin{subfigure}{.5\textwidth}
-    \centering
-    \includegraphics[width=\textwidth]{img/exp3_1/exp3_1__latency_client_write_1.png}
-    \caption{Latency}
-    \label{fig:mesh1}
-\end{subfigure}%
-\begin{subfigure}{.5\textwidth}
-      \centering
-    \includegraphics[width=\textwidth]{img/exp3_1/exp3_1__throughput_client_write_1.png}
-    \caption{Throughput}
-    \label{fig:mesh1}
-\end{subfigure}
-\caption{Exp3.1: Latency and throughputs for \textbf{write-only} as measures by the \textbf{clients} (one middleware)}
-\label{fig:test}
-\end{figure}
-
 
 \begin{figure}[!ht] 
   \label{ fig7} 
@@ -1522,6 +1563,62 @@ For read-only experiments, I have the following throughput and response graph de
   \begin{minipage}[b]{0.5\linewidth}
     \centering
     \includegraphics[width=0.7\linewidth]{img/exp3_1/exp3_1_mw_percentile_plots_writes_1__vc_32.png} 
+    \caption{DFT, rupture} 
+    \vspace{4ex}
+  \end{minipage} 
+\end{figure}
+
+\subsection{Experiment 3.2}
+Here is the extensive bar-plot on where most time is spent:
+
+
+\begin{figure}[H] 
+  \label{ fig7} 
+  \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=0.7\linewidth]{img/exp3_2/exp3_2_mw_percentile_plots_writes_0__vc_1.png} 
+    \caption{Initial condition} 
+    \vspace{4ex}
+  \end{minipage}%%
+  \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=0.7\linewidth]{img/exp3_2/exp3_2_mw_percentile_plots_writes_1__vc_1.png} 
+    \caption{Rupture} 
+    \vspace{4ex}
+  \end{minipage} 
+  \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=0.7\linewidth]{img/exp3_2/exp3_2_mw_percentile_plots_writes_0__vc_4.png} 
+    \caption{DFT, Initial condition} 
+    \vspace{4ex}
+  \end{minipage}%% 
+  \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=0.7\linewidth]{img/exp3_2/exp3_2_mw_percentile_plots_writes_1__vc_4.png} 
+    \caption{DFT, rupture} 
+    \vspace{4ex}
+  \end{minipage} 
+    \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=0.7\linewidth]{img/exp3_2/exp3_2_mw_percentile_plots_writes_0__vc_16.png} 
+    \caption{DFT, Initial condition} 
+    \vspace{4ex}
+  \end{minipage}%% 
+  \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=0.7\linewidth]{img/exp3_2/exp3_2_mw_percentile_plots_writes_1__vc_16.png} 
+    \caption{DFT, rupture} 
+    \vspace{4ex}
+  \end{minipage} 
+    \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=0.7\linewidth]{img/exp3_2/exp3_2_mw_percentile_plots_writes_0__vc_32.png} 
+    \caption{DFT, Initial condition} 
+    \vspace{4ex}
+  \end{minipage}%% 
+  \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=0.7\linewidth]{img/exp3_2/exp3_2_mw_percentile_plots_writes_1__vc_32.png} 
     \caption{DFT, rupture} 
     \vspace{4ex}
   \end{minipage} 

@@ -70,6 +70,7 @@ class Exp4_1:
 
         # Middleware parameters
         self.number_of_middlewares = 2
+        # self.worker_threads_per_middleware = [(2 ** x) for x in range(3, 7)]
         self.worker_threads_per_middleware = [(2 ** x) for x in range(3, 7)]
 
         # Setting the reads to writes ratio

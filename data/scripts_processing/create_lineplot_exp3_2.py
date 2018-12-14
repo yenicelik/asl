@@ -65,6 +65,9 @@ def iterate_through_experiments_exp3_2():
 
     for write in [0, 1]:
 
+        max_throughput = 0
+        max_throughput_client = 0
+
         mw_throughput_means = np.zeros((total_virtual_clients, total_middleware_threads))
         mw_throughput_stddev = np.zeros((total_virtual_clients, total_middleware_threads))
         mw_latency_means = np.zeros((total_virtual_clients, total_middleware_threads))
@@ -88,6 +91,8 @@ def iterate_through_experiments_exp3_2():
                 mw_all_throughputs = []
                 mw_all_latencies = []
 
+                queuetimes = []
+
                 for repetition in range(3):
 
                     for middleware in [1, 2]:
@@ -104,6 +109,8 @@ def iterate_through_experiments_exp3_2():
                         try:
                             df = parse_log(BASEPATH + middleware_filename)
                             mw_throughput, mw_latency = get_latency_log_dataframe(df)
+                            queuetimes.append(df['differenceTimeEnqueuedAndDequeued'].astype(float).mean())
+
                             mw_throughput *= mt * 1000 # because we have two middlewares # * (2./3.) # because the load of the clients is distributed on two middlewares
 
                             print("Throughput is: ", mw_throughput)
@@ -147,6 +154,11 @@ def iterate_through_experiments_exp3_2():
                 mw_mean_throughput = np.sum(mw_all_throughputs) / 3. # because we have 3 repeats, and two middlewares (throughput per middleware is calculated as the total throughput)
                 mw_stddev_latency = np.std(mw_all_latencies)
                 mw_stddev_throughput = np.std(mw_all_throughputs)
+
+                if max_throughput < mw_mean_throughput:
+                    max_throughput = mw_mean_throughput
+                    print("TTT", write, mw_mean_throughput, mw_mean_latency, np.mean(queuetimes))
+
                 # Append to list
                 mw_throughput_means[_vc, _mt] = mw_mean_throughput
                 mw_latency_means[_vc, _mt] = mw_mean_latency
@@ -157,6 +169,12 @@ def iterate_through_experiments_exp3_2():
                 client_mean_throughput = np.sum(client_all_throughputs) / 3.
                 client_stddev_latency = np.std(client_all_latencies)
                 client_stddev_throughput = np.std(client_all_throughputs)
+
+
+                if max_throughput_client < client_mean_throughput:
+                    max_throughput_client = client_mean_throughput
+                    print("TTT CLIENT", write, client_mean_throughput, client_mean_latency)
+
                 # Append to list
                 client_throughput_means[_vc, _mt] = client_mean_throughput
                 client_latency_means[_vc, _mt] = client_mean_latency

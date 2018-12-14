@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.8.10)  14 DEC 2018 13:36
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.8.10)  14 DEC 2018 23:36
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -719,6 +719,36 @@ LaTeX Warning: Label `fig:mesh1' multiply defined.
 LaTeX Warning: Label `sub@fig:mesh1' multiply defined.
 
 
+LaTeX Warning: Label `fig:mesh1' multiply defined.
+
+
+LaTeX Warning: Label `sub@fig:mesh1' multiply defined.
+
+
+LaTeX Warning: Label `fig:test' multiply defined.
+
+
+LaTeX Warning: Label `fig:mesh1' multiply defined.
+
+
+LaTeX Warning: Label `sub@fig:mesh1' multiply defined.
+
+
+LaTeX Warning: Label `fig:mesh1' multiply defined.
+
+
+LaTeX Warning: Label `sub@fig:mesh1' multiply defined.
+
+
+LaTeX Warning: Label `fig:test' multiply defined.
+
+
+LaTeX Warning: Label `fig:mesh1' multiply defined.
+
+
+LaTeX Warning: Label `sub@fig:mesh1' multiply defined.
+
+
 LaTeX Warning: Label `fig:test' multiply defined.
 
 
@@ -776,34 +806,7 @@ LaTeX Warning: Label `sub@fig:mesh1' multiply defined.
 LaTeX Warning: Label `fig:test' multiply defined.
 
 
-LaTeX Warning: Label `fig:mesh1' multiply defined.
-
-
-LaTeX Warning: Label `sub@fig:mesh1' multiply defined.
-
-
-LaTeX Warning: Label `fig:mesh1' multiply defined.
-
-
-LaTeX Warning: Label `sub@fig:mesh1' multiply defined.
-
-
-LaTeX Warning: Label `fig:test' multiply defined.
-
-
-LaTeX Warning: Label `fig:mesh1' multiply defined.
-
-
-LaTeX Warning: Label `sub@fig:mesh1' multiply defined.
-
-
-LaTeX Warning: Label `fig:mesh1' multiply defined.
-
-
-LaTeX Warning: Label `sub@fig:mesh1' multiply defined.
-
-
-LaTeX Warning: Label `fig:test' multiply defined.
+LaTeX Warning: Label ` fig7' multiply defined.
 
 
 LaTeX Warning: Label `fig:mesh1' multiply defined.
@@ -918,7 +921,7 @@ LaTeX Font Info:    External font `cmex10' loaded for size
  [1
 
 {/usr/local/texlive/2018/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
-<img/middleware_diagram.png, id=169, 1090.0725pt x 961.5925pt>
+<img/middleware_diagram.png, id=173, 1090.0725pt x 961.5925pt>
 File: img/middleware_diagram.png Graphic file (type png)
 <use img/middleware_diagram.png>
 Package pdftex.def Info: img/middleware_diagram.png  used on input line 67.
@@ -974,14 +977,14 @@ Underfull \hbox (badness 10000) in paragraph at lines 308--311
 
  []
 
-<img/exp2_1/exp2_1__latency_client_read_write.png, id=226, 462.528pt x 346.896p
+<img/exp2_1/exp2_1__latency_client_read_write.png, id=230, 462.528pt x 346.896p
 t>
 File: img/exp2_1/exp2_1__latency_client_read_write.png Graphic file (type png)
 <use img/exp2_1/exp2_1__latency_client_read_write.png>
 Package pdftex.def Info: img/exp2_1/exp2_1__latency_client_read_write.png  used
  on input line 316.
 (pdftex.def)             Requested size: 226.48395pt x 169.86406pt.
-<img/exp2_1/exp2_1__throughput_client_read_write.png, id=227, 462.528pt x 346.8
+<img/exp2_1/exp2_1__throughput_client_read_write.png, id=231, 462.528pt x 346.8
 96pt>
 File: img/exp2_1/exp2_1__throughput_client_read_write.png Graphic file (type pn
 g)
@@ -1005,14 +1008,14 @@ Underfull \hbox (badness 10000) in paragraph at lines 382--386
 
  []
 
-<img/exp2_2/exp2_2__latency_client_read_write.png, id=241, 462.528pt x 346.896p
+<img/exp2_2/exp2_2__latency_client_read_write.png, id=245, 462.528pt x 346.896p
 t>
 File: img/exp2_2/exp2_2__latency_client_read_write.png Graphic file (type png)
 <use img/exp2_2/exp2_2__latency_client_read_write.png>
 Package pdftex.def Info: img/exp2_2/exp2_2__latency_client_read_write.png  used
  on input line 391.
 (pdftex.def)             Requested size: 226.48395pt x 169.86406pt.
-<img/exp2_2/exp2_2__throughput_client_read_write.png, id=242, 462.528pt x 346.8
+<img/exp2_2/exp2_2__throughput_client_read_write.png, id=246, 462.528pt x 346.8
 96pt>
 File: img/exp2_2/exp2_2__throughput_client_read_write.png Graphic file (type pn
 g)
@@ -1052,7 +1055,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 448--459
  []
 
 [10] [11]
-<img/exp3_1/exp3_1__latency_middleware_write_0.png, id=258, 462.528pt x 346.896
+<img/exp3_1/exp3_1__latency_middleware_write_0.png, id=262, 462.528pt x 346.896
 pt>
 File: img/exp3_1/exp3_1__latency_middleware_write_0.png Graphic file (type png)
 
@@ -1060,7 +1063,7 @@ File: img/exp3_1/exp3_1__latency_middleware_write_0.png Graphic file (type png)
 Package pdftex.def Info: img/exp3_1/exp3_1__latency_middleware_write_0.png  use
 d on input line 524.
 (pdftex.def)             Requested size: 226.48395pt x 169.86406pt.
-<img/exp3_1/exp3_1__throughput_middleware_write_0.png, id=259, 462.528pt x 346.
+<img/exp3_1/exp3_1__throughput_middleware_write_0.png, id=263, 462.528pt x 346.
 896pt>
 File: img/exp3_1/exp3_1__throughput_middleware_write_0.png Graphic file (type p
 ng)
@@ -1070,658 +1073,714 @@ used on input line 530.
 (pdftex.def)             Requested size: 226.48395pt x 169.86406pt.
  [12 <./img/exp3_1/exp3_1__latency_middleware_write_0.png> <./img/exp3_1/exp3_1
 __throughput_middleware_write_0.png>]
-<img/exp3_1/exp3_1__latency_middleware_write_1.png, id=267, 462.528pt x 346.896
+<img/exp3_1/exp3_1__latency_client_write_0.png, id=271, 462.528pt x 346.896pt>
+File: img/exp3_1/exp3_1__latency_client_write_0.png Graphic file (type png)
+<use img/exp3_1/exp3_1__latency_client_write_0.png>
+Package pdftex.def Info: img/exp3_1/exp3_1__latency_client_write_0.png  used on
+ input line 560.
+(pdftex.def)             Requested size: 226.48395pt x 169.86406pt.
+<img/exp3_1/exp3_1__throughput_client_write_0.png, id=272, 462.528pt x 346.896p
+t>
+File: img/exp3_1/exp3_1__throughput_client_write_0.png Graphic file (type png)
+<use img/exp3_1/exp3_1__throughput_client_write_0.png>
+Package pdftex.def Info: img/exp3_1/exp3_1__throughput_client_write_0.png  used
+ on input line 566.
+(pdftex.def)             Requested size: 226.48395pt x 169.86406pt.
+<img/exp3_1/exp3_1__latency_middleware_write_1.png, id=273, 462.528pt x 346.896
 pt>
 File: img/exp3_1/exp3_1__latency_middleware_write_1.png Graphic file (type png)
 
 <use img/exp3_1/exp3_1__latency_middleware_write_1.png>
 Package pdftex.def Info: img/exp3_1/exp3_1__latency_middleware_write_1.png  use
-d on input line 572.
+d on input line 593.
 (pdftex.def)             Requested size: 226.48395pt x 169.86406pt.
-<img/exp3_1/exp3_1__throughput_middleware_write_1.png, id=268, 462.528pt x 346.
+<img/exp3_1/exp3_1__throughput_middleware_write_1.png, id=274, 462.528pt x 346.
 896pt>
 File: img/exp3_1/exp3_1__throughput_middleware_write_1.png Graphic file (type p
 ng)
 <use img/exp3_1/exp3_1__throughput_middleware_write_1.png>
 Package pdftex.def Info: img/exp3_1/exp3_1__throughput_middleware_write_1.png  
-used on input line 578.
+used on input line 599.
 (pdftex.def)             Requested size: 226.48395pt x 169.86406pt.
- [13 <./img/exp3_1/exp3_1__latency_middleware_write_1.png> <./img/exp3_1/exp3_1
-__throughput_middleware_write_1.png>]
-<img/exp3_1/exp3_1__queuesize_middleware_write_0.png, id=277, 462.528pt x 346.8
+ [13 <./img/exp3_1/exp3_1__latency_client_write_0.png> <./img/exp3_1/exp3_1__th
+roughput_client_write_0.png> <./img/exp3_1/exp3_1__latency_middleware_write_1.p
+ng> <./img/exp3_1/exp3_1__throughput_middleware_write_1.png>]
+<img/exp3_1/exp3_1__latency_client_write_1.png, id=286, 462.528pt x 346.896pt>
+File: img/exp3_1/exp3_1__latency_client_write_1.png Graphic file (type png)
+<use img/exp3_1/exp3_1__latency_client_write_1.png>
+Package pdftex.def Info: img/exp3_1/exp3_1__latency_client_write_1.png  used on
+ input line 632.
+(pdftex.def)             Requested size: 226.48395pt x 169.86406pt.
+<img/exp3_1/exp3_1__throughput_client_write_1.png, id=287, 462.528pt x 346.896p
+t>
+File: img/exp3_1/exp3_1__throughput_client_write_1.png Graphic file (type png)
+<use img/exp3_1/exp3_1__throughput_client_write_1.png>
+Package pdftex.def Info: img/exp3_1/exp3_1__throughput_client_write_1.png  used
+ on input line 638.
+(pdftex.def)             Requested size: 226.48395pt x 169.86406pt.
+ [14 <./img/exp3_1/exp3_1__latency_client_write_1.png> <./img/exp3_1/exp3_1__th
+roughput_client_write_1.png>]
+<img/exp3_1/exp3_1__queuesize_middleware_write_0.png, id=295, 462.528pt x 346.8
 96pt>
 File: img/exp3_1/exp3_1__queuesize_middleware_write_0.png Graphic file (type pn
 g)
 <use img/exp3_1/exp3_1__queuesize_middleware_write_0.png>
 Package pdftex.def Info: img/exp3_1/exp3_1__queuesize_middleware_write_0.png  u
-sed on input line 620.
+sed on input line 660.
 (pdftex.def)             Requested size: 226.48395pt x 169.86406pt.
-<img/exp3_1/exp3_1__queuesize_middleware_write_1.png, id=278, 462.528pt x 346.8
+<img/exp3_1/exp3_1__queuesize_middleware_write_1.png, id=296, 462.528pt x 346.8
 96pt>
 File: img/exp3_1/exp3_1__queuesize_middleware_write_1.png Graphic file (type pn
 g)
 <use img/exp3_1/exp3_1__queuesize_middleware_write_1.png>
 Package pdftex.def Info: img/exp3_1/exp3_1__queuesize_middleware_write_1.png  u
-sed on input line 626.
+sed on input line 666.
 (pdftex.def)             Requested size: 226.48395pt x 169.86406pt.
- [14 <./img/exp3_1/exp3_1__queuesize_middleware_write_0.png> <./img/exp3_1/exp3
+ [15 <./img/exp3_1/exp3_1__queuesize_middleware_write_0.png> <./img/exp3_1/exp3
 _1__queuesize_middleware_write_1.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 678--681
+Underfull \hbox (badness 10000) in paragraph at lines 718--721
 
  []
 
-<img/exp3_2/exp3_2__latency_middleware_write_0.png, id=286, 462.528pt x 346.896
+<img/exp3_2/exp3_2__latency_middleware_write_0.png, id=304, 462.528pt x 346.896
 pt>
 File: img/exp3_2/exp3_2__latency_middleware_write_0.png Graphic file (type png)
 
 <use img/exp3_2/exp3_2__latency_middleware_write_0.png>
 Package pdftex.def Info: img/exp3_2/exp3_2__latency_middleware_write_0.png  use
-d on input line 691.
+d on input line 731.
 (pdftex.def)             Requested size: 226.48395pt x 169.86406pt.
-<img/exp3_2/exp3_2__throughput_middleware_write_0.png, id=287, 462.528pt x 346.
+<img/exp3_2/exp3_2__throughput_middleware_write_0.png, id=305, 462.528pt x 346.
 896pt>
 File: img/exp3_2/exp3_2__throughput_middleware_write_0.png Graphic file (type p
 ng)
 <use img/exp3_2/exp3_2__throughput_middleware_write_0.png>
 Package pdftex.def Info: img/exp3_2/exp3_2__throughput_middleware_write_0.png  
-used on input line 697.
+used on input line 737.
 (pdftex.def)             Requested size: 226.48395pt x 169.86406pt.
-[15]
-<img/exp3_2/exp3_2__latency_client_write_0.png, id=292, 462.528pt x 346.896pt>
+[16 <./img/exp3_2/exp3_2__latency_middleware_write_0.png> <./img/exp3_2/exp3_2_
+_throughput_middleware_write_0.png>]
+<img/exp3_2/exp3_2__latency_client_write_0.png, id=313, 462.528pt x 346.896pt>
 File: img/exp3_2/exp3_2__latency_client_write_0.png Graphic file (type png)
 <use img/exp3_2/exp3_2__latency_client_write_0.png>
 Package pdftex.def Info: img/exp3_2/exp3_2__latency_client_write_0.png  used on
- input line 721.
+ input line 761.
 (pdftex.def)             Requested size: 226.48395pt x 169.86406pt.
-<img/exp3_2/exp3_2__throughput_client_write_0.png, id=293, 462.528pt x 346.896p
+<img/exp3_2/exp3_2__throughput_client_write_0.png, id=314, 462.528pt x 346.896p
 t>
 File: img/exp3_2/exp3_2__throughput_client_write_0.png Graphic file (type png)
 <use img/exp3_2/exp3_2__throughput_client_write_0.png>
 Package pdftex.def Info: img/exp3_2/exp3_2__throughput_client_write_0.png  used
- on input line 727.
+ on input line 767.
 (pdftex.def)             Requested size: 226.48395pt x 169.86406pt.
-<img/exp3_2/exp3_2__latency_middleware_write_1.png, id=294, 462.528pt x 346.896
+<img/exp3_2/exp3_2__latency_middleware_write_1.png, id=315, 462.528pt x 346.896
 pt>
 File: img/exp3_2/exp3_2__latency_middleware_write_1.png Graphic file (type png)
 
 <use img/exp3_2/exp3_2__latency_middleware_write_1.png>
 Package pdftex.def Info: img/exp3_2/exp3_2__latency_middleware_write_1.png  use
-d on input line 743.
+d on input line 783.
 (pdftex.def)             Requested size: 226.48395pt x 169.86406pt.
-<img/exp3_2/exp3_2__throughput_middleware_write_1.png, id=295, 462.528pt x 346.
+<img/exp3_2/exp3_2__throughput_middleware_write_1.png, id=316, 462.528pt x 346.
 896pt>
 File: img/exp3_2/exp3_2__throughput_middleware_write_1.png Graphic file (type p
 ng)
 <use img/exp3_2/exp3_2__throughput_middleware_write_1.png>
 Package pdftex.def Info: img/exp3_2/exp3_2__throughput_middleware_write_1.png  
-used on input line 749.
+used on input line 789.
 (pdftex.def)             Requested size: 226.48395pt x 169.86406pt.
- [16 <./img/exp3_2/exp3_2__latency_middleware_write_0.png> <./img/exp3_2/exp3_2
-__throughput_middleware_write_0.png> <./img/exp3_2/exp3_2__latency_client_write
-_0.png> <./img/exp3_2/exp3_2__throughput_client_write_0.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 757--764
+
+Underfull \hbox (badness 10000) in paragraph at lines 797--804
 
  []
 
-
-Underfull \hbox (badness 10000) in paragraph at lines 765--769
+[17 <./img/exp3_2/exp3_2__latency_client_write_0.png> <./img/exp3_2/exp3_2__thr
+oughput_client_write_0.png> <./img/exp3_2/exp3_2__latency_middleware_write_1.pn
+g> <./img/exp3_2/exp3_2__throughput_middleware_write_1.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 805--809
 
  []
 
-<img/exp3_2/exp3_2__latency_client_write_1.png, id=306, 462.528pt x 346.896pt>
+<img/exp3_2/exp3_2__latency_client_write_1.png, id=327, 462.528pt x 346.896pt>
 File: img/exp3_2/exp3_2__latency_client_write_1.png Graphic file (type png)
 <use img/exp3_2/exp3_2__latency_client_write_1.png>
 Package pdftex.def Info: img/exp3_2/exp3_2__latency_client_write_1.png  used on
- input line 778.
+ input line 817.
 (pdftex.def)             Requested size: 226.48395pt x 169.86406pt.
-<img/exp3_2/exp3_2__throughput_client_write_1.png, id=307, 462.528pt x 346.896p
+<img/exp3_2/exp3_2__throughput_client_write_1.png, id=328, 462.528pt x 346.896p
 t>
 File: img/exp3_2/exp3_2__throughput_client_write_1.png Graphic file (type png)
 <use img/exp3_2/exp3_2__throughput_client_write_1.png>
 Package pdftex.def Info: img/exp3_2/exp3_2__throughput_client_write_1.png  used
- on input line 784.
+ on input line 823.
 (pdftex.def)             Requested size: 226.48395pt x 169.86406pt.
-[17 <./img/exp3_2/exp3_2__latency_middleware_write_1.png> <./img/exp3_2/exp3_2_
-_throughput_middleware_write_1.png>]
-<img/exp3_2/exp3_2__queuesize_middleware_write_0.png, id=315, 462.528pt x 346.8
+<img/exp3_2/exp3_2__queuesize_middleware_write_0.png, id=329, 462.528pt x 346.8
 96pt>
 File: img/exp3_2/exp3_2__queuesize_middleware_write_0.png Graphic file (type pn
 g)
 <use img/exp3_2/exp3_2__queuesize_middleware_write_0.png>
 Package pdftex.def Info: img/exp3_2/exp3_2__queuesize_middleware_write_0.png  u
-sed on input line 799.
-(pdftex.def)             Requested size: 226.48395pt x 169.86406pt.
-<img/exp3_2/exp3_2__queuesize_middleware_write_1.png, id=316, 462.528pt x 346.8
+sed on input line 848.
+(pdftex.def)             Requested size: 203.83417pt x 152.87819pt.
+<img/exp3_2/exp3_2__queuesize_middleware_write_1.png, id=330, 462.528pt x 346.8
 96pt>
 File: img/exp3_2/exp3_2__queuesize_middleware_write_1.png Graphic file (type pn
 g)
 <use img/exp3_2/exp3_2__queuesize_middleware_write_1.png>
 Package pdftex.def Info: img/exp3_2/exp3_2__queuesize_middleware_write_1.png  u
-sed on input line 805.
-(pdftex.def)             Requested size: 226.48395pt x 169.86406pt.
-<img/exp3_2/exp3_2_mw_percentile_plots_writes_0__vc_1.png, id=317, 462.528pt x 
+sed on input line 854.
+(pdftex.def)             Requested size: 203.83417pt x 152.87819pt.
+[18 <./img/exp3_2/exp3_2__latency_client_write_1.png> <./img/exp3_2/exp3_2__thr
+oughput_client_write_1.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 865--874
+
+ []
+
+<img/exp3_2/exp3_2_mw_percentile_plots_writes_0__vc_1.png, id=338, 462.528pt x 
 346.896pt>
 File: img/exp3_2/exp3_2_mw_percentile_plots_writes_0__vc_1.png Graphic file (ty
 pe png)
 <use img/exp3_2/exp3_2_mw_percentile_plots_writes_0__vc_1.png>
 Package pdftex.def Info: img/exp3_2/exp3_2_mw_percentile_plots_writes_0__vc_1.p
-ng  used on input line 823.
-(pdftex.def)             Requested size: 158.53807pt x 118.90643pt.
-<img/exp3_2/exp3_2_mw_percentile_plots_writes_1__vc_1.png, id=318, 462.528pt x 
+ng  used on input line 879.
+(pdftex.def)             Requested size: 142.68329pt x 107.01262pt.
+<img/exp3_2/exp3_2_mw_percentile_plots_writes_1__vc_1.png, id=339, 462.528pt x 
 346.896pt>
 File: img/exp3_2/exp3_2_mw_percentile_plots_writes_1__vc_1.png Graphic file (ty
 pe png)
 <use img/exp3_2/exp3_2_mw_percentile_plots_writes_1__vc_1.png>
 Package pdftex.def Info: img/exp3_2/exp3_2_mw_percentile_plots_writes_1__vc_1.p
-ng  used on input line 829.
-(pdftex.def)             Requested size: 158.53807pt x 118.90643pt.
-<img/exp3_2/exp3_2_mw_percentile_plots_writes_0__vc_4.png, id=319, 462.528pt x 
-346.896pt>
-File: img/exp3_2/exp3_2_mw_percentile_plots_writes_0__vc_4.png Graphic file (ty
-pe png)
-<use img/exp3_2/exp3_2_mw_percentile_plots_writes_0__vc_4.png>
-Package pdftex.def Info: img/exp3_2/exp3_2_mw_percentile_plots_writes_0__vc_4.p
-ng  used on input line 835.
-(pdftex.def)             Requested size: 158.53807pt x 118.90643pt.
-<img/exp3_2/exp3_2_mw_percentile_plots_writes_1__vc_4.png, id=320, 462.528pt x 
-346.896pt>
-File: img/exp3_2/exp3_2_mw_percentile_plots_writes_1__vc_4.png Graphic file (ty
-pe png)
-<use img/exp3_2/exp3_2_mw_percentile_plots_writes_1__vc_4.png>
-Package pdftex.def Info: img/exp3_2/exp3_2_mw_percentile_plots_writes_1__vc_4.p
-ng  used on input line 841.
-(pdftex.def)             Requested size: 158.53807pt x 118.90643pt.
-<img/exp3_2/exp3_2_mw_percentile_plots_writes_0__vc_16.png, id=321, 462.528pt x
- 346.896pt>
-File: img/exp3_2/exp3_2_mw_percentile_plots_writes_0__vc_16.png Graphic file (t
-ype png)
-<use img/exp3_2/exp3_2_mw_percentile_plots_writes_0__vc_16.png>
-Package pdftex.def Info: img/exp3_2/exp3_2_mw_percentile_plots_writes_0__vc_16.
-png  used on input line 847.
-(pdftex.def)             Requested size: 158.53807pt x 118.90643pt.
-<img/exp3_2/exp3_2_mw_percentile_plots_writes_1__vc_16.png, id=322, 462.528pt x
- 346.896pt>
-File: img/exp3_2/exp3_2_mw_percentile_plots_writes_1__vc_16.png Graphic file (t
-ype png)
-<use img/exp3_2/exp3_2_mw_percentile_plots_writes_1__vc_16.png>
-Package pdftex.def Info: img/exp3_2/exp3_2_mw_percentile_plots_writes_1__vc_16.
-png  used on input line 853.
-(pdftex.def)             Requested size: 158.53807pt x 118.90643pt.
-<img/exp3_2/exp3_2_mw_percentile_plots_writes_0__vc_32.png, id=323, 462.528pt x
+ng  used on input line 885.
+(pdftex.def)             Requested size: 142.68329pt x 107.01262pt.
+<img/exp3_2/exp3_2_mw_percentile_plots_writes_0__vc_32.png, id=340, 462.528pt x
  346.896pt>
 File: img/exp3_2/exp3_2_mw_percentile_plots_writes_0__vc_32.png Graphic file (t
 ype png)
 <use img/exp3_2/exp3_2_mw_percentile_plots_writes_0__vc_32.png>
 Package pdftex.def Info: img/exp3_2/exp3_2_mw_percentile_plots_writes_0__vc_32.
-png  used on input line 859.
-(pdftex.def)             Requested size: 158.53807pt x 118.90643pt.
-<img/exp3_2/exp3_2_mw_percentile_plots_writes_1__vc_32.png, id=324, 462.528pt x
+png  used on input line 891.
+(pdftex.def)             Requested size: 142.68329pt x 107.01262pt.
+<img/exp3_2/exp3_2_mw_percentile_plots_writes_1__vc_32.png, id=341, 462.528pt x
  346.896pt>
 File: img/exp3_2/exp3_2_mw_percentile_plots_writes_1__vc_32.png Graphic file (t
 ype png)
 <use img/exp3_2/exp3_2_mw_percentile_plots_writes_1__vc_32.png>
 Package pdftex.def Info: img/exp3_2/exp3_2_mw_percentile_plots_writes_1__vc_32.
-png  used on input line 865.
-(pdftex.def)             Requested size: 158.53807pt x 118.90643pt.
- [18 <./img/exp3_2/exp3_2__latency_client_write_1.png> <./img/exp3_2/exp3_2__th
-roughput_client_write_1.png> <./img/exp3_2/exp3_2__queuesize_middleware_write_0
-.png> <./img/exp3_2/exp3_2__queuesize_middleware_write_1.png>] [19 <./img/exp3_
-2/exp3_2_mw_percentile_plots_writes_0__vc_1.png> <./img/exp3_2/exp3_2_mw_percen
-tile_plots_writes_1__vc_1.png> <./img/exp3_2/exp3_2_mw_percentile_plots_writes_
-0__vc_4.png> <./img/exp3_2/exp3_2_mw_percentile_plots_writes_1__vc_4.png> <./im
-g/exp3_2/exp3_2_mw_percentile_plots_writes_0__vc_16.png> <./img/exp3_2/exp3_2_m
-w_percentile_plots_writes_1__vc_16.png> <./img/exp3_2/exp3_2_mw_percentile_plot
-s_writes_0__vc_32.png> <./img/exp3_2/exp3_2_mw_percentile_plots_writes_1__vc_32
-.png>]
-Overfull \hbox (0.91667pt too wide) in paragraph at lines 881--881
+png  used on input line 897.
+(pdftex.def)             Requested size: 142.68329pt x 107.01262pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 877--901
+[][][]
+ []
+
+[19 <./img/exp3_2/exp3_2__queuesize_middleware_write_0.png> <./img/exp3_2/exp3_
+2__queuesize_middleware_write_1.png>]
+Overfull \hbox (0.91667pt too wide) in paragraph at lines 909--909
 []\OT1/cmr/m/n/10.95 Throughput| 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 881--881
+Underfull \hbox (badness 10000) in paragraph at lines 909--909
 []\OT1/cmr/m/n/10.95 Response
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 881--881
+Underfull \hbox (badness 10000) in paragraph at lines 909--909
 []\OT1/cmr/m/n/10.95 Average
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 881--881
+Underfull \hbox (badness 10000) in paragraph at lines 909--909
 \OT1/cmr/m/n/10.95 time in
  []
 
 
-Overfull \hbox (0.91667pt too wide) in paragraph at lines 893--893
+Overfull \hbox (0.91667pt too wide) in paragraph at lines 921--921
 []\OT1/cmr/m/n/10.95 Throughput| 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 893--893
+Underfull \hbox (badness 10000) in paragraph at lines 921--921
 []\OT1/cmr/m/n/10.95 Response
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 893--893
+Underfull \hbox (badness 10000) in paragraph at lines 921--921
 []\OT1/cmr/m/n/10.95 Average
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 893--893
+Underfull \hbox (badness 10000) in paragraph at lines 921--921
 \OT1/cmr/m/n/10.95 time in
  []
 
-
-Underfull \hbox (badness 10000) in paragraph at lines 904--905
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 906--910
+[20 <./img/exp3_2/exp3_2_mw_percentile_plots_writes_0__vc_1.png> <./img/exp3_2/
+exp3_2_mw_percentile_plots_writes_1__vc_1.png> <./img/exp3_2/exp3_2_mw_percenti
+le_plots_writes_0__vc_32.png> <./img/exp3_2/exp3_2_mw_percentile_plots_writes_1
+__vc_32.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 932--933
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 911--916
+Underfull \hbox (badness 10000) in paragraph at lines 934--938
 
  []
 
-[20]
-Underfull \hbox (badness 10000) in paragraph at lines 948--953
+
+Underfull \hbox (badness 10000) in paragraph at lines 939--944
 
  []
 
-<img/exp4_1/exp4_1__vc_64__latency_middleware_write_1.png, id=353, 462.528pt x 
+
+Underfull \hbox (badness 10000) in paragraph at lines 976--981
+
+ []
+
+<img/exp4_1/exp4_1__vc_64__latency_middleware_write_1.png, id=359, 462.528pt x 
 346.896pt>
 File: img/exp4_1/exp4_1__vc_64__latency_middleware_write_1.png Graphic file (ty
 pe png)
 <use img/exp4_1/exp4_1__vc_64__latency_middleware_write_1.png>
 Package pdftex.def Info: img/exp4_1/exp4_1__vc_64__latency_middleware_write_1.p
-ng  used on input line 960.
+ng  used on input line 988.
 (pdftex.def)             Requested size: 226.48395pt x 169.86406pt.
-<img/exp4_1/exp4_1__vc_64__throughput_middleware_write_1.png, id=354, 462.528pt
+<img/exp4_1/exp4_1__vc_64__throughput_middleware_write_1.png, id=360, 462.528pt
  x 346.896pt>
 File: img/exp4_1/exp4_1__vc_64__throughput_middleware_write_1.png Graphic file 
 (type png)
 <use img/exp4_1/exp4_1__vc_64__throughput_middleware_write_1.png>
 Package pdftex.def Info: img/exp4_1/exp4_1__vc_64__throughput_middleware_write_
-1.png  used on input line 966.
+1.png  used on input line 994.
 (pdftex.def)             Requested size: 226.48395pt x 169.86406pt.
-<img/exp4_1/exp4_1__vc_64__latency_client_write_1.png, id=355, 462.528pt x 346.
+[21]
+<img/exp4_1/exp4_1__vc_64__latency_client_write_1.png, id=365, 462.528pt x 346.
 896pt>
 File: img/exp4_1/exp4_1__vc_64__latency_client_write_1.png Graphic file (type p
 ng)
 <use img/exp4_1/exp4_1__vc_64__latency_client_write_1.png>
 Package pdftex.def Info: img/exp4_1/exp4_1__vc_64__latency_client_write_1.png  
-used on input line 978.
+used on input line 1006.
 (pdftex.def)             Requested size: 226.48395pt x 169.86406pt.
-<img/exp4_1/exp4_1__vc_64__throughput_client_write_1.png, id=356, 462.528pt x 3
+<img/exp4_1/exp4_1__vc_64__throughput_client_write_1.png, id=366, 462.528pt x 3
 46.896pt>
 File: img/exp4_1/exp4_1__vc_64__throughput_client_write_1.png Graphic file (typ
 e png)
 <use img/exp4_1/exp4_1__vc_64__throughput_client_write_1.png>
 Package pdftex.def Info: img/exp4_1/exp4_1__vc_64__throughput_client_write_1.pn
-g  used on input line 984.
+g  used on input line 1012.
 (pdftex.def)             Requested size: 226.48395pt x 169.86406pt.
-[21 <./img/exp4_1/exp4_1__vc_64__latency_middleware_write_1.png> <./img/exp4_1/
-exp4_1__vc_64__throughput_middleware_write_1.png>]
-<img/exp4_1/exp4_1__queuesize_middleware_write_1.png, id=364, 462.528pt x 346.8
+<img/exp4_1/exp4_1__queuesize_middleware_write_1.png, id=367, 462.528pt x 346.8
 96pt>
 File: img/exp4_1/exp4_1__queuesize_middleware_write_1.png Graphic file (type pn
 g)
 <use img/exp4_1/exp4_1__queuesize_middleware_write_1.png>
 Package pdftex.def Info: img/exp4_1/exp4_1__queuesize_middleware_write_1.png  u
-sed on input line 1001.
+sed on input line 1029.
 (pdftex.def)             Requested size: 226.48395pt x 169.86406pt.
-<img/exp4_1/exp4_1_mw_percentile_plots_writes_1__vc_1.png, id=365, 462.528pt x 
+ [22 <./img/exp4_1/exp4_1__vc_64__latency_middleware_write_1.png> <./img/exp4_1
+/exp4_1__vc_64__throughput_middleware_write_1.png> <./img/exp4_1/exp4_1__vc_64_
+_latency_client_write_1.png> <./img/exp4_1/exp4_1__vc_64__throughput_client_wri
+te_1.png>]
+<img/exp4_1/exp4_1_mw_percentile_plots_writes_1__vc_1.png, id=379, 462.528pt x 
 346.896pt>
 File: img/exp4_1/exp4_1_mw_percentile_plots_writes_1__vc_1.png Graphic file (ty
 pe png)
 <use img/exp4_1/exp4_1_mw_percentile_plots_writes_1__vc_1.png>
 Package pdftex.def Info: img/exp4_1/exp4_1_mw_percentile_plots_writes_1__vc_1.p
-ng  used on input line 1019.
+ng  used on input line 1047.
 (pdftex.def)             Requested size: 158.53807pt x 118.90643pt.
-<img/exp4_1/exp4_1_mw_percentile_plots_writes_1__vc_2.png, id=366, 462.528pt x 
+<img/exp4_1/exp4_1_mw_percentile_plots_writes_1__vc_2.png, id=380, 462.528pt x 
 346.896pt>
 File: img/exp4_1/exp4_1_mw_percentile_plots_writes_1__vc_2.png Graphic file (ty
 pe png)
 <use img/exp4_1/exp4_1_mw_percentile_plots_writes_1__vc_2.png>
 Package pdftex.def Info: img/exp4_1/exp4_1_mw_percentile_plots_writes_1__vc_2.p
-ng  used on input line 1025.
+ng  used on input line 1053.
 (pdftex.def)             Requested size: 158.53807pt x 118.90643pt.
-<img/exp4_1/exp4_1_mw_percentile_plots_writes_1__vc_4.png, id=367, 462.528pt x 
+<img/exp4_1/exp4_1_mw_percentile_plots_writes_1__vc_4.png, id=381, 462.528pt x 
 346.896pt>
 File: img/exp4_1/exp4_1_mw_percentile_plots_writes_1__vc_4.png Graphic file (ty
 pe png)
 <use img/exp4_1/exp4_1_mw_percentile_plots_writes_1__vc_4.png>
 Package pdftex.def Info: img/exp4_1/exp4_1_mw_percentile_plots_writes_1__vc_4.p
-ng  used on input line 1031.
+ng  used on input line 1059.
 (pdftex.def)             Requested size: 158.53807pt x 118.90643pt.
-<img/exp4_1/exp4_1_mw_percentile_plots_writes_1__vc_8.png, id=368, 462.528pt x 
+<img/exp4_1/exp4_1_mw_percentile_plots_writes_1__vc_8.png, id=382, 462.528pt x 
 346.896pt>
 File: img/exp4_1/exp4_1_mw_percentile_plots_writes_1__vc_8.png Graphic file (ty
 pe png)
 <use img/exp4_1/exp4_1_mw_percentile_plots_writes_1__vc_8.png>
 Package pdftex.def Info: img/exp4_1/exp4_1_mw_percentile_plots_writes_1__vc_8.p
-ng  used on input line 1037.
+ng  used on input line 1065.
 (pdftex.def)             Requested size: 158.53807pt x 118.90643pt.
-<img/exp4_1/exp4_1_mw_percentile_plots_writes_1__vc_16.png, id=369, 462.528pt x
+<img/exp4_1/exp4_1_mw_percentile_plots_writes_1__vc_16.png, id=383, 462.528pt x
  346.896pt>
 File: img/exp4_1/exp4_1_mw_percentile_plots_writes_1__vc_16.png Graphic file (t
 ype png)
 <use img/exp4_1/exp4_1_mw_percentile_plots_writes_1__vc_16.png>
 Package pdftex.def Info: img/exp4_1/exp4_1_mw_percentile_plots_writes_1__vc_16.
-png  used on input line 1043.
+png  used on input line 1071.
 (pdftex.def)             Requested size: 158.53807pt x 118.90643pt.
-<img/exp4_1/exp4_1_mw_percentile_plots_writes_1__vc_32.png, id=370, 462.528pt x
+<img/exp4_1/exp4_1_mw_percentile_plots_writes_1__vc_32.png, id=384, 462.528pt x
  346.896pt>
 File: img/exp4_1/exp4_1_mw_percentile_plots_writes_1__vc_32.png Graphic file (t
 ype png)
 <use img/exp4_1/exp4_1_mw_percentile_plots_writes_1__vc_32.png>
 Package pdftex.def Info: img/exp4_1/exp4_1_mw_percentile_plots_writes_1__vc_32.
-png  used on input line 1049.
+png  used on input line 1077.
 (pdftex.def)             Requested size: 158.53807pt x 118.90643pt.
 File: img/exp4_1/exp4_1_mw_percentile_plots_writes_1__vc_32.png Graphic file (t
 ype png)
 <use img/exp4_1/exp4_1_mw_percentile_plots_writes_1__vc_32.png>
 Package pdftex.def Info: img/exp4_1/exp4_1_mw_percentile_plots_writes_1__vc_32.
-png  used on input line 1055.
+png  used on input line 1083.
 (pdftex.def)             Requested size: 158.53807pt x 118.90643pt.
 File: img/exp4_1/exp4_1_mw_percentile_plots_writes_1__vc_32.png Graphic file (t
 ype png)
 <use img/exp4_1/exp4_1_mw_percentile_plots_writes_1__vc_32.png>
 Package pdftex.def Info: img/exp4_1/exp4_1_mw_percentile_plots_writes_1__vc_32.
-png  used on input line 1061.
+png  used on input line 1089.
 (pdftex.def)             Requested size: 158.53807pt x 118.90643pt.
- [22 <./img/exp4_1/exp4_1__vc_64__latency_client_write_1.png> <./img/exp4_1/exp
-4_1__vc_64__throughput_client_write_1.png> <./img/exp4_1/exp4_1__queuesize_midd
-leware_write_1.png>] [23 <./img/exp4_1/exp4_1_mw_percentile_plots_writes_1__vc_
-1.png> <./img/exp4_1/exp4_1_mw_percentile_plots_writes_1__vc_2.png> <./img/exp4
-_1/exp4_1_mw_percentile_plots_writes_1__vc_4.png> <./img/exp4_1/exp4_1_mw_perce
-ntile_plots_writes_1__vc_8.png> <./img/exp4_1/exp4_1_mw_percentile_plots_writes
-_1__vc_16.png> <./img/exp4_1/exp4_1_mw_percentile_plots_writes_1__vc_32.png>]
-Overfull \hbox (4.74847pt too wide) in paragraph at lines 1072--1083
+ [23 <./img/exp4_1/exp4_1__queuesize_middleware_write_1.png>]
+[24 <./img/exp4_1/exp4_1_mw_percentile_plots_writes_1__vc_1.png> <./img/exp4_1/
+exp4_1_mw_percentile_plots_writes_1__vc_2.png> <./img/exp4_1/exp4_1_mw_percenti
+le_plots_writes_1__vc_4.png> <./img/exp4_1/exp4_1_mw_percentile_plots_writes_1_
+_vc_8.png> <./img/exp4_1/exp4_1_mw_percentile_plots_writes_1__vc_16.png> <./img
+/exp4_1/exp4_1_mw_percentile_plots_writes_1__vc_32.png>]
+Overfull \hbox (4.74847pt too wide) in paragraph at lines 1100--1111
  [] 
  []
 
-<img/exp5_1/exp5_1_client_percentile_plots_sharded_True.png, id=392, 462.528pt 
+<img/exp5_1/exp5_1_client_percentile_plots_sharded_True.png, id=402, 462.528pt 
 x 346.896pt>
 File: img/exp5_1/exp5_1_client_percentile_plots_sharded_True.png Graphic file (
 type png)
 <use img/exp5_1/exp5_1_client_percentile_plots_sharded_True.png>
 Package pdftex.def Info: img/exp5_1/exp5_1_client_percentile_plots_sharded_True
-.png  used on input line 1125.
+.png  used on input line 1153.
 (pdftex.def)             Requested size: 452.9679pt x 339.74402pt.
-[24]
-Underfull \hbox (badness 10000) in paragraph at lines 1130--1136
+[25]
+Underfull \hbox (badness 10000) in paragraph at lines 1158--1164
 
  []
 
-<img/exp5_1/exp5_1__client_latency_sharding_True.png, id=397, 462.528pt x 346.8
+<img/exp5_1/exp5_1__client_latency_sharding_True.png, id=408, 462.528pt x 346.8
 96pt>
 File: img/exp5_1/exp5_1__client_latency_sharding_True.png Graphic file (type pn
 g)
 <use img/exp5_1/exp5_1__client_latency_sharding_True.png>
 Package pdftex.def Info: img/exp5_1/exp5_1__client_latency_sharding_True.png  u
-sed on input line 1145.
+sed on input line 1173.
 (pdftex.def)             Requested size: 226.48395pt x 169.86406pt.
-<img/exp5_1/exp5_1__client_throughput_sharding_True.png, id=398, 462.528pt x 34
+<img/exp5_1/exp5_1__client_throughput_sharding_True.png, id=409, 462.528pt x 34
 6.896pt>
 File: img/exp5_1/exp5_1__client_throughput_sharding_True.png Graphic file (type
  png)
 <use img/exp5_1/exp5_1__client_throughput_sharding_True.png>
 Package pdftex.def Info: img/exp5_1/exp5_1__client_throughput_sharding_True.png
-  used on input line 1151.
+  used on input line 1179.
 (pdftex.def)             Requested size: 226.48395pt x 169.86406pt.
-[25 <./img/exp5_1/exp5_1_client_percentile_plots_sharded_True.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 1165--1171
+[26 <./img/exp5_1/exp5_1_client_percentile_plots_sharded_True.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 1193--1199
 
  []
 
-[26 <./img/exp5_1/exp5_1__client_latency_sharding_True.png> <./img/exp5_1/exp5_
+[27 <./img/exp5_1/exp5_1__client_latency_sharding_True.png> <./img/exp5_1/exp5_
 1__client_throughput_sharding_True.png>]
-<img/exp5_1/exp5_1_client_percentile_plots_sharded_False.png, id=413, 462.528pt
+<img/exp5_1/exp5_1_client_percentile_plots_sharded_False.png, id=423, 462.528pt
  x 346.896pt>
 File: img/exp5_1/exp5_1_client_percentile_plots_sharded_False.png Graphic file 
 (type png)
 <use img/exp5_1/exp5_1_client_percentile_plots_sharded_False.png>
 Package pdftex.def Info: img/exp5_1/exp5_1_client_percentile_plots_sharded_Fals
-e.png  used on input line 1206.
+e.png  used on input line 1234.
 (pdftex.def)             Requested size: 452.9679pt x 339.74402pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 1211--1219
+Underfull \hbox (badness 10000) in paragraph at lines 1239--1247
 
  []
 
-[27 <./img/exp5_1/exp5_1_client_percentile_plots_sharded_False.png>]
-<img/exp5_1/exp5_1__client_latency_sharding_False.png, id=420, 462.528pt x 346.
+[28 <./img/exp5_1/exp5_1_client_percentile_plots_sharded_False.png>]
+<img/exp5_1/exp5_1__client_latency_sharding_False.png, id=430, 462.528pt x 346.
 896pt>
 File: img/exp5_1/exp5_1__client_latency_sharding_False.png Graphic file (type p
 ng)
 <use img/exp5_1/exp5_1__client_latency_sharding_False.png>
 Package pdftex.def Info: img/exp5_1/exp5_1__client_latency_sharding_False.png  
-used on input line 1232.
+used on input line 1260.
 (pdftex.def)             Requested size: 226.48395pt x 169.86406pt.
-<img/exp5_1/exp5_1__client_throughput_sharding_False.png, id=421, 462.528pt x 3
+<img/exp5_1/exp5_1__client_throughput_sharding_False.png, id=431, 462.528pt x 3
 46.896pt>
 File: img/exp5_1/exp5_1__client_throughput_sharding_False.png Graphic file (typ
 e png)
 <use img/exp5_1/exp5_1__client_throughput_sharding_False.png>
 Package pdftex.def Info: img/exp5_1/exp5_1__client_throughput_sharding_False.pn
-g  used on input line 1238.
+g  used on input line 1266.
 (pdftex.def)             Requested size: 226.48395pt x 169.86406pt.
- [28 <./img/exp5_1/exp5_1__client_latency_sharding_False.png> <./img/exp5_1/exp
+ [29 <./img/exp5_1/exp5_1__client_latency_sharding_False.png> <./img/exp5_1/exp
 5_1__client_throughput_sharding_False.png>]
-<img/exp5_1/histogram_client_nonsharded.png, id=429, 462.528pt x 346.896pt>
+<img/exp5_1/histogram_client_nonsharded.png, id=439, 462.528pt x 346.896pt>
 File: img/exp5_1/histogram_client_nonsharded.png Graphic file (type png)
 <use img/exp5_1/histogram_client_nonsharded.png>
 Package pdftex.def Info: img/exp5_1/histogram_client_nonsharded.png  used on in
-put line 1270.
+put line 1298.
 (pdftex.def)             Requested size: 226.48395pt x 169.86406pt.
-<img/exp5_1/histogram_client_sharded.png, id=430, 462.528pt x 346.896pt>
+<img/exp5_1/histogram_client_sharded.png, id=440, 462.528pt x 346.896pt>
 File: img/exp5_1/histogram_client_sharded.png Graphic file (type png)
 <use img/exp5_1/histogram_client_sharded.png>
 Package pdftex.def Info: img/exp5_1/histogram_client_sharded.png  used on input
- line 1276.
+ line 1304.
 (pdftex.def)             Requested size: 226.48395pt x 169.86406pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 1286--1288
+Underfull \hbox (badness 10000) in paragraph at lines 1314--1316
 
  []
 
-[29 <./img/exp5_1/histogram_client_nonsharded.png> <./img/exp5_1/histogram_clie
+[30 <./img/exp5_1/histogram_client_nonsharded.png> <./img/exp5_1/histogram_clie
 nt_sharded.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 1332--1334
+Underfull \hbox (badness 10000) in paragraph at lines 1360--1362
 
  []
 
 
 Package hyperref Warning: Difference (2) between bookmark levels is greater 
-(hyperref)                than one, level fixed on input line 1344.
+(hyperref)                than one, level fixed on input line 1372.
 
 
-Overfull \hbox (10.80293pt too wide) in paragraph at lines 1349--1362
+Overfull \hbox (10.80293pt too wide) in paragraph at lines 1377--1390
  [] 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1380--1381
+Underfull \hbox (badness 10000) in paragraph at lines 1404--1406
 
  []
 
-[30]
-Underfull \hbox (badness 10000) in paragraph at lines 1384--1387
-
- []
-
-<img/exp3_1/exp3_1__latency_client_write_0.png, id=442, 462.528pt x 346.896pt>
-File: img/exp3_1/exp3_1__latency_client_write_0.png Graphic file (type png)
-<use img/exp3_1/exp3_1__latency_client_write_0.png>
-Package pdftex.def Info: img/exp3_1/exp3_1__latency_client_write_0.png  used on
- input line 1421.
-(pdftex.def)             Requested size: 226.48395pt x 169.86406pt.
-<img/exp3_1/exp3_1__throughput_client_write_0.png, id=443, 462.528pt x 346.896p
-t>
-File: img/exp3_1/exp3_1__throughput_client_write_0.png Graphic file (type png)
-<use img/exp3_1/exp3_1__throughput_client_write_0.png>
-Package pdftex.def Info: img/exp3_1/exp3_1__throughput_client_write_0.png  used
- on input line 1427.
-(pdftex.def)             Requested size: 226.48395pt x 169.86406pt.
 [31]
-<img/exp3_1/exp3_1__latency_client_write_1.png, id=449, 462.528pt x 346.896pt>
-File: img/exp3_1/exp3_1__latency_client_write_1.png Graphic file (type png)
-<use img/exp3_1/exp3_1__latency_client_write_1.png>
-Package pdftex.def Info: img/exp3_1/exp3_1__latency_client_write_1.png  used on
- input line 1439.
-(pdftex.def)             Requested size: 226.48395pt x 169.86406pt.
-<img/exp3_1/exp3_1__throughput_client_write_1.png, id=450, 462.528pt x 346.896p
-t>
-File: img/exp3_1/exp3_1__throughput_client_write_1.png Graphic file (type png)
-<use img/exp3_1/exp3_1__throughput_client_write_1.png>
-Package pdftex.def Info: img/exp3_1/exp3_1__throughput_client_write_1.png  used
- on input line 1445.
-(pdftex.def)             Requested size: 226.48395pt x 169.86406pt.
-<img/exp3_1/exp3_1_mw_percentile_plots_writes_0__vc_1.png, id=451, 462.528pt x 
+Underfull \hbox (badness 10000) in paragraph at lines 1440--1441
+
+ []
+
+
+Overfull \hbox (37.8703pt too wide) in paragraph at lines 1449--1459
+[][]
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1449--1459
+
+ []
+
+
+Overfull \hbox (33.62024pt too wide) in paragraph at lines 1472--1482
+[][]
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1472--1482
+
+ []
+
+[32]
+<img/exp3_1/exp3_1_mw_percentile_plots_writes_0__vc_1.png, id=461, 462.528pt x 
 346.896pt>
 File: img/exp3_1/exp3_1_mw_percentile_plots_writes_0__vc_1.png Graphic file (ty
 pe png)
 <use img/exp3_1/exp3_1_mw_percentile_plots_writes_0__vc_1.png>
 Package pdftex.def Info: img/exp3_1/exp3_1_mw_percentile_plots_writes_0__vc_1.p
-ng  used on input line 1458.
+ng  used on input line 1499.
 (pdftex.def)             Requested size: 158.53807pt x 118.90643pt.
-<img/exp3_1/exp3_1_mw_percentile_plots_writes_1__vc_1.png, id=452, 462.528pt x 
+<img/exp3_1/exp3_1_mw_percentile_plots_writes_1__vc_1.png, id=462, 462.528pt x 
 346.896pt>
 File: img/exp3_1/exp3_1_mw_percentile_plots_writes_1__vc_1.png Graphic file (ty
 pe png)
 <use img/exp3_1/exp3_1_mw_percentile_plots_writes_1__vc_1.png>
 Package pdftex.def Info: img/exp3_1/exp3_1_mw_percentile_plots_writes_1__vc_1.p
-ng  used on input line 1464.
+ng  used on input line 1505.
 (pdftex.def)             Requested size: 158.53807pt x 118.90643pt.
-<img/exp3_1/exp3_1_mw_percentile_plots_writes_0__vc_2.png, id=453, 462.528pt x 
+<img/exp3_1/exp3_1_mw_percentile_plots_writes_0__vc_2.png, id=463, 462.528pt x 
 346.896pt>
 File: img/exp3_1/exp3_1_mw_percentile_plots_writes_0__vc_2.png Graphic file (ty
 pe png)
 <use img/exp3_1/exp3_1_mw_percentile_plots_writes_0__vc_2.png>
 Package pdftex.def Info: img/exp3_1/exp3_1_mw_percentile_plots_writes_0__vc_2.p
-ng  used on input line 1470.
+ng  used on input line 1511.
 (pdftex.def)             Requested size: 158.53807pt x 118.90643pt.
-<img/exp3_1/exp3_1_mw_percentile_plots_writes_1__vc_2.png, id=454, 462.528pt x 
+<img/exp3_1/exp3_1_mw_percentile_plots_writes_1__vc_2.png, id=464, 462.528pt x 
 346.896pt>
 File: img/exp3_1/exp3_1_mw_percentile_plots_writes_1__vc_2.png Graphic file (ty
 pe png)
 <use img/exp3_1/exp3_1_mw_percentile_plots_writes_1__vc_2.png>
 Package pdftex.def Info: img/exp3_1/exp3_1_mw_percentile_plots_writes_1__vc_2.p
-ng  used on input line 1476.
+ng  used on input line 1517.
 (pdftex.def)             Requested size: 158.53807pt x 118.90643pt.
-<img/exp3_1/exp3_1_mw_percentile_plots_writes_0__vc_4.png, id=455, 462.528pt x 
+<img/exp3_1/exp3_1_mw_percentile_plots_writes_0__vc_4.png, id=465, 462.528pt x 
 346.896pt>
 File: img/exp3_1/exp3_1_mw_percentile_plots_writes_0__vc_4.png Graphic file (ty
 pe png)
 <use img/exp3_1/exp3_1_mw_percentile_plots_writes_0__vc_4.png>
 Package pdftex.def Info: img/exp3_1/exp3_1_mw_percentile_plots_writes_0__vc_4.p
-ng  used on input line 1482.
+ng  used on input line 1523.
 (pdftex.def)             Requested size: 158.53807pt x 118.90643pt.
-<img/exp3_1/exp3_1_mw_percentile_plots_writes_1__vc_4.png, id=456, 462.528pt x 
+<img/exp3_1/exp3_1_mw_percentile_plots_writes_1__vc_4.png, id=466, 462.528pt x 
 346.896pt>
 File: img/exp3_1/exp3_1_mw_percentile_plots_writes_1__vc_4.png Graphic file (ty
 pe png)
 <use img/exp3_1/exp3_1_mw_percentile_plots_writes_1__vc_4.png>
 Package pdftex.def Info: img/exp3_1/exp3_1_mw_percentile_plots_writes_1__vc_4.p
-ng  used on input line 1488.
+ng  used on input line 1529.
 (pdftex.def)             Requested size: 158.53807pt x 118.90643pt.
-<img/exp3_1/exp3_1_mw_percentile_plots_writes_1__vc_8.png, id=457, 462.528pt x 
+<img/exp3_1/exp3_1_mw_percentile_plots_writes_1__vc_8.png, id=467, 462.528pt x 
 346.896pt>
 File: img/exp3_1/exp3_1_mw_percentile_plots_writes_1__vc_8.png Graphic file (ty
 pe png)
 <use img/exp3_1/exp3_1_mw_percentile_plots_writes_1__vc_8.png>
 Package pdftex.def Info: img/exp3_1/exp3_1_mw_percentile_plots_writes_1__vc_8.p
-ng  used on input line 1494.
+ng  used on input line 1535.
 (pdftex.def)             Requested size: 158.53807pt x 118.90643pt.
 File: img/exp3_1/exp3_1_mw_percentile_plots_writes_1__vc_8.png Graphic file (ty
 pe png)
 <use img/exp3_1/exp3_1_mw_percentile_plots_writes_1__vc_8.png>
 Package pdftex.def Info: img/exp3_1/exp3_1_mw_percentile_plots_writes_1__vc_8.p
-ng  used on input line 1500.
+ng  used on input line 1541.
 (pdftex.def)             Requested size: 158.53807pt x 118.90643pt.
-<img/exp3_1/exp3_1_mw_percentile_plots_writes_0__vc_16.png, id=458, 462.528pt x
+<img/exp3_1/exp3_1_mw_percentile_plots_writes_0__vc_16.png, id=468, 462.528pt x
  346.896pt>
 File: img/exp3_1/exp3_1_mw_percentile_plots_writes_0__vc_16.png Graphic file (t
 ype png)
 <use img/exp3_1/exp3_1_mw_percentile_plots_writes_0__vc_16.png>
 Package pdftex.def Info: img/exp3_1/exp3_1_mw_percentile_plots_writes_0__vc_16.
-png  used on input line 1506.
+png  used on input line 1547.
 (pdftex.def)             Requested size: 158.53807pt x 118.90643pt.
-<img/exp3_1/exp3_1_mw_percentile_plots_writes_1__vc_16.png, id=459, 462.528pt x
+<img/exp3_1/exp3_1_mw_percentile_plots_writes_1__vc_16.png, id=469, 462.528pt x
  346.896pt>
 File: img/exp3_1/exp3_1_mw_percentile_plots_writes_1__vc_16.png Graphic file (t
 ype png)
 <use img/exp3_1/exp3_1_mw_percentile_plots_writes_1__vc_16.png>
 Package pdftex.def Info: img/exp3_1/exp3_1_mw_percentile_plots_writes_1__vc_16.
-png  used on input line 1512.
+png  used on input line 1553.
 (pdftex.def)             Requested size: 158.53807pt x 118.90643pt.
-<img/exp3_1/exp3_1_mw_percentile_plots_writes_0__vc_32.png, id=460, 462.528pt x
+<img/exp3_1/exp3_1_mw_percentile_plots_writes_0__vc_32.png, id=470, 462.528pt x
  346.896pt>
 File: img/exp3_1/exp3_1_mw_percentile_plots_writes_0__vc_32.png Graphic file (t
 ype png)
 <use img/exp3_1/exp3_1_mw_percentile_plots_writes_0__vc_32.png>
 Package pdftex.def Info: img/exp3_1/exp3_1_mw_percentile_plots_writes_0__vc_32.
-png  used on input line 1518.
+png  used on input line 1559.
 (pdftex.def)             Requested size: 158.53807pt x 118.90643pt.
-<img/exp3_1/exp3_1_mw_percentile_plots_writes_1__vc_32.png, id=461, 462.528pt x
+<img/exp3_1/exp3_1_mw_percentile_plots_writes_1__vc_32.png, id=471, 462.528pt x
  346.896pt>
 File: img/exp3_1/exp3_1_mw_percentile_plots_writes_1__vc_32.png Graphic file (t
 ype png)
 <use img/exp3_1/exp3_1_mw_percentile_plots_writes_1__vc_32.png>
 Package pdftex.def Info: img/exp3_1/exp3_1_mw_percentile_plots_writes_1__vc_32.
-png  used on input line 1524.
+png  used on input line 1565.
 (pdftex.def)             Requested size: 158.53807pt x 118.90643pt.
 
-Overfull \hbox (2.43333pt too wide) in paragraph at lines 1456--1528
+Overfull \hbox (2.43333pt too wide) in paragraph at lines 1497--1569
 [] []
  []
 
 
-LaTeX Warning: Float too large for page by 302.68134pt on input line 1528.
+LaTeX Warning: Float too large for page by 302.68134pt on input line 1569.
 
-<img/exp5_1/exp5_1__mw_latency_sharding_True.png, id=462, 462.528pt x 346.896pt
+File: img/exp3_2/exp3_2_mw_percentile_plots_writes_0__vc_1.png Graphic file (ty
+pe png)
+<use img/exp3_2/exp3_2_mw_percentile_plots_writes_0__vc_1.png>
+Package pdftex.def Info: img/exp3_2/exp3_2_mw_percentile_plots_writes_0__vc_1.p
+ng  used on input line 1579.
+(pdftex.def)             Requested size: 158.53807pt x 118.90643pt.
+File: img/exp3_2/exp3_2_mw_percentile_plots_writes_1__vc_1.png Graphic file (ty
+pe png)
+<use img/exp3_2/exp3_2_mw_percentile_plots_writes_1__vc_1.png>
+Package pdftex.def Info: img/exp3_2/exp3_2_mw_percentile_plots_writes_1__vc_1.p
+ng  used on input line 1585.
+(pdftex.def)             Requested size: 158.53807pt x 118.90643pt.
+<img/exp3_2/exp3_2_mw_percentile_plots_writes_0__vc_4.png, id=472, 462.528pt x 
+346.896pt>
+File: img/exp3_2/exp3_2_mw_percentile_plots_writes_0__vc_4.png Graphic file (ty
+pe png)
+<use img/exp3_2/exp3_2_mw_percentile_plots_writes_0__vc_4.png>
+Package pdftex.def Info: img/exp3_2/exp3_2_mw_percentile_plots_writes_0__vc_4.p
+ng  used on input line 1591.
+(pdftex.def)             Requested size: 158.53807pt x 118.90643pt.
+<img/exp3_2/exp3_2_mw_percentile_plots_writes_1__vc_4.png, id=473, 462.528pt x 
+346.896pt>
+File: img/exp3_2/exp3_2_mw_percentile_plots_writes_1__vc_4.png Graphic file (ty
+pe png)
+<use img/exp3_2/exp3_2_mw_percentile_plots_writes_1__vc_4.png>
+Package pdftex.def Info: img/exp3_2/exp3_2_mw_percentile_plots_writes_1__vc_4.p
+ng  used on input line 1597.
+(pdftex.def)             Requested size: 158.53807pt x 118.90643pt.
+<img/exp3_2/exp3_2_mw_percentile_plots_writes_0__vc_16.png, id=474, 462.528pt x
+ 346.896pt>
+File: img/exp3_2/exp3_2_mw_percentile_plots_writes_0__vc_16.png Graphic file (t
+ype png)
+<use img/exp3_2/exp3_2_mw_percentile_plots_writes_0__vc_16.png>
+Package pdftex.def Info: img/exp3_2/exp3_2_mw_percentile_plots_writes_0__vc_16.
+png  used on input line 1603.
+(pdftex.def)             Requested size: 158.53807pt x 118.90643pt.
+<img/exp3_2/exp3_2_mw_percentile_plots_writes_1__vc_16.png, id=475, 462.528pt x
+ 346.896pt>
+File: img/exp3_2/exp3_2_mw_percentile_plots_writes_1__vc_16.png Graphic file (t
+ype png)
+<use img/exp3_2/exp3_2_mw_percentile_plots_writes_1__vc_16.png>
+Package pdftex.def Info: img/exp3_2/exp3_2_mw_percentile_plots_writes_1__vc_16.
+png  used on input line 1609.
+(pdftex.def)             Requested size: 158.53807pt x 118.90643pt.
+File: img/exp3_2/exp3_2_mw_percentile_plots_writes_0__vc_32.png Graphic file (t
+ype png)
+<use img/exp3_2/exp3_2_mw_percentile_plots_writes_0__vc_32.png>
+Package pdftex.def Info: img/exp3_2/exp3_2_mw_percentile_plots_writes_0__vc_32.
+png  used on input line 1615.
+(pdftex.def)             Requested size: 158.53807pt x 118.90643pt.
+File: img/exp3_2/exp3_2_mw_percentile_plots_writes_1__vc_32.png Graphic file (t
+ype png)
+<use img/exp3_2/exp3_2_mw_percentile_plots_writes_1__vc_32.png>
+Package pdftex.def Info: img/exp3_2/exp3_2_mw_percentile_plots_writes_1__vc_32.
+png  used on input line 1621.
+(pdftex.def)             Requested size: 158.53807pt x 118.90643pt.
+[33]
+<img/exp5_1/exp5_1__mw_latency_sharding_True.png, id=480, 462.528pt x 346.896pt
 >
 File: img/exp5_1/exp5_1__mw_latency_sharding_True.png Graphic file (type png)
 <use img/exp5_1/exp5_1__mw_latency_sharding_True.png>
 Package pdftex.def Info: img/exp5_1/exp5_1__mw_latency_sharding_True.png  used 
-on input line 1539.
+on input line 1636.
 (pdftex.def)             Requested size: 226.48395pt x 169.86406pt.
-<img/exp5_1/exp5_1__mw_throughput_sharding_True.png, id=463, 462.528pt x 346.89
+<img/exp5_1/exp5_1__mw_throughput_sharding_True.png, id=481, 462.528pt x 346.89
 6pt>
 File: img/exp5_1/exp5_1__mw_throughput_sharding_True.png Graphic file (type png
 )
 <use img/exp5_1/exp5_1__mw_throughput_sharding_True.png>
 Package pdftex.def Info: img/exp5_1/exp5_1__mw_throughput_sharding_True.png  us
-ed on input line 1545.
+ed on input line 1642.
 (pdftex.def)             Requested size: 226.48395pt x 169.86406pt.
-[32 <./img/exp3_1/exp3_1__latency_client_write_0.png> <./img/exp3_1/exp3_1__thr
-oughput_client_write_0.png> <./img/exp3_1/exp3_1__latency_client_write_1.png> <
-./img/exp3_1/exp3_1__throughput_client_write_1.png>]
-<img/exp5_1/exp5_1__mw_latency_sharding_False.png, id=474, 462.528pt x 346.896p
+ [34 <./img/exp3_2/exp3_2_mw_percentile_plots_writes_0__vc_4.png> <./img/exp3_2
+/exp3_2_mw_percentile_plots_writes_1__vc_4.png> <./img/exp3_2/exp3_2_mw_percent
+ile_plots_writes_0__vc_16.png> <./img/exp3_2/exp3_2_mw_percentile_plots_writes_
+1__vc_16.png>]
+<img/exp5_1/exp5_1__mw_latency_sharding_False.png, id=491, 462.528pt x 346.896p
 t>
 File: img/exp5_1/exp5_1__mw_latency_sharding_False.png Graphic file (type png)
 <use img/exp5_1/exp5_1__mw_latency_sharding_False.png>
 Package pdftex.def Info: img/exp5_1/exp5_1__mw_latency_sharding_False.png  used
- on input line 1560.
+ on input line 1657.
 (pdftex.def)             Requested size: 226.48395pt x 169.86406pt.
-<img/exp5_1/exp5_1__mw_throughput_sharding_False.png, id=475, 462.528pt x 346.8
+<img/exp5_1/exp5_1__mw_throughput_sharding_False.png, id=492, 462.528pt x 346.8
 96pt>
 File: img/exp5_1/exp5_1__mw_throughput_sharding_False.png Graphic file (type pn
 g)
 <use img/exp5_1/exp5_1__mw_throughput_sharding_False.png>
 Package pdftex.def Info: img/exp5_1/exp5_1__mw_throughput_sharding_False.png  u
-sed on input line 1566.
+sed on input line 1663.
 (pdftex.def)             Requested size: 226.48395pt x 169.86406pt.
- [33 <./img/exp5_1/exp5_1__mw_latency_sharding_True.png> <./img/exp5_1/exp5_1__
+ [35 <./img/exp5_1/exp5_1__mw_latency_sharding_True.png> <./img/exp5_1/exp5_1__
 mw_throughput_sharding_True.png> <./img/exp5_1/exp5_1__mw_latency_sharding_Fals
 e.png> <./img/exp5_1/exp5_1__mw_throughput_sharding_False.png>]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1575.
- [34 <./img/exp3_1/exp3_1_mw_percentile_plots_writes_0__vc_1.png> <./img/exp3_1
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1672.
+ [36 <./img/exp3_1/exp3_1_mw_percentile_plots_writes_0__vc_1.png> <./img/exp3_1
 /exp3_1_mw_percentile_plots_writes_1__vc_1.png> <./img/exp3_1/exp3_1_mw_percent
 ile_plots_writes_0__vc_2.png> <./img/exp3_1/exp3_1_mw_percentile_plots_writes_1
 __vc_2.png> <./img/exp3_1/exp3_1_mw_percentile_plots_writes_0__vc_4.png> <./img
@@ -1730,24 +1789,24 @@ percentile_plots_writes_1__vc_8.png> <./img/exp3_1/exp3_1_mw_percentile_plots_w
 rites_0__vc_16.png> <./img/exp3_1/exp3_1_mw_percentile_plots_writes_1__vc_16.pn
 g> <./img/exp3_1/exp3_1_mw_percentile_plots_writes_0__vc_32.png> <./img/exp3_1/
 exp3_1_mw_percentile_plots_writes_1__vc_32.png>]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 1575.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 1672.
  (./report.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1575.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1575.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1672.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1672.
 
 Package rerunfilecheck Info: File `report.out' has not changed.
-(rerunfilecheck)             Checksum: 220BA126E4E19C13A1AE4A0443B95C61;2539.
+(rerunfilecheck)             Checksum: 34A0B278A4C8E2F25E5EE13111B0AFF5;2603.
 
 
 LaTeX Warning: There were multiply-defined labels.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1575.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1672.
  ) 
 Here is how much of TeX's memory you used:
- 17188 strings out of 492649
- 339163 string characters out of 6129622
- 390935 words of memory out of 5000000
- 20604 multiletter control sequences out of 15000+600000
+ 17198 strings out of 492649
+ 339278 string characters out of 6129622
+ 391935 words of memory out of 5000000
+ 20606 multiletter control sequences out of 15000+600000
  9684 words of font info for 34 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  62i,12n,77p,496b,564s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -1766,10 +1825,10 @@ live/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texl
 ive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texliv
 e/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive
 /2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
-Output written on report.pdf (34 pages, 2200662 bytes).
+Output written on report.pdf (36 pages, 2205509 bytes).
 PDF statistics:
- 579 PDF objects out of 1000 (max. 8388607)
- 390 compressed objects within 4 object streams
- 122 named destinations out of 1000 (max. 500000)
- 652 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 598 PDF objects out of 1000 (max. 8388607)
+ 406 compressed objects within 5 object streams
+ 130 named destinations out of 1000 (max. 500000)
+ 660 words of extra memory for PDF output out of 10000 (max. 10000000)
 
