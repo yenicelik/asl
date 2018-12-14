@@ -647,6 +647,14 @@ This implies that the middleware congests the requests and collects the requests
 
 \subsection{Two Middlewares}
 
+In this set of experiments, I use three client memtier virtual machines, and 1 memcached server.
+These virtual machine instances are connected with exactly two middleware virtual machines in the middle.
+The three clients connect to the middlewares (two memtier-instances per client machine). 
+The middlewares both connect to the server.
+For this section, I repeat each experiment for 3 times and plot the standard deviation amongst those trials.
+I also allow for a 15 second warm-up and 15 second cool-down time, and disregard these measurements when retrieving the logs about the request times from the middleware.
+I measuring the throughput and response time for different values of number of virtual clients.
+
 \begin{center}
 	\scriptsize{
 		\begin{tabular}{|l|c|}
@@ -669,9 +677,9 @@ Another difference is that we allow each individual client to run two memtier in
 
 In addition measuring the throughput and response time for different values of number of virtual clients, we also allow to modify the number of middleware threads as another measureable variable.
 This means that I test out the throughput and latency for any permutation of
-virtualthreads=[1, 2, 4, 8, 16, 32] and threads in the middleware=[8, 16, 32, 64].
-I repeat each experiment for 3 times and plot the standard deviation amongst those trials.
-I also allow for a 15 second warm-up and 15 second cool-down time, and disregard these measurements when retrieving the logs about the request times from the middleware.\\
+virtualthreads=[1, 2, 4, 8, 16, 32] and threads in the middleware=[8, 16, 32, 64].\\
+
+I first talk separately about read-only operations, write-only operations, and then compare them in another section subsubsection "Additional Explanation".
 
 \subsubsection{Read-only}
 I first start with read-only operations.
@@ -681,45 +689,52 @@ I first start with read-only operations.
 \begin{subfigure}{.5\textwidth}
     \centering
     \includegraphics[width=\textwidth]{img/exp3_2/exp3_2__latency_middleware_write_0.png}
-    \caption{Latency read only}
+    \caption{Latency}
     \label{fig:mesh1}
 \end{subfigure}%
 \begin{subfigure}{.5\textwidth}
       \centering
     \includegraphics[width=\textwidth]{img/exp3_2/exp3_2__throughput_middleware_write_0.png}
-    \caption{Throughput read only}
+    \caption{Throughput}
     \label{fig:mesh1}
 \end{subfigure}
-\caption{Exp3.2: Latency and throughputs as measures by the middlewares}
+\caption{Exp3.2: Latency and throughputs for \textbf{write-only} as measures by the \textbf{middlewares} (two middlewares)}
 \label{fig:test}
 \end{figure}
 
-%TODO : explanation
+For read-only workloads, the bottleneck is the server, with the very same explanation as in  section 3.1.
+Please refer to section 3.1, as I will not repeat this explanation here for conciseness.
+Because we introduce no additional server, this bottleneck does not change, and the maximum number of ops / sec does not increase.
+This claim is supported by the throughput graph, which shows that the system is already saturated with 2 virtual clients per thread.
+Introducing the second middleware does not improve this performance, as the number of servers does not change.
+
+As such, the system saturates already with 2 virtual clients per memtier thread - the same as in experiment 2.1 read-only and experiment 3.1 read-only.
+There is no oversaturation, and the system is stable, as can be seen from the slight error bars in both the response graph, and the throughput graph.
+
+As a sanity check, one the interactive law applies, as the latency grows although the throughput stays the same.
+In addition to that, the throughput and response time graphs as measure by the client support the throughputs as observed in the middleware.
 
 \begin{figure}[H]
 \centering
 \begin{subfigure}{.5\textwidth}
     \centering
     \includegraphics[width=\textwidth]{img/exp3_2/exp3_2__latency_client_write_0.png}
-    \caption{Latency read only}
+    \caption{Latency}
     \label{fig:mesh1}
 \end{subfigure}%
 \begin{subfigure}{.5\textwidth}
       \centering
     \includegraphics[width=\textwidth]{img/exp3_2/exp3_2__throughput_client_write_0.png}
-    \caption{Throughput read only}
+    \caption{Throughput}
     \label{fig:mesh1}
 \end{subfigure}
-\caption{Exp3.2: Latency and throughputs as measures by the clients}
+\caption{Exp3.2: Latency and throughputs for \textbf{write-only} as measures by the \textbf{clients} (two middleware)}
 \label{fig:test}
 \end{figure}
 
-The client and middleware graphs deviate sligthly.
-As one can see, the middleware graph seems more stable.
-This is because the middleware graph only shows the performance \textbf{excluding} the warm-up and cool-down phase, whereas the client graphs do not exclude these measurements.
-
-
 \subsubsection{Write-only}
+
+I proceed with write-only operations.
 
 \begin{figure}[H]
 \centering
@@ -739,7 +754,22 @@ This is because the middleware graph only shows the performance \textbf{excludin
 \label{fig:test}
 \end{figure}
 
----
+For read-only workloads, the bottleneck is the middleware instance, as was explained in section 3.1 write-only.
+Please refer to section 3.1 for an explanation on this.
+Because the middleware is the bottleneck, one can clearly see that for write-only operations, adding the second middleware almost doubles the throughput of the system.
+This is because the total load of the system is now distributed amongst two middlewares instead of only a single one.
+This means that each in total, we have double the amount of middleware-threads that can handle the requests.
+This claim is supported by comparing the write-only graphs in this section with the write-only graphs in section 3.1.
+One can validate, that doubling the number of threads in the middleware (which can be achieved by also by just spawning a second middleware which takes over part of that load), the throughput increases significantly. \\
+
+The bottleneck is the total number of middlewarethreads in the system.
+For 8 and 16 middleware threads per middleware instance, the system is under-saturated up to 8, respectively 16 virtual clients per thread. 
+For a higher number of middleware-threads per middleware instance, increasing the number of virtual clients per thread almost allows to reach the system the maximum throughput as is given by the compound throughput of the client machines.
+This claim is supported by the graph which shows an evening out of the throughput rate after 16 virtual clients per thread for 8 and 16 middleware threads per middleware instance, and an square-root-like increase in the throughput of the system which have 32 and respectively 64 middleware threads per middleware. \\
+
+
+As a sanity check, one the interactive law applies, as the latency grows although the throughput stays the same, and this with an ever-increasing rate.
+In addition to that, the throughput and response time graphs as measure by the client support the throughputs as observed in the middleware as the following graphs show.
 
 \begin{figure}[H]
 \centering
@@ -758,13 +788,6 @@ This is because the middleware graph only shows the performance \textbf{excludin
 \caption{Exp3.2: Latency and throughputs as measures by the clients}
 \label{fig:test}
 \end{figure}
-
-%TODO : explanation
-
-
-The client and middleware graphs deviate sligthly.
-As one can see, the middleware graph seems more stable.
-This is because the middleware graph only shows the performance \textbf{excluding} the warm-up and cool-down phase, whereas the client graphs do not exclude these measurements.
 
 \subsubsection{Explanation}
 

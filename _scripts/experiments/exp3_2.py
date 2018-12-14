@@ -72,7 +72,7 @@ class Exp3_2:
         # Middleware parameters
         self.number_of_middlewares = 1
         # self.worker_threads_per_middleware = [(2 ** x) for x in range(3, 7)]
-        self.worker_threads_per_middleware = [(2 ** x) for x in range(3, 7)]
+        self.worker_threads_per_middleware = [(2 ** x) for x in range(6, 7)]
 
         # Setting the reads to writes ratio
         # self.writes = "1" # TODO: delegated to the below items
@@ -148,7 +148,7 @@ class ExperimentBaselineMW2(BaseExperimentRunner, Exp3_2):
             self.remote_logdir
         )
 
-        for self.writes in ["1"]:
+        for self.writes in ["0"]:
             self.reads = "1" if self.writes == "0" else "0"  # Exactly only reads or writes
 
             for middleware_workerthread in self.worker_threads_per_middleware:
