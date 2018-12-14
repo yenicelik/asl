@@ -168,8 +168,6 @@ def iterate_through_experiments_exp3_1():
                     print("TTT CLIENT", write, client_mean_throughput, client_mean_latency)
 
                 # Maximal values at: (printouts!)
-                # TTT 3348.1792857057153 0.9414414414414414 86452.39140625
-                # TTT CLIENT 3321.116666666667 1.8055555555555556
 
 
                 # Append to list

@@ -175,6 +175,9 @@ def iterate_through_experiments_exp3_2():
                     max_throughput_client = client_mean_throughput
                     print("TTT CLIENT", write, client_mean_throughput, client_mean_latency)
 
+                    # TTT 0 2978.673972968874 14.885140067475584 588816.9135975742
+                    # TTT CLIENT 0 3010.066666666667 15.961666666666666
+
                 # Append to list
                 client_throughput_means[_vc, _mt] = client_mean_throughput
                 client_latency_means[_vc, _mt] = client_mean_latency

@@ -907,10 +907,10 @@ One can also see, that the system is (as claimed before) not saturated with 1 vi
 	{Maximum throughput for one middleware.}
 	\begin{tabular}{|l|p{2cm}|p{2cm}|p{2cm}|p{2cm}|}
 		\hline                                & Throughput & Response time & Average time in queue & Miss rate \\ 
-		\hline Reads: Measured on middleware  & 3348 & 0.94 ms & 0.086 ms &           0 \\ 
-		\hline Reads: Measured on clients     & 3321 & 1.81 ms & n/a                   &           0 \\ 
-		\hline Writes: Measured on middleware & 7658 & 2.16 ms & 0.824 ms & n/a       \\ 
-		\hline Writes: Measured on clients    & 7629 & 12.57 ms & n/a                   & n/a       \\ 
+		\hline Reads: Measured on middleware  & 2989 ops / sec & 7.04 ms & 4.280 ms &           0 \\ 
+		\hline Reads: Measured on clients     & 2978 ops / sec & 8.06 ms & n/a                   &           0 \\ 
+		\hline Writes: Measured on middleware & 7658 ops / sec & 2.16 ms & 0.82 ms & n/a       \\ 
+		\hline Writes: Measured on clients    & 7629 ops / sec & 12.57 ms & n/a                   & n/a       \\ 
 		\hline 
 	\end{tabular}
 \end{center}
@@ -919,10 +919,10 @@ One can also see, that the system is (as claimed before) not saturated with 1 vi
 	{Maximum throughput for two middlewares.}
 	\begin{tabular}{|l|p{2cm}|p{2cm}|p{2cm}|p{2cm}|}
 		\hline                                & Throughput & Response time & Average time in queue & Miss rate \\ 
-		\hline Reads: Measured on middleware  & 10330 & 31.40 &                       &           0\\ 
-		\hline Reads: Measured on clients     & 11116 &  32.37 & n/a                   &           0\\ 
-		\hline Writes: Measured on middleware & 8131 & 11.13 &                       & n/a       \\ 
-		\hline Writes: Measured on clients    & 8108 & 14.27 & n/a                   & n/a       \\ 
+		\hline Reads: Measured on middleware  & 2978 ops / sec & 14.88 ms & 0.588 ms &           0\\ 
+		\hline Reads: Measured on clients     & 3010 ops / sec &  15.96 ms & n/a               &           0\\ 
+		\hline Writes: Measured on middleware & 15809 ops / sec & 7.11 ms & 1.561 ms & n/a       \\ 
+		\hline Writes: Measured on clients    & 15901 ops / sec & 14.27 & n/a              & n/a       \\ 
 		\hline 
 	\end{tabular}
 \end{center}
@@ -942,17 +942,28 @@ In 3.2 one can observer, that we now increase the number of middleware-threads t
 As a result, the throughput also almost doubles, and one cannot recognise a saturation phase.
 This implies that adding more middleware-threads possibly could result at the original, almost $18'000 ops/sec$ calculation. \\
 
+In addition to that, reads spend much less time in the queue than write operats.
+The data in the above table supports this claim, as for the experiment with one middle and with two middlewares, the average time in the queue is 10 times higher, respectively 3 times higher for writes compared to read-operations.
+As a sanity check, the given values coincide with the values found in the preivous experiments, and also comply with the theoretical maximum bandwidth of the clients (of $3'000 ops/sec$), and the servers (of $18'000 ops/sec$).
+The reduction from this maximum to the observed values stems from network overhead, as well as middleware overhead (as was detailedly explained in section 3.1).
+Finally, it is important to notice that as the requests move from reads to writes, the load is transferred from the middleware (and thus the network thread) to the server threads.
+This is because for GET operations, the packets inside the queue do \textbf{not} occupy packets of size 4KB, and because the packets need to be handled by the server.
+For SET operations, the packets inside the queue \textbf{do} occupy packets of size 4KB,  which means that the average time in the queue is naturally higher (even alone from copying and keeping memory around).
+These explanations are confirmed by the graphs which show at which stage of the lifetime the request is spending the most time at.
+
+\textbf{To sum up} (for explanation, please refer to the above subsections), the total number of middlewarethreads operating in the system as a whole, has a high impact on the throughput of the system.
+However, the system will be bottlenecked by the server-upload bandwidth for read-only operations, as the server constantly needs to upload packets of size 4KB.
+For write-only operations, this bottleneck would usually arise from the upload bandwidth of clients, which would be $18'000 ops/sec$ in total.
+However, in section 3.1 we obsevere that the middleware decreases the throughput rate compared to expeirment 2.1.
+In section 3.2, we observe that adding another middleware instance heavily increases this performance.
+This makes us think that the number of total middlewarethreads in the entire system heavily affects the overall throughput of the system.
+
 %TODO potentially make this experiment, with one middleware, and 128, and 256 threads? and check if this hypothesis is correct?
-
-%TODO talk more about queue times, queue sizes etc.
-
-
-
 
 \section{Throughput for Writes (90 pts)}
 
 \subsection{Full System}
-I am connecting three load generating client VMs to two middlewares.
+I am connecting each of three load generating client VMs to two middlewares.
 These middlewares are connected to three memcached server VMs each.
 I have the following setup.
 
@@ -977,7 +988,7 @@ During this experiment, I iterate over all possible permutations of virtual clie
 I run each experiment for 90 seconds (which includes a 15 second warm-up and a 15 second cool-down time). 
 Each experiment again consists of three trials from which we measure the mean and the standard deviation.
 This section only covers write-only experiments.
-I cover response time (latency) , and throughput. \\
+I cover response time (latency) in milliseconds, and throughput in ops/sec. \\
 
 The following are graphs from the middleware.
 
@@ -1327,15 +1338,18 @@ Provide a detailed comparison of the sharded and non-shareded modes. For which m
 
 This 2k analysis includes the analysis of any correlations between the following factors: 1. number of memcached servers, 2. the number of middleware vm's and finally 3. the number of worker threads per middleware.
 The following table shows which possible values we cross-reference, such that we can later on analyse which factors have the most impact on throughput and response time.
+I place labels for each configuration, as these will be needed for later analysis
 
-\begin{itemize}
-		
-	\item Memcached servers: 1 and 3
-	\item Middlewares: 1 and 2
-	\item Worker threads per MW: 8 and 32
-	      	      
-\end{itemize}
-
+\begin{center}
+    \begin{tabular}{ | l | l | l | p{5cm} |}
+    \hline
+     & Option -1 & Option 1 & Variable in analysis \\ \hline
+    Memcached servers & 1 & 3 & X \\ \hline
+    Middlewares & 1 & 2 & Y \\ \hline
+    Worker threads per MW & 8 & 32 & Z \\
+    \hline
+    \end{tabular}
+\end{center}
 
 Any configuration is run 3 times (3 repetitions) for 90 seconds, which implies a 15 second warm-up and a 15 second cool-down time.
 The following table shows a detailed configuration of my setup.
@@ -1358,33 +1372,49 @@ The following table shows a detailed configuration of my setup.
 \end{center}
 
 I apply this analysis once for read-only workloads, and then separately for write-only workloads, as both procedures are fundamentally different.
-I don't use any multi-get behavior (i.e. keysize is always 1 for read-only workloads). \\
+I don't use any multi-get behavior (i.e. keysize is always 1 for read-only workloads).
+The 2k-analysis for the response time, and the throughput will be separate.
+For all the measured values, I will use values as observed by the middleware and not by the client. \\
 
-For read-only and work-only workloads, I created tables which represent all possible configurations.
-For both subsections, I will use the following abbreviations (and variable-names)
+For each of the experiments below, I will solve the equation:
 
-\begin{itemize}
-\item NS: Number of Servers
-\item NM: Number of Middlewares
-\item WTMW: Worker threads per middleware
-\end{itemize}
+\begin{equation}
+	y = a_X \times X + a_Y \times Y + a_Z \times Z + a_{X, Y} \times X Y + a_{X, Z} \times X Z + a_{Y, Z} \times Y Z + a_{X, Y, Z} \times X Y Z + a_0
+\end{equation}
+where $a_0$ is a constant value, and $y$ is the variable which we want to solve for (either throughput or response time).
+I use this model, as this captures any possible linear combination between variables.
+Because any possible combination between variables is taken into consideration, I can then say which factors have the biggest impact, without sacrificing accuracy (by trying to separate variables).
+
+I will be able to tell the total variation of the item to be predicted using the root mean squared error formula:
+ 
+\begin{equation}
+y = SST = \sum_{i=1}^{2^2} (y_i - \hat{y} )^2
+\end{equation}
+
 
 \subsubsection{Read-only}
 
+I will first start with read-only operations.
+These are depending on the allocation of the configuration and are measured through my experiments.
+The cells contain the values that the respective variable attains.
+In parantheses and next to each individual value, I write down the level in the analysis that this value corresponds to.
+
 % & Mean Latency 
 
+%% & Throughput $\sigma$. 
+%% Latency $\sigma$
 \begin{center}
-    \begin{tabular}{ | l | l | l | p{5cm} |}
+    \begin{tabular}{ | l | l | l | l | l | }
     \hline
-    NS (Servers) & NM (Middlewares) & WTMW (Workerthreads) & Mean Throughput \\ \hline
-    1 & 1 & 8 & \\ \hline
-    1& 1 & 32 & \\ \hline
-    1 & 2 & 8 &  \\ \hline
-   	1 & 2 & 32 & \\ \hline
-    3 & 1 & 8 & \\ \hline
-    3 & 1 & 32 &  \\ \hline
-    3 & 2 & 8 &  \\ \hline
-    3 & 2 & 32 &  \\
+    X & Y & Z & Mean Throughput in ops/sec & Mean Latency in ms\\ \hline
+    1 (-1) & 1 (-1) & 8 (-1) & 3236 & 59 \\ \hline
+    1 (-1 )& 1 (-1) & 32 (1) & 3238 & 59 \\ \hline
+    1 (-1) & 2(1)  & 8 (-1) & 3299 & 58 \\ \hline
+   	1 (-1) & 2 (1) & 32 (1) & 3282 & 59 \\ \hline
+    3 (1) & 1 (-1) & 8 (-1) & 7957 & 24 \\ \hline
+    3 (1) & 1 (-1) & 32 (1) & 8690 & 22 \\ \hline
+    3 (1) & 2 (1) & 8 (-1) & 8843 & 22 \\ \hline
+    3 (1) & 2 (1) & 32 (1) & 9064 & 21 \\
     \hline
     \end{tabular}
 \end{center}
@@ -1397,6 +1427,21 @@ For each of the two workloads, what is the impact of these parameters on through
 
 \subsubsection{Write-only}
 
+\begin{center}
+    \begin{tabular}{ | l | l | l | l | l | }
+    \hline
+    X & Y & Z & Mean Throughput in ops/sec & Mean Latency in ms\\ \hline
+    1 (-1) & 1 (-1) & 8 (-1) & 7955 & 24 \\ \hline
+    1 (-1 )& 1 (-1) & 32 (1) & 8314 & 23 \\ \hline
+    1 (-1) & 2(1)  & 8 (-1) & 9253 & 18 \\ \hline
+   	1 (-1) & 2 (1) & 32 (1) & 14947 & 12 \\ \hline
+    3 (1) & 1 (-1) & 8 (-1) & 5238 & 37 \\ \hline
+    3 (1) & 1 (-1) & 32 (1) & 7266 & 26 \\ \hline
+    3 (1) & 2 (1) & 8 (-1) & 8367 & 21 \\ \hline
+    3 (1) & 2 (1) & 32 (1) & 11624 & 15 \\
+    \hline
+    \end{tabular}
+\end{center}
 
 
 \section{Queuing Model (90 pts)}

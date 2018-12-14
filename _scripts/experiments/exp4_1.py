@@ -66,7 +66,7 @@ class Exp4_1:
         self.instances_of_memtier_per_machine = 2
         self.threads_per_memtier_instance = 1
         # self.virtual_clients_per_thread = [(2 ** x) for x in range(0, 6)]
-        self.virtual_clients_per_thread = [(2 ** x) for x in range(0, 6)]
+        self.virtual_clients_per_thread = [(2 ** x) for x in range(1, 6)]
 
         # Middleware parameters
         self.number_of_middlewares = 2
@@ -83,7 +83,7 @@ class Exp4_1:
 
         # Meta experiment configurations
         self.repetitions = 3  # 3 should be fine
-        self.time = 60 + 15 # Time in seconds
+        self.time = 60 + 30 # Time in seconds
         # self.time = 10
         self.population_time = 20
         # self.population_time = 1
