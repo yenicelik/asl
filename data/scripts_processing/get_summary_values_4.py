@@ -206,17 +206,14 @@ def iterate_through_experiments_exp4_1():
 
         print("MW IS: ", mt)
         argmax_vc = np.argmax(client_throughput_means[:,_mt].flatten())
-        print("Argmax vc is: ", argmax_vc)
+        print("Argmax vc is: ", 2**argmax_vc)
         print("Max is: ", )
         print("queuesize: ", queuesizes[argmax_vc])
         print("waittimes: ", waittimes[argmax_vc])
         print("queuetimes: ", queuetimes[argmax_vc])
         print("Client troughput mean: ", client_throughput_means[argmax_vc,_mt].flatten())
         print("MW troughput mean: ", mw_throughput_means[argmax_vc,_mt].flatten())
-        print("MW derived throughput time: ", 3. / mw_latency_means[argmax_vc,_mt].flatten() * 1000)
-
-
-
+        print("MW derived throughput time: ", 2 * 3 * (2**argmax_vc) / mw_latency_means[argmax_vc,_mt].flatten() * 1000)
 
     # THROUGHPUTS
     # print("###write:client ", write, client_throughput_means)

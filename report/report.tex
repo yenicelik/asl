@@ -1095,7 +1095,7 @@ This would mean that the requests are "in-sync" with the requests sent to the se
 
 As a sanity check, the throughput and latency graphs by the client (the figure above) directly matches the values as measured by the middleware.
 Furthermore, the interactive law holds, as the throughput saturated and flattens out, as the latency starts growing super-linearly.
-
+The system is stable, as the error bars indicate small deviation amongst individual trials.
 
 \begin{figure}[H]
 \centering
@@ -1109,9 +1109,6 @@ Furthermore, the interactive law holds, as the throughput saturated and flattens
 \label{fig:test}
 \end{figure}
 
-%TODO measure system saturation with dstat? i.e. if 100% at 8 VC and at 32 VC?
-%TODO talk about respective response times
-
 %TODO more threads for 3.2 writes only, to check if saturation is reached (or what the maximum number is going to be?
 
 \subsection{Summary}
@@ -1119,11 +1116,11 @@ Furthermore, the interactive law holds, as the throughput saturated and flattens
 Based on the experiments above, fill out the following table with the data corresponding to the maximum throughput point for all four worker-thread scenarios.
 
 \begin{center}
-	{Maximum throughput for the full system (in ops/sec) }
+	{Maximum throughput for the full system (in ops/sec, unless a different unit is specified) }
 	\begin{tabular}{|l|p{1.5cm}|p{1.5cm}|p{1.5cm}|p{1.5cm}|}
 		\hline                                            									& WT=8 & WT=16 & WT=32 & WT=64 \\ 
 		\hline Throughput (Middleware)   								& 8833 & 10153 & 12503 & 13706 \\ 
-		\hline Throughput (Derived from MW response time) & 308 & 494 & 599 & 17830  \\ 
+		\hline Throughput (Derived from MW response time) & 9858 & 11591 & 14096 & 17143  \\ 
 		\hline Throughput (Client)              								& 8833 & 10068 & 12586 & 12858 \\ 
 		\hline Average time in queue            							& 8.042 ms & 5.346 ms &  8.533 ms & 2.631 ms       \\ 
 		\hline Average length of queue                    				&  33    		 &   22   	&  48  &   13   \\ 
@@ -1132,7 +1129,33 @@ Based on the experiments above, fill out the following table with the data corre
 	\end{tabular}
 \end{center}
 
+For WT=8 and WT=16, the maximum throughput is achieved when the number of virtual clients per memtier threads are 16.
+For WT=32 and WT=64, the maximum throughput is achieved when the number of virutal clients per memtier threads are 32.
+
+The results are very similar to the ones achieved in experiment 3.2, write-only.
+This is because exactly two servers are added to the system configuration from experiment 3.2.
+However, because the number of servers is not a bottleneck for write-only operations (as was explained before in section 2.1), adding more servers does not significantly affect performance (expect possibly delaying it a bit, because we now have to wait for more servers before we can proceed with the response, which may causes a slightly higher latency as can be seen by comparing the response time graph in this section with the response time graph in section 2.1). 
+
+Following the above logic, the results in this experiment should be very similar to the experiment 3.2, wirte-onle.
+The similarities with experiment 3.2 are that 8 middlewarethreads starts saturating with 8 virtual client threards (just as in this experiment), and then slightly oversaturates.
+This can be seen from the graph which starts to slightly lose some throughputs per second after 8 virtual client threads.
+Furthermore, 16 middlewarethreads saturates stabily, just like in this experiment.
+This can be seen by the graph stays flat after 16 virtual clients.
+For 32 and 64 middlewarethreads per middleware, the saturation point agrees with the saturation point in this experiment.
+The only markable difference is the additional latency caused by contacting multiple servers, which imply a slight increase in response times, as can be seen by higher slopes in this experiment)\\
+
+The calculation for the throughput derived from the MW response time is not fully accurate, as the interactive law only when we have also defined a constant term $Z$ that we take into consideration.
+Because the derived throughput is always up to 15\% accurate, I arrive at the conclusion that these values do provide a sanity check.
+
 Based on the data provided in these tables, draw conclusions on the state of your system for a variable number of worker threads.
+Overall, the number of total middleware threads are the bottleneck for the throughput of the system.
+This means that the number of total middleware threads is the most important parameter for the performance, whereas adding additional servers does not have any significant effect at all, as this was never a bottleneck for write-only experiments (as explained in section 3.2 and 2.1 write-only).
+This claim is supported by the fact, that the mean throughput of the maximum throughput configuration increases as we increase the number of middlewarethreads.
+The system is able to complete requests faster with an increasing number of middlewarethreads.
+In addition to the observed throughput, this can be seen by the average length in the queue, and average time in the queue.
+Whenever the number of virtual clients is constant (i.e. for WT=8 and WT=16 it is 16, and for WT=32 and WT=64 it is 32), the average length of the queue decreases, as well as the average time in the queue (from 8ms to 5.4ms, and 8ms to 2.6ms) respectively.
+
+The throughput on the clients match the throughputs on the middlewares, which finally support a sound analysis of my system as a sanity check.
 
 \section{Gets and Multi-gets (90 pts)}
 
@@ -1355,8 +1378,8 @@ I place labels for each configuration, as these will be needed for later analysi
     \begin{tabular}{ | l | l | l | p{5cm} |}
     \hline
      & Option -1 & Option 1 & Variable in analysis \\ \hline
-    Memcached servers & 1 & 3 & X \\ \hline
-    Middlewares & 1 & 2 & Y \\ \hline
+     Middlewares & 1 & 2 & X \\ \hline
+    Memcached servers & 1 & 3 & Y \\ \hline
     Worker threads per MW & 8 & 32 & Z \\
     \hline
     \end{tabular}
@@ -1390,14 +1413,16 @@ For all the measured values, I will use values as observed by the middleware and
 For each of the experiments below, I will solve the equation:
 
 \begin{equation}
-	y = a_X \times X + a_Y \times Y + a_Z \times Z + a_{X, Y} \times X Y + a_{X, Z} \times X Z + a_{Y, Z} \times Y Z + a_{X, Y, Z} \times X Y Z + a_0
+	y = a_X \times X + a_Y \times Y + a_Z \times Z + a_{X, Y} \times X Y + a_{X, Z} \times X Z + a_{Y, Z} \times Y Z + a_{X, Y, Z} \times X Y Z + a_0 + e
 \end{equation}
-where $a_0$ is a constant value, and $y$ is the variable which we want to solve for (either throughput or response time).
+where $a_0$ is a constant value, and $y$ is the variable which we want to solve for (either throughput or response time), with $e$ being the constant error term.
 I use this model, as this captures any possible linear combination between variables.
 Because any possible combination between variables is taken into consideration, I can then say which factors have the biggest impact, without sacrificing accuracy (by trying to separate variables).
 
 I will be able to tell the total variation of the item to be predicted using the root mean squared error formula:
- 
+
+
+%TODO write down formulae 
 \begin{equation}
 y = SST = \sum_{i=1}^{2^2} (y_i - \hat{y} )^2
 \end{equation}
@@ -1412,23 +1437,56 @@ In parantheses and next to each individual value, I write down the level in the 
 
 % & Mean Latency 
 
+For read-only operations, I get the following vector for the vector $\mathbf{a} = 
+[a_0, a_X, a_Y, a_Z, a_{X, Y}, a_{X, Z}, a_{Y, Z}, a_{X, Y, Z}] $ and the error term $e$:
+
+
 %% & Throughput $\sigma$. 
 %% Latency $\sigma$
 \begin{center}
-    \begin{tabular}{ | l | l | l | l | l | }
+	\begin{table}[H]
+	\center
+    \begin{tabular}{ | l | l | l | l |  }
     \hline
-    X & Y & Z & Mean Throughput in ops/sec & Mean Latency in ms\\ \hline
-    1 (-1) & 1 (-1) & 8 (-1) & 3236 & 59 \\ \hline
-    1 (-1 )& 1 (-1) & 32 (1) & 3238 & 59 \\ \hline
-    1 (-1) & 2(1)  & 8 (-1) & 3299 & 58 \\ \hline
-   	1 (-1) & 2 (1) & 32 (1) & 3282 & 59 \\ \hline
-    3 (1) & 1 (-1) & 8 (-1) & 7957 & 24 \\ \hline
-    3 (1) & 1 (-1) & 32 (1) & 8690 & 22 \\ \hline
-    3 (1) & 2 (1) & 8 (-1) & 8843 & 22 \\ \hline
-    3 (1) & 2 (1) & 32 (1) & 9064 & 21 \\
+    Factor & q-value & Sum-Squared & Effect (in fractions) \\ \hline
+    $a_0$ & 40.18 & 38748.79 & - \\ \hline
+    $a_X$ & -0.13 & 0.42 & 0.0000 \\ \hline
+    $a_Y$ & -19.11 & 8768.05 & 0.9939 \\ \hline
+    $a_Z$ & -1.08  & 27.80 & 0.0032 \\ \hline
+   	$a_{X, Y}$ & -0.60 & 8.70 & 0.0010 \\ \hline
+    $a_{X, Z}$ & 0.33 & 2.67 & 0.0003 \\ \hline
+    $a_{Y, Z}$ & 0.01 & 0.00 & 0.0000 \\ \hline
+    $a_{X, Y, Z}$ & 0.62 & 9.19 & 0.0010 \\
     \hline
     \end{tabular}
+  	\caption{Exp6.1: 2k analysis graph for Response Time and Read-only operations}	 
+  	\end{table}  
 \end{center}
+
+%% & Throughput $\sigma$. 
+%% Latency $\sigma$
+\begin{center}
+	\begin{table}[H]
+	\center
+    \begin{tabular}{ | l | l | l | l |  }
+    \hline
+    Factor & q-value & Sum-Squared & Effect (in fractions) \\ \hline
+    $a_0$ & 5570.54 & 744742427.04 & - \\ \hline
+    $a_X$ & 56.21 & 75825.04 & 0.0005	 \\ \hline
+    $a_Y$ & 2596.54 & 161808687.04 & 0.9967 \\ \hline
+    $a_Z$ & 35.04  & 29470.04	 & 0.0005 \\ \hline
+   	$a_{X, Y}$ & 55.71 & 74482.04	 & 0.0005 \\ \hline
+    $a_{X, Z}$ & -55.79 & 74705.04 & 0.0005 \\ \hline
+    $a_{Y, Z}$ & 60.38 & 87483.38 & 0.0005 \\ \hline
+    $a_{X, Y, Z}$ & -72.63 & 126585.38 & 0.0008 \\
+    \hline
+    \end{tabular}
+  	\caption{Exp6.1: 2k analysis graph for Throughput in ops/sec and Read-only operations}	 
+  	\end{table}  
+\end{center}
+
+
+
 
 Repeat the experiment for (a)~a write-only and (b)~a read-only workload.
 For each of the two workloads, what is the impact of these parameters on throughput, respectively response time?
@@ -1438,22 +1496,52 @@ For each of the two workloads, what is the impact of these parameters on through
 
 \subsubsection{Write-only}
 
+%% & Throughput $\sigma$. 
+%% Latency $\sigma$
 \begin{center}
-    \begin{tabular}{ | l | l | l | l | l | }
+	\begin{table}[H]
+	\center
+    \begin{tabular}{ | l | l | l | l |  }
     \hline
-    X & Y & Z & Mean Throughput in ops/sec & Mean Latency in ms\\ \hline
-    1 (-1) & 1 (-1) & 8 (-1) & 7955 & 24 \\ \hline
-    1 (-1 )& 1 (-1) & 32 (1) & 8314 & 23 \\ \hline
-    1 (-1) & 2(1)  & 8 (-1) & 9253 & 18 \\ \hline
-   	1 (-1) & 2 (1) & 32 (1) & 14947 & 12 \\ \hline
-    3 (1) & 1 (-1) & 8 (-1) & 5238 & 37 \\ \hline
-    3 (1) & 1 (-1) & 32 (1) & 7266 & 26 \\ \hline
-    3 (1) & 2 (1) & 8 (-1) & 8367 & 21 \\ \hline
-    3 (1) & 2 (1) & 32 (1) & 11624 & 15 \\
+    Factor & q-value & Sum-Squared & Effect (in fractions) \\ \hline
+    $a_0$ & 14.44 & 5002.59 & - \\ \hline
+    $a_X$ & 0.36 & 3.10 & 0.0014 \\ \hline
+    $a_Y$ & 4.97 & 592.82 & 0.2593 \\ \hline
+    $a_Z$ & -6.72  & 1082.46 & 0.4735 \\ \hline
+   	$a_{X, Y}$ & -2.67 & 171.09 & 0.0748	 \\ \hline
+    $a_{X, Z}$ & 2.10 & 106.09	 & 0.0464	 \\ \hline
+    $a_{Y, Z}$ & -2.17 & 112.49 & 0.0492	 \\ \hline
+    $a_{X, Y, Z}$ & 2.31 & 128.25 & 0.0561 \\
     \hline
     \end{tabular}
+  	\caption{Exp6.1: 2k analysis graph for Response Time and Write-only operations}	 
+  	\end{table}  
 \end{center}
 
+		
+							
+
+%% & Throughput $\sigma$. 
+%% Latency $\sigma$
+\begin{center}
+	\begin{table}[H]
+	\center
+    \begin{tabular}{ | l | l | l | l |  }
+    \hline
+    Factor & q-value & Sum-Squared & Effect (in fractions) \\ \hline
+    $a_0$ & 9182.71& 2023731176 & - \\ \hline
+    $a_X$ & 2334.71 & 130820712.04 & 0.5827	 \\ \hline
+    $a_Y$ & -1290.21 & 39951301.04 & 0.1779 \\ \hline
+    $a_Z$ & 1194.04  & 34217652.04	 & 0.1524 \\ \hline
+   	$a_{X, Y}$ & -210.21	 & 1060501.04	 & 0.0047 \\ \hline
+    $a_{X, Z}$ & 703.54	 & 11879301.04 & 0.0529 \\ \hline
+    $a_{Y, Z}$ & 188.63	 & 853905.37 & 0.0038 \\ \hline
+    $a_{X, Y, Z}$ & -373.21 & 3342827.04 & 0.0149 \\
+    \hline
+    \end{tabular}
+  	\caption{Exp6.1: 2k analysis graph for Throughput in ops/sec and Write-only operations}	 
+  	\end{table}  
+\end{center}
 
 \section{Queuing Model (90 pts)}
 
