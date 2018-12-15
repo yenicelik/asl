@@ -50,12 +50,12 @@ def get_latency_log_dataframe(df):
     # TODO: How to calculate throughput?
 
     throughput = np.mean(df['throughput'].astype(float))
-    print("Ops per second: ", throughput)
+    # print("Ops per second: ", throughput)
     # # 4. Calculate the mean throughput
     # throughput = len(df['totalRequests']) / latency
 
-    print("SSS")
-    print(throughput)
+    # print("SSS")
+    # print(throughput)
 
     return throughput, latency
 

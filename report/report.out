@@ -17,23 +17,22 @@
 \BOOKMARK [2][-]{subsection.3.3}{Summary}{section.3}% 17
 \BOOKMARK [1][-]{section.4}{Throughput for Writes \(90 pts\)}{}% 18
 \BOOKMARK [2][-]{subsection.4.1}{Full System}{section.4}% 19
-\BOOKMARK [3][-]{subsubsection.4.1.1}{Explanation}{subsection.4.1}% 20
-\BOOKMARK [2][-]{subsection.4.2}{Summary}{section.4}% 21
-\BOOKMARK [1][-]{section.5}{Gets and Multi-gets \(90 pts\)}{}% 22
-\BOOKMARK [2][-]{subsection.5.1}{Sharded Case}{section.5}% 23
-\BOOKMARK [3][-]{subsubsection.5.1.1}{Explanation}{subsection.5.1}% 24
-\BOOKMARK [2][-]{subsection.5.2}{Non-sharded Case}{section.5}% 25
-\BOOKMARK [3][-]{subsubsection.5.2.1}{Explanation}{subsection.5.2}% 26
-\BOOKMARK [2][-]{subsection.5.3}{Histogram}{section.5}% 27
-\BOOKMARK [2][-]{subsection.5.4}{Summary}{section.5}% 28
-\BOOKMARK [1][-]{section.6}{2K Analysis \(90 pts\)}{}% 29
-\BOOKMARK [2][-]{subsubsection.6.0.1}{Read-only}{section.6}% 30
-\BOOKMARK [3][-]{subsubsection.6.0.2}{Write-only}{subsubsection.6.0.1}% 31
-\BOOKMARK [1][-]{section.7}{Queuing Model \(90 pts\)}{}% 32
-\BOOKMARK [2][-]{subsection.7.1}{M/M/1}{section.7}% 33
-\BOOKMARK [2][-]{subsection.7.2}{M/M/m}{section.7}% 34
-\BOOKMARK [2][-]{subsection.7.3}{Network of Queues}{section.7}% 35
-\BOOKMARK [1][-]{section.8}{Appendix}{}% 36
-\BOOKMARK [2][-]{subsection.8.1}{Experiment 3.1 - Baseline with one middleware}{section.8}% 37
-\BOOKMARK [2][-]{subsection.8.2}{Experiment 3.2}{section.8}% 38
-\BOOKMARK [2][-]{subsection.8.3}{Experiment 5.1 - Multi-key GETs}{section.8}% 39
+\BOOKMARK [2][-]{subsection.4.2}{Summary}{section.4}% 20
+\BOOKMARK [1][-]{section.5}{Gets and Multi-gets \(90 pts\)}{}% 21
+\BOOKMARK [2][-]{subsection.5.1}{Sharded Case}{section.5}% 22
+\BOOKMARK [3][-]{subsubsection.5.1.1}{Explanation}{subsection.5.1}% 23
+\BOOKMARK [2][-]{subsection.5.2}{Non-sharded Case}{section.5}% 24
+\BOOKMARK [3][-]{subsubsection.5.2.1}{Explanation}{subsection.5.2}% 25
+\BOOKMARK [2][-]{subsection.5.3}{Histogram}{section.5}% 26
+\BOOKMARK [2][-]{subsection.5.4}{Summary}{section.5}% 27
+\BOOKMARK [1][-]{section.6}{2K Analysis \(90 pts\)}{}% 28
+\BOOKMARK [2][-]{subsubsection.6.0.1}{Read-only}{section.6}% 29
+\BOOKMARK [3][-]{subsubsection.6.0.2}{Write-only}{subsubsection.6.0.1}% 30
+\BOOKMARK [1][-]{section.7}{Queuing Model \(90 pts\)}{}% 31
+\BOOKMARK [2][-]{subsection.7.1}{M/M/1}{section.7}% 32
+\BOOKMARK [2][-]{subsection.7.2}{M/M/m}{section.7}% 33
+\BOOKMARK [2][-]{subsection.7.3}{Network of Queues}{section.7}% 34
+\BOOKMARK [1][-]{section.8}{Appendix}{}% 35
+\BOOKMARK [2][-]{subsection.8.1}{Experiment 3.1 - Baseline with one middleware}{section.8}% 36
+\BOOKMARK [2][-]{subsection.8.2}{Experiment 3.2}{section.8}% 37
+\BOOKMARK [2][-]{subsection.8.3}{Experiment 5.1 - Multi-key GETs}{section.8}% 38

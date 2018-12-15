@@ -225,15 +225,15 @@ I arrive at the theoretical maximum throughput by checking how many packages cou
 I divide the bandwidth by the packet size to arrive at the theoretical maximum throughput per single VM.
 
 \begin{center}
-    \begin{tabular}{| l | l | l | l |}
+    \begin{tabular}{| l | l | l | l | l |}
     \hline
-    VM From & VM To & Bandwidth & Theoretical Maximum Throughput per VM (ops/sec)\\ \hline
-    Client & Middleware & 201 Mbits/sec &  6'250 \\ \hline
-    Client & Server & 201 Mbits/sec & 6'250 \\ \hline
-    Middleware & Client & 804 Mbits/sec & 25'000 \\ \hline
-    Middleware & Server & 804 Mbits/sec & 25'000 \\ \hline
-    Server & Client & 101 Mbits/sec &  3'125 \\ \hline
-    Server & Middleware & 101 Mbits/sec & 3'125 \\
+    VM From & VM To & Bandwidth & Minimum Latency & Theoretical Maximum Throughput \\ \hline
+    Client & Middleware & 201 Mbits/sec & 0.729 ms &  6'250 ops/sec \\ \hline
+    Client & Server & 201 Mbits/sec & 0.636 ms & 6'250 ops/sec \\ \hline
+    Middleware & Client & 804 Mbits/sec & 0.611 ms & 25'000 ops/sec \\ \hline
+    Middleware & Server & 804 Mbits/sec & 0.825 ms & 25'000 ops/sec \\ \hline
+    Server & Client & 101 Mbits/sec & 0.766 ms &  3'125 ops/sec \\ \hline
+    Server & Middleware & 101 Mbits/sec & 0.642 ms & 3'125 ops/sec \\
     \hline
     \end{tabular}
 \end{center}
@@ -1010,6 +1010,71 @@ The following are graphs from the middleware.
 \label{fig:test}
 \end{figure}
 
+The bottleneck of this experiment is the middleware.
+This is because even with a single server (instead of three servers), we know from section 2.1 that the maximum throughput reaches almost $18'000 ops/sec$ with only 16 virtual clients per memtier thread.
+Compared to that experiment, we cap out at lower throughput rates (namely approximately $10000 to 12000 ops/sec$) for the same number of virtual clients per thread. 
+The above graphs support this claim.
+It shows that for 8 middlewarethreads is a hard bottleneck, which saturates between 4 and 16 virtual clients per thread, and even starts oversaturating after 16 virtual clients per memtier thread.
+This over-saturation occurs because the middleware cannot effectively handle all the requests fast enough, and the proportion of wait-time (for the memcached servers) to queue-time (within the middleware) increases drastically with an increasing number of virtual clients per thread.
+The following graph supports this claim, where one can see that.
+This ratio increases from approximate $0.1 / 2.0 = 0.2$ to approximately $23 / 3 \approx 7.1 $, which means that more time is spent in the queue as we increase the number of virtual clients per thread.
+
+For 16 middlewarethreads, the system is undersaturated until 16 virtual clients per threads, and after this can successfully handle an increasing number of requests per second.
+This claim is supported by the above graph which shows a flattning out of the throughput per second, and by the graphs below, which show a much lower ratio (from approximately $0.2$ to $5$).
+
+For 32 and 64 middlewarethreads, the system is under-saturated until 16 virtual clients per threads, and slowly reaches saturation as we increase to 32 virtual clients per thread.
+Reaching this saturation can be seen by the graph which starts flattening out more and more.
+This is also supported by the graphs below, which show the time spent at different stages of the lifetime of a request.
+The ratio from time spent in the queue, and time waiting for server increases much slower than for the 8 or 16 middlewarethreads (i.e. increases and decreases from approximately $0.2$ to $2$ (32) and $ 0.5$ (64) respectively).
+
+\begin{figure}[H] 
+  \label{ fig7} 
+  \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=0.9\linewidth]{img/exp4_1/exp4_1_mw_percentile_plots_writes_1__vc_1.png} 
+    \caption{Write-only with 1 virtual client per memtier threads} 
+    \vspace{4ex}
+  \end{minipage}%%
+  \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=0.9\linewidth]{img/exp4_1/exp4_1_mw_percentile_plots_writes_1__vc_2.png} 
+    \caption{Write-only with 2 virtual client per memtier threads} 
+    \vspace{4ex}
+  \end{minipage} 
+  \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=0.9\linewidth]{img/exp4_1/exp4_1_mw_percentile_plots_writes_1__vc_4.png} 
+    \caption{Write-only with 4 virtual client per memtier threads} 
+    \vspace{4ex}
+  \end{minipage}%% 
+  \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=0.9\linewidth]{img/exp4_1/exp4_1_mw_percentile_plots_writes_1__vc_8.png} 
+    \caption{Write-only with 18 virtual client per memtier threads} 
+    \vspace{4ex}
+  \end{minipage} 
+    \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=0.9\linewidth]{img/exp4_1/exp4_1_mw_percentile_plots_writes_1__vc_16.png} 
+    \caption{Write-only with 16 virtual client per memtier threads} 
+    \vspace{4ex}
+  \end{minipage}%% 
+  \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=0.9\linewidth]{img/exp4_1/exp4_1_mw_percentile_plots_writes_1__vc_32.png} 
+    \caption{Write-only with 32 virtual client per memtier threads} 
+    \vspace{4ex}
+  \end{minipage}
+  \caption{Exp4.1: Time spent at different stages of the lifetime of a request. Each graph distinguished between read-only and write-only operations, as well as the number of virtual clients per memtier-thread (1 or 32)}
+\end{figure}
+
+Once can see an outlier point for at virtual number of clients = 16 and for 64 middlewarethreads. 
+I have repeatedly run this experiment and get the same results each time.
+The middleware congests for this case, as the requests are sent to the server, but are waiting for the server rather than being congested in the queue.
+This waiting time is higher than the case with 32 middlewarethreads.
+However, one can double check that for both cases (32 and 64 middlewarethreads), this point does not provide a saturation point, can be seen by the below figure on the average queue-length (which is lowes for 64).
+This would mean that the requests are "in-sync" with the requests sent to the servers for 32 middlewarethreads, and starts to get congested with 64 middlewarethreads.
+
 \begin{figure}[H]
 \centering
 \begin{subfigure}{.5\textwidth}
@@ -1024,13 +1089,12 @@ The following are graphs from the middleware.
     \caption{Throughput write only}
     \label{fig:mesh1}
 \end{subfigure}
-\caption{Exp3.2: Latency and throughputs as measures by the clients}
+\caption{Exp4.1: Latency and throughputs as measures by the clients}
 \label{fig:test}
 \end{figure}
 
-\subsubsection{Explanation}
-
-Provide a detailed analysis of the results (e.g., bottleneck analysis, component utilizations, average queue lengths, system saturation). Add any additional figures and experiments that help you illustrate your point and support your claims.
+As a sanity check, the throughput and latency graphs by the client (the figure above) directly matches the values as measured by the middleware.
+Furthermore, the interactive law holds, as the throughput saturated and flattens out, as the latency starts growing super-linearly.
 
 
 \begin{figure}[H]
@@ -1038,85 +1102,32 @@ Provide a detailed analysis of the results (e.g., bottleneck analysis, component
 \begin{subfigure}{.5\textwidth}
       \centering
     \includegraphics[width=\textwidth]{img/exp4_1/exp4_1__queuesize_middleware_write_1.png}
-    \caption{Throughput read only}
+    \caption{Write only}
     \label{fig:mesh1}
 \end{subfigure}
-\caption{Exp3.1: Latency and throughputs as measures by the \textbf{middlewares}}
+\caption{Exp4.1: Average Queuesize in middleware \textbf{per} number of middleware threads and \textbf{per} virtual cliens per memtier thread}
 \label{fig:test}
 \end{figure}
 
-%TODO : compare read-only and write-only operations 
 %TODO measure system saturation with dstat? i.e. if 100% at 8 VC and at 32 VC?
 %TODO talk about respective response times
 
 %TODO more threads for 3.2 writes only, to check if saturation is reached (or what the maximum number is going to be?
-
-\begin{figure}[H] 
-  \label{ fig7} 
-  \begin{minipage}[b]{0.5\linewidth}
-    \centering
-    \includegraphics[width=0.7\linewidth]{img/exp4_1/exp4_1_mw_percentile_plots_writes_1__vc_1.png} 
-    \caption{Initial condition} 
-    \vspace{4ex}
-  \end{minipage}%%
-  \begin{minipage}[b]{0.5\linewidth}
-    \centering
-    \includegraphics[width=0.7\linewidth]{img/exp4_1/exp4_1_mw_percentile_plots_writes_1__vc_2.png} 
-    \caption{Rupture} 
-    \vspace{4ex}
-  \end{minipage} 
-  \begin{minipage}[b]{0.5\linewidth}
-    \centering
-    \includegraphics[width=0.7\linewidth]{img/exp4_1/exp4_1_mw_percentile_plots_writes_1__vc_4.png} 
-    \caption{DFT, Initial condition} 
-    \vspace{4ex}
-  \end{minipage}%% 
-  \begin{minipage}[b]{0.5\linewidth}
-    \centering
-    \includegraphics[width=0.7\linewidth]{img/exp4_1/exp4_1_mw_percentile_plots_writes_1__vc_8.png} 
-    \caption{DFT, rupture} 
-    \vspace{4ex}
-  \end{minipage} 
-    \begin{minipage}[b]{0.5\linewidth}
-    \centering
-    \includegraphics[width=0.7\linewidth]{img/exp4_1/exp4_1_mw_percentile_plots_writes_1__vc_16.png} 
-    \caption{DFT, Initial condition} 
-    \vspace{4ex}
-  \end{minipage}%% 
-  \begin{minipage}[b]{0.5\linewidth}
-    \centering
-    \includegraphics[width=0.7\linewidth]{img/exp4_1/exp4_1_mw_percentile_plots_writes_1__vc_32.png} 
-    \caption{DFT, rupture} 
-    \vspace{4ex}
-  \end{minipage} 
-    \begin{minipage}[b]{0.5\linewidth}
-    \centering
-    \includegraphics[width=0.7\linewidth]{img/exp4_1/exp4_1_mw_percentile_plots_writes_1__vc_32.png} 
-    \caption{DFT, Initial condition} 
-    \vspace{4ex}
-  \end{minipage}%% 
-  \begin{minipage}[b]{0.5\linewidth}
-    \centering
-    \includegraphics[width=0.7\linewidth]{img/exp4_1/exp4_1_mw_percentile_plots_writes_1__vc_32.png} 
-    \caption{DFT, rupture} 
-    \vspace{4ex}
-  \end{minipage} 
-\end{figure}
 
 \subsection{Summary}
 
 Based on the experiments above, fill out the following table with the data corresponding to the maximum throughput point for all four worker-thread scenarios.
 
 \begin{center}
-	{Maximum throughput for the full system}
+	{Maximum throughput for the full system (in ops/sec) }
 	\begin{tabular}{|l|p{1.5cm}|p{1.5cm}|p{1.5cm}|p{1.5cm}|}
-		\hline                                            & WT=8 & WT=16 & WT=32 & WT=64 \\ 
-		\hline Throughput (Middleware)                    & 14365 & 18338 & 18828 & 17984 \\ 
-		\hline Throughput (Derived from MW response time) & 14632 & 18827 & 18504 & 17830  \\ 
-		\hline Throughput (Client)                     &14858 & 17017 & 15703 & 17503 \\ 
-		\hline Average time in queue                      &      &       &       &       \\ 
-		\hline Average length of queue                    &      &       &       &       \\ 
-		\hline Average time waiting for memcached         &      &       &       &       \\ 
+		\hline                                            									& WT=8 & WT=16 & WT=32 & WT=64 \\ 
+		\hline Throughput (Middleware)   								& 8833 & 10153 & 12503 & 13706 \\ 
+		\hline Throughput (Derived from MW response time) & 308 & 494 & 599 & 17830  \\ 
+		\hline Throughput (Client)              								& 8833 & 10068 & 12586 & 12858 \\ 
+		\hline Average time in queue            							& 8.042 ms & 5.346 ms &  8.533 ms & 2.631 ms       \\ 
+		\hline Average length of queue                    				&  33    		 &   22   	&  48  &   13   \\ 
+		\hline Average time waiting for memcached         		& 1.722 ms  & 3.136 ms &  4.977 ms     & 8.760ms       \\ 
 		\hline 
 	\end{tabular}
 \end{center}
