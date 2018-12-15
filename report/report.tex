@@ -1408,41 +1408,28 @@ The following table shows a detailed configuration of my setup.
 I apply this analysis once for read-only workloads, and then separately for write-only workloads, as both procedures are fundamentally different.
 I don't use any multi-get behavior (i.e. keysize is always 1 for read-only workloads).
 The 2k-analysis for the response time, and the throughput will be separate.
-For all the measured values, I will use values as observed by the middleware and not by the client. \\
+For all the measured values, I will use values as observed by the middleware and not by the client. 
+I use the \textbf{2k-r}, which implicitly calculates the errors as \textit{implicitly} as part of the analysis. \\
 
-For each of the experiments below, I will solve the equation:
+For each of the experiments I calculate the q-values (which I are the coefficients before each random variable $X, Y, Z$), the squared sums (which I will abbreviate as \textbf{SS} from here on), and the fractional effects created by that specific factor.
+A table of all the values that was used to calculate the q-values, SS values and fractional effects can be found in the appendix.
+I will solve the equation to get the responsible coefficients per experiment:
 
 \begin{equation}
 	y = a_X \times X + a_Y \times Y + a_Z \times Z + a_{X, Y} \times X Y + a_{X, Z} \times X Z + a_{Y, Z} \times Y Z + a_{X, Y, Z} \times X Y Z + a_0 + e
 \end{equation}
 where $a_0$ is a constant value, and $y$ is the variable which we want to solve for (either throughput or response time), with $e$ being the constant error term.
 I use this model, as this captures any possible linear combination between variables.
-Because any possible combination between variables is taken into consideration, I can then say which factors have the biggest impact, without sacrificing accuracy (by trying to separate variables).
-
-I will be able to tell the total variation of the item to be predicted using the root mean squared error formula:
-
-
-%TODO write down formulae 
-\begin{equation}
-y = SST = \sum_{i=1}^{2^2} (y_i - \hat{y} )^2
-\end{equation}
-
+Because any possible combination between variables is taken into consideration, I can then say which factors have the biggest impact (by looking at which fractional effect is the biggest), without sacrificing accuracy (by trying to separate variables, and by using an error term).
 
 \subsubsection{Read-only}
 
 I will first start with read-only operations.
 These are depending on the allocation of the configuration and are measured through my experiments.
 The cells contain the values that the respective variable attains.
-In parantheses and next to each individual value, I write down the level in the analysis that this value corresponds to.
-
-% & Mean Latency 
 
 For read-only operations, I get the following vector for the vector $\mathbf{a} = 
 [a_0, a_X, a_Y, a_Z, a_{X, Y}, a_{X, Z}, a_{Y, Z}, a_{X, Y, Z}] $ and the error term $e$:
-
-
-%% & Throughput $\sigma$. 
-%% Latency $\sigma$
 \begin{center}
 	\begin{table}[H]
 	\center
@@ -1459,9 +1446,14 @@ For read-only operations, I get the following vector for the vector $\mathbf{a} 
     $a_{X, Y, Z}$ & 0.62 & 9.19 & 0.0010 \\
     \hline
     \end{tabular}
-  	\caption{Exp6.1: 2k analysis graph for Response Time and Read-only operations}	 
+  	\caption{Exp6.1: 2k analysis graph for \textbf{Response Time and Read-only} operations}	 
   	\end{table}  
 \end{center}
+
+The analysis results in the heaviest coefficient (with a weight of $0.9939$) to be $Y$, which corresponds to the number of memcached servers.
+This means that changing the number of memcached servers has the most effect on the response time of the system.
+Comparing this result to the difference in response time of experiment 3.1 and experiment 3.2, this result is accurate.
+More servers can handle more read-requests at the same time, which means that the latency will naturally go down.
 
 %% & Throughput $\sigma$. 
 %% Latency $\sigma$
@@ -1481,20 +1473,21 @@ For read-only operations, I get the following vector for the vector $\mathbf{a} 
     $a_{X, Y, Z}$ & -72.63 & 126585.38 & 0.0008 \\
     \hline
     \end{tabular}
-  	\caption{Exp6.1: 2k analysis graph for Throughput in ops/sec and Read-only operations}	 
+  	\caption{Exp6.1: 2k analysis graph for \textbf{Throughput in ops/sec and Read-only} operations}	 
   	\end{table}  
 \end{center}
 
-
-
-
-Repeat the experiment for (a)~a write-only and (b)~a read-only workload.
-For each of the two workloads, what is the impact of these parameters on throughput, respectively response time?
-
-
-
+Because the interactive law holds, almost the same result applies for the throughput, where the number of servers carry the highest effect (with a parameter-weight of $ 99 \% $).
+Again, this is because we have identified repeatedly, that for read-requests, the server-upload-bandwidth is the bottleneck, as the upload-bandwidth is only $ 100Mbit/s $, whereas the clients can pull for much more.
+As the 2k analysis shows, (and all previous experiments read-only experiments), changing the number of servers also has the highest effect amongst all variables on the throughput.
 
 \subsubsection{Write-only}
+Now I discuss the 2k-r analysis on the write-only workloads.
+
+The write-only workloads substantially differ from the read-only workloads.
+The read-only workloads have always been bottlenecked by the servers, which was also clear from the analysis in any previous section involving read-only operations
+
+The write-only workloads however have multiple factors affecting the experiments.
 
 %% & Throughput $\sigma$. 
 %% Latency $\sigma$
@@ -1514,12 +1507,14 @@ For each of the two workloads, what is the impact of these parameters on through
     $a_{X, Y, Z}$ & 2.31 & 128.25 & 0.0561 \\
     \hline
     \end{tabular}
-  	\caption{Exp6.1: 2k analysis graph for Response Time and Write-only operations}	 
+  	\caption{Exp6.1: 2k analysis graph for \textbf{Response Time and Write-only} operations}	 
   	\end{table}  
 \end{center}
 
-		
-							
+From the calculation, the response-2k-r-analysis table shows that the most significant two factors are 1. the number of middlewarethreads in the system, and 2. the number of servers in the system (with approximately $ 47 \% $ and respectively $ 26 \% $ of the entire parameter-weights).
+This is simple, as I have shown in section 4.1, that for write-only operations, the total number of middleware-threads in the system has the most impact on the write-only times.
+Naturally, the less number of servers we have, the less the middleware needs to wait for each individual server (but can simply fetch the requests from one server), which means that adding a second server just increases latency.
+This is captured in the 2k-r analysis, being the second-highest factor having effect.
 
 %% & Throughput $\sigma$. 
 %% Latency $\sigma$
@@ -1539,9 +1534,20 @@ For each of the two workloads, what is the impact of these parameters on through
     $a_{X, Y, Z}$ & -373.21 & 3342827.04 & 0.0149 \\
     \hline
     \end{tabular}
-  	\caption{Exp6.1: 2k analysis graph for Throughput in ops/sec and Write-only operations}	 
+  	\caption{Exp6.1: 2k analysis graph for \textbf{Throughput in ops/sec and Write-only} operations}	 
   	\end{table}  
 \end{center}
+
+Similar result applies for the 2-k-r analysis on the throughput, as the interactive law applies as was shown in all previous sections involving write-only operations.
+However, for the throughput, the parameter weights are much more dominant in the number of middlewares (with approximately $ 58 \% $ of the parameter weights), followed by the number of servers with $ 18 \% $ of the parameter weights, and finally with the number of 
+middlewarethreads with $ 15 \% $ of the parameter-weights.
+Adding a second middleware literally doubles the number of threads, and allows for the load generated by the client to be distributed to two different virtual machines.
+This naturally allows for more requests per second, as the load for each individual middleware is almost halved compared to having only one middleware.
+This naturally means that the numeber of middlewares has the highest parameter weight (with about $ 58 \% $) compared to the other factors.
+However, the number of servers affects the throughput, as this is coupled to the latency (by the interactive law). 
+For the same reasons as mentioned above, the throughput for write-only experiments increases when we introduce less servers, for the simple reason that less servers need to be contacted (and also because the servers never provide a bottleneck for write-only operations).
+For this reason, and because the number of servers is rather insignificant to splitting the client-load amongst two virtual machines, the parameter weights is also high with $ 18 \% $.
+Finally, because the increasing the number of middlewarethreads on one machine also means increasing the capacity of a single machine (and for the similar reasons as mentioned in experiment 4.1 and in the above paragraph), the parameter-weight of this factor is also fairly large with $ 15 \% $. 
 
 \section{Queuing Model (90 pts)}
 
