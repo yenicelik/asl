@@ -1196,19 +1196,19 @@ However, the values measured as per client do conform with the trends found in t
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.7\textwidth]{img/exp5_1/exp5_1_client_percentile_plots_sharded_True.png}
-\caption{Exp3.2: Latency and throughputs as measures by the middlewares}
+\caption{Exp5.1: Latency in ms as a function of multie-get \textbf{keysize} and \textbf{percentile amongst all requests}. The labels on the x-axis are to be interpreted by "\textbf{keysize} : \textbf{percentile}" (i.e. the element before the semicolon denotes the keysize, the element after the semicolon denotes the percentile)  }
 \label{fig:test}
 \end{figure}
 
 The multiegets all have a similar response time.
 This is because the middleware does not internally distinguish between sending only a single packet, and multiple packets to the servers, as long as these packets fully fit into the \textit{byteBuffer}.
-As my byteBuffer is of size $20 * 1024 * 4$, and a single "full" datapacket for message is of size $ 4096 $, this easily fits into the byteBuffer.
+As my byteBuffer is of size $15 * 4024$, and a single "full" datapacket for message is of size $ 4096 $, (and because we have at most 9 of these requests in one request) this easily fits into the byteBuffer.
 As such, there is no significant slowdown in the response time.
 However, because of the higher memory requirements, bigger multi-gets tend to be a bit more unstable (as this requires more operations, and more operations can cause delays).
-This can be seen in the graph, where the latency percentiles (especially the 90th percentiles) increase with a higher number of keysizes. \\
+This can be seen in the graph, where the latency percentiles (especially the 75 percentiles) increase with a higher number of keysizes. \\
 
 To do a sanity check, I include the total latency and throughputs as measured by the clients (because the above histogram was derived from client values).
-One can clearly see that the trend presented in the above barchart is supported by the response times measured by the clients.
+One can clearly see that the trend presented in the above barchart is supported by the response times measured by the clients (this you can see by looking at each individual percentile, and seeing that this percentile increases as we increase the keysize).
 In additional to that, the inverse law for throughput and latency holds, as the throughput and latency both have an overall almost constant tendency (with the exception of the keysize "9" decreasing throughput slightly, and increasing the latency slightly).
 
 \begin{figure}[H]
@@ -1235,7 +1235,9 @@ As one can see, the graphs support this claim of the inverse correlation between
 
 \subsubsection{Explanation}
 
-The bottleneck is either the server which has to respond to all the get-requests (and can do some compoundedly in the case of multi-gets with keysize > 1), or the middleware which does not allow the client to push more requests towards the server.
+%TODO the explanation is adapted to the old experiment! modify this!
+
+The bottleneck is either the server which has to respond to all the get-requests (and can do some compoundedly in the case of multi-gets with keysize $>1$), or the middleware which does not allow the client to push more requests towards the server.
 However, because the bandwidth of the middleware is so high, and theoretically supports almost $35'000 ops/sec$, it is highly likely that it is again the servers which cannot utilize more than the existing bandwidth of $3'000 ops/sec$.
 This relates to experiment 2.2 (baseline no middleware, read-only), where one single client instance is able to max out the servers fairly quickly. 
 The latency caused by contacting multiple servers instead of just one can be seen by comparing these values to the non-sharded case.
@@ -1246,7 +1248,8 @@ However, it could also be the middleware which is not able to pass on all reques
 This would also explain the drop from $ 6'000 ops/sec $ in experiment 2.2, to $ 3'500 ops/sec$ in this experiment.
 After doing a profiling of the code, I recognize that the java function \textbf{String.split} takes up most of the performance, and heavily increases system utilization.
 
-%TODO  average queue length over time! system saturation?
+%TODO average queue length over time! system saturation?
+%TODO average time in queues -> do this analysis for each individual keysize? --> additional experiments or system elements
 
 \subsection{Non-sharded Case}
 

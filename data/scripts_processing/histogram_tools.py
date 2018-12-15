@@ -34,12 +34,14 @@ def create_multiple_histogram_plot(keys, means, stddevs, filepath, is_latency=Fa
 
         if is_queue:
             time_labels = ['Time to Enqueue', 'Time in Queue', 'Time Queue to Server', 'Time at Server','Time Server to Client']
-            keynames = [("mt: " + str(key) + ": Time " + str(x)) for x in time_labels]
+            keynames = [(str(key) + " : " + str(x)) for x in time_labels]
             plt.bar(keynames, current_mean, label="Middlewarethreads {}".format(key), yerr=current_stddev, capsize=5)
         else:
             percentile_keys = ["avg", "25", "50", "75", "90", "99"]
-            keynames = [("Keysize: " + str(key) + ": Percentile " + str(x)) for x in percentile_keys]
-            plt.bar(keynames, current_mean, label="Keysize {}".format(key), yerr=current_stddev, capsize=5)
+            keynames = [(str(key) + " : " + str(x)) for x in percentile_keys]
+            plt.bar(
+                keynames,
+                current_mean, label="Keysize {}".format(key), yerr=current_stddev, capsize=5)
 
         print("Shapes are: ", len(keynames), current_mean.shape, current_stddev.shape)
 
@@ -48,9 +50,18 @@ def create_multiple_histogram_plot(keys, means, stddevs, filepath, is_latency=Fa
         # Create a boxplot out of these values now
 
 
+
+    if is_queue:
+        plt.xlabel('Number of Virtual Clients per Thread')
+        plt.ylabel('Average number of requests in queue')
+    else:
+        plt.xlabel('Number of Virtual Clients per Thread')
+        plt.ylabel('Response Time in ms')
+
+
     plt.ylim(ymin=0)
     plt.legend(loc='best')
-    plt.xticks(rotation=70)
+    plt.xticks(rotation=90)
     plt.gca().legend()
 
     if filepath is None:
