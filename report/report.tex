@@ -1195,7 +1195,7 @@ However, the values measured as per client do conform with the trends found in t
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth]{img/exp5_1/exp5_1_client_percentile_plots_sharded_True.png}
+\includegraphics[width=0.7\textwidth]{img/exp5_1/exp5_1_client_percentile_plots_sharded_True.png}
 \caption{Exp3.2: Latency and throughputs as measures by the middlewares}
 \label{fig:test}
 \end{figure}
@@ -1276,7 +1276,7 @@ I plot average response time as measured on the client, as well as the 25th, 50t
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth]{img/exp5_1/exp5_1_client_percentile_plots_sharded_False.png}
+\includegraphics[width=0.8\textwidth]{img/exp5_1/exp5_1_client_percentile_plots_sharded_False.png}
 \caption{Exp3.2: Latency and throughputs as measures by the middlewares}
 \label{fig:test}
 \end{figure}
@@ -1409,7 +1409,11 @@ I apply this analysis once for read-only workloads, and then separately for writ
 I don't use any multi-get behavior (i.e. keysize is always 1 for read-only workloads).
 The 2k-analysis for the response time, and the throughput will be separate.
 For all the measured values, I will use values as observed by the middleware and not by the client. 
-I use the \textbf{2k-r}, which implicitly calculates the errors as \textit{implicitly} as part of the analysis. \\
+I use the \textbf{2k-r}, which implicitly calculates the errors as \textit{implicitly} as part of the analysis. 
+The motivation behind this is that although my system is stable (as can be seen from the rather small error bars in all previous sections), there are error bars existent.
+The model is more extensive, and because I want to capture this error inside this model, I go with using the 2k-r analysis rather than the vanilla 2k analysis.
+I use the 2k-r analysis for both subsections, for convenience, and comparability between then different two separate 2k-r analysis (such that the coefficients are relatable to one another).
+\\
 
 For each of the experiments I calculate the q-values (which I are the coefficients before each random variable $X, Y, Z$), the squared sums (which I will abbreviate as \textbf{SS} from here on), and the fractional effects created by that specific factor.
 A table of all the values that was used to calculate the q-values, SS values and fractional effects can be found in the appendix.
@@ -1818,5 +1822,98 @@ This is the non-sharded case.
 \label{fig:test}
 \end{figure}
 
+\subsection{Exp 6.1}
+
+
+%% & Throughput $\sigma$. 
+%% Latency $\sigma$
+\begin{center}
+	\begin{table}[H]
+	\center
+\resizebox{\columnwidth}{!}{%
+    \begin{tabular}{ | l | l | l | l | l | l | l | l | l | l | l | l | l | l | l | l | l | l | l | l | l |  }
+    \hline
+Config & Offset & X & Y & Z & XY & XZ & YZ & XYZ	& Value1 & Value2 & Value3 & ThroughputMean & Error1 & Error2 & Error3  \\ \hline
+1 &	1 &	-1 & -1	&-1&	& 1	1& 	1	& -1	& 3030.00 &	3008.00	& 3009.00 & 3015.67	& 14.33	&-7.67	&-6.67  \\ \hline
+2 &	1 &	-1 & -1	&1	&1	& -1	& -1	& 1	& 2959.00 &	2912.00	& 2923.00 & 2931.33	& 27.67	&-19.33	&-8.33  \\ \hline
+3 &	1 &	-1 & 1	&-1&	& -1	1	& -1	& 1	& 7815.00 &	7853.00	& 7826.00 & 7831.33	& -16.33	&21.67	&-5.33  \\ \hline
+4 &	1 &	-1 & 1	&1	&-1	& -1& 	1	& -1	& 8190.00 &	8309.00	& 8338.00 & 8279.00	& -89.00	&30.00	&59.00 \\ \hline
+5 &	1 &	1 & -1	&-1&	& -1	-1& 	1	& 1	& 2984.00 &	2983.00	& 2982.00 & 2983.00	& 1.00	&0.00	&-1.00 \\ \hline
+6 &	1 &	1 & -1	&1	&-1	& 1	& -1	& -1	& 2959.00 &	2960.00	& 2979.00 & 2966.00	& -7.00	-6.00	&13.00 \\ \hline
+7 &	1 &	1 & 1	&-1&	& 1	-1	& -1	& -1	& 8150.00 &	8435.00	& 8351.00 & 8312.00	& -162.00	&123.00	&39.00 \\ \hline
+8 &	1 &	1 & 1	&1	&1	& 1& 	1	& 1	& 8302.00 &	8169.00	& 8267.00 & 8246.00	& 56.00	& -77.00	&21.00 \\ \hline
+    \end{tabular}
+    }
+  	\caption{Exp6.1: 2k analysis raw data for \textbf{Throughput and Read-only} operations}	 
+  	\end{table}  
+\end{center}
+
+
+%% & Throughput $\sigma$. 
+%% Latency $\sigma$
+\begin{center}
+	\begin{table}[H]
+	\center
+\resizebox{\columnwidth}{!}{%
+    \begin{tabular}{ | l | l | l | l | l | l | l | l | l | l | l | l | l | l | l | l | l | l | l | l | l |  }
+    \hline
+Config & Offset & X & Y & Z & XY & XZ & YZ & XYZ	& Value1 & Value2 & Value3 & LatencyMean & Error1 & Error2 & Error3 \\ \hline
+1	&1	&-1	&-1	&-1	&1	&1	&1	&-1	& 14.65	& 11.58	& 6.11	&10.78	&3.87	&0.80	&-4.67 \\ \hline
+2	&1	&-1	&-1	&1	&1	&-1	&-1	&1	& 2.10	& 2.09	& 2.10	&2.10	&0.00	&-0.01	&0.00 \\ \hline
+3	&1	&-1	&1	&-1	&-1	&1	&-1	&1	& 32.63	& 40.25	& 32.16	&35.01	&-2.38	&5.24	&-2.85 \\ \hline
+4	&1	&-1	&1	&1	&-1	&-1	&1	&-1	& 6.57	& 7.92	& 10.78	&8.42	&-1.85	&-0.50	&2.36 \\ \hline
+5	&1	&1	&-1	&-1	&-1	&-1	&1	&1	& 17.66	& 17.55	& 16.56	&17.26	&0.40	&0.29	&-0.70 \\ \hline
+6	&1	&1	&-1	&1	&-1	&1	&-1	&-1	& 7.63	& 7.34	& 8.24	&7.74	&-0.11	&-0.40	&0.50 \\ \hline
+7	&1	&1	&1	&-1	&1	&-1	&-1	&-1	& 21.79	& 21.47	& 21.43	&21.56	&0.23	&-0.09	&-0.13 \\ \hline
+8	&1	&1	&1	&1	&1	&1	&1	&1	& 12.34	& 12.35	& 13.20	&12.63	&-0.29	&-0.28	&0.57 \\ \hline
+    \end{tabular}
+    }
+  	\caption{Exp6.1: 2k analysis raw data for \textbf{Response Time and Read-only} operations}	 
+  	\end{table}  
+\end{center}
+
+%% & Throughput $\sigma$. 
+%% Latency $\sigma$
+\begin{center}
+	\begin{table}[H]
+	\center
+\resizebox{\columnwidth}{!}{%
+    \begin{tabular}{ | l | l | l | l | l | l | l | l | l | l | l | l | l | l | l | l | l | l | l | l | l |  }
+    \hline
+Config & Offset & X & Y & Z & XY & XZ & YZ & XYZ	& Value1 & Value2 & Value3 & ThroughputMean & Error1 & Error2 & Error3 \\ \hline
+1	&1	&-1& -1	&-1	&1	&1	&1	&-1	&8539.00	&8085.00	&7374.00	&7999.33	&539.67	&85.67	 & -625.33 \\ \hline
+2	&1	&-1& -1	&1	&1	&-1	&-1	&1	&8364.00	&7499.00	&7707.00	&7856.67	&507.33	&-357.67 & 	-149.67 \\ \hline
+3	&1	&-1& 1	&-1	&-1	&1	&-1	&1	&4882.00	&4114.00	&5151.00	&4715.67	&166.33	&-601.67 & 	435.33 \\ \hline
+4	&1	&-1& 1	&1	&-1	&-1	&1	&-1	&6929.00	&7206.00	&6326.00	&6820.33	&108.67	&385.67	 & -494.33 \\ \hline
+5	&1	&1	&-1	&-1	&-1	&-1	&1	&1	&11115.00	&10693.00	&10999.00	&10935.67	&179.33	&-242.67 & 	63.33 \\ \hline
+6	&1	&1	&-1	&1	&-1	&1	&-1	&-1	&15164.00	&14924.00	&15212.00	&15100.00	&64.00	&-176.00 & 	112.00 \\ \hline
+7	&1	&1	&1	&-1	&1	&-1	&-1	&-1	&8634.00	&8170.00	&8108.00	&8304.00	&330.00	&-134.00 & 	-196.00 \\ \hline
+8	&1	&1	&1	&1	&1	&1	&1	&1	&11689.00	&11731.00	&11770.00	&11730.00	&-41.00	&1.00	 & 40.00 \\ \hline
+    \end{tabular}
+    }
+  	\caption{Exp6.1: 2k analysis raw data for \textbf{Throughput and Write-only} operations}	 
+  	\end{table}  
+\end{center}
+
+\begin{center}
+	\begin{table}[H]
+	\center
+\resizebox{\columnwidth}{!}{%
+    \begin{tabular}{ | l | l | l | l | l | l | l | l | l | l | l | l | l | l | l | l | l | l | l | l | l |  }
+    \hline
+Config & Offset & X & Y & Z & XY & XZ & YZ & XYZ	& Value1 & Value2 & Value3 & LatencyMean & Error1 & Error2 & Error3 \\ \hline
+1	& 1 &	-1 &-1	&-1	&1	&1	&1	&-1	& 14.65	& 11.58	& 6.11	& 10.78	& 3.87	& 0.80	& -4.67 \\ \hline
+2	& 1 &	-1 &-1	&1	&1	&-1	&-1	&1	& 2.10	& 2.09	& 2.10	& 2.10	& 0.00	& -0.01	& 0.00 \\ \hline
+3	& 1 &	-1 &1	&-1	&-1	&1	&-1	&1	& 32.63	& 40.25	& 32.16	& 35.01	& -2.38	& 5.24	& -2.85 \\ \hline
+4	& 1 &	-1 &1	&1	&-1	&-1	&1	&-1	& 6.57	& 7.92	& 10.78	& 8.42	& -1.85	& -0.50	& 2.36 \\ \hline
+5	& 1 &	1 &-1	&-1	&-1	&-1	&1	&1	& 17.66	& 17.55	& 16.56	& 17.26	& 0.40	& 0.29	& -0.70 \\ \hline
+6	& 1 &	1 &-1	&1	&-1	&1	&-1	&-1	& 7.63	& 7.34	& 8.24	& 7.74	& -0.11	& -0.40	& 0.50 \\ \hline
+7	& 1 &	1 &1	&-1	&1	&-1	&-1	&-1	& 21.79	& 21.47	& 21.43	& 21.56	& 0.23	& -0.09	& -0.13 \\ \hline
+8	& 1 &	1 &1	&1	&1	&1	&1	&1	& 12.34	& 12.35	& 13.20	& 12.63	& -0.29	& -0.28	& 0.57 \\ \hline
+    \end{tabular}
+    }
+  	\caption{Exp6.1: 2k analysis raw data for \textbf{Response Time and Write-only} operations}	 
+  	\end{table}  
+\end{center}
 
 \end{document}
