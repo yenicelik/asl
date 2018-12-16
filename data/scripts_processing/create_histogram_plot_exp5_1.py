@@ -35,7 +35,7 @@ def get_pattern_exp5_1_middleware(
         keysize,
         repetition,
         sharding
-    ):
+):
     """
         Gets the filename given the above specification for the middleware threads
     :return:

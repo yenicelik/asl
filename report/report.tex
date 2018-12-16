@@ -1196,7 +1196,7 @@ However, the values measured as per client do conform with the trends found in t
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.7\textwidth]{img/exp5_1/exp5_1_client_percentile_plots_sharded_True.png}
-\caption{Exp5.1: Latency in ms as a function of multie-get \textbf{keysize} and \textbf{percentile amongst all requests}. The labels on the x-axis are to be interpreted by "\textbf{keysize} : \textbf{percentile}" (i.e. the element before the semicolon denotes the keysize, the element after the semicolon denotes the percentile)  }
+\caption{Exp5.1: Latency in ms as a function of multi-get \textbf{keysize} and \textbf{percentile amongst all requests}. The labels on the x-axis are to be interpreted by "\textbf{keysize} : \textbf{percentile}" (i.e. the element before the semicolon denotes the keysize, the element after the semicolon denotes the percentile). This graph only shows \textbf{sharded} requests.  }
 \label{fig:test}
 \end{figure}
 
@@ -1255,6 +1255,7 @@ After doing a profiling of the code, I recognize that the java function \textbf{
 
 I run multi-gets with 1, 3, 6 and 9 keys (memtier configuration) with sharding disabled. 
 The following provides a more detailed view of the configuration that I used.
+Any configuration that I do not specify further is exactly the same as in the sharded case.
 
 \begin{center}
 	\scriptsize{
@@ -1280,7 +1281,7 @@ I plot average response time as measured on the client, as well as the 25th, 50t
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.8\textwidth]{img/exp5_1/exp5_1_client_percentile_plots_sharded_False.png}
-\caption{Exp3.2: Latency and throughputs as measures by the middlewares}
+\caption{Exp5.1: Latency in ms as a function of multi-get \textbf{keysize} and \textbf{percentile amongst all requests}. The labels on the x-axis are to be interpreted by "\textbf{keysize} : \textbf{percentile}" (i.e. the element before the semicolon denotes the keysize, the element after the semicolon denotes the percentile). This graph only shows \textbf{non-sharded} requests.}
 \label{fig:test}
 \end{figure}
 
@@ -1290,7 +1291,7 @@ And this is indeed the case.
 The average and percentiles match up in response time as can be seen from the graph.
 There are some deviations, but these deviations are all within the error bounds of the other multikey-get sizes.
 The reason behind the very similar multi-key-getsizes is also the \textit{byteBuffer} that I use, which allows each multikey-get request to fit into the buffer.
-As my byteBuffer is of size $20 * 1024 * 4$, and a single "full" datapacket for message is of size $ 4096 $, this easily fits into the byteBuffer.
+As my byteBuffer is of size $15 * 4024$, and a single "full" datapacket for message is of size $ 4096 $, this easily fits into the byteBuffer (again, for the same reason as the sharded case).
 As such, there is no statistically significant decrease or increase in the response time or throughput. \\
 
 To do a sanity check, I include the total latency and throughputs as measured by the clients (because the above histogram was derived from client values).
@@ -1315,7 +1316,7 @@ However, the values measured as per client do conform with the trends found in t
     \caption{Throughput write only}
     \label{fig:mesh1}
 \end{subfigure}
-\caption{Exp3.2: Latency and throughputs as measures by the clients}
+\caption{Exp5.1: Latency and throughputs as measures by the clients}
 \label{fig:test}
 \end{figure}
 
@@ -1329,11 +1330,13 @@ As one can see, the graphs support this claim of the inverse correlation between
 
 Provide a detailed analysis of the results (e.g., bottleneck analysis, component utilizations, average queue lengths, system saturation). Add any additional figures and experiments that help you illustrate your point and support your claims.
 
+%TODO average queue length and average wait time for each request?
+
 \subsection{Histogram}
 
 For the case with 6 keys inside the multi-get, I now display four histograms representing the sharded and non-sharded response time distribution, both as measured on the client, and inside the middleware. 
 I chose the bucket sizes such that the represent intervals of at least 100 micro-seconds (i.e. 1/10th of a millisecond).
-After considering taking the mean of multiple items, I arrived at the conclusion of only picking a single memtier-instance's output and plotting this. 
+After considering taking the mean of multiple repetitions, I arrived at the conclusion of only picking a single memtier-instance's output and plotting this. 
 This is for two reasons. 
 1. This gives us a more true distribution, and not a flattened mean. Furthermore this is a good approximation, because all latency-histograms (across all memtier-instances) are very similarly distributed.
 2. Adding multiple histograms together which are slightly deviated on the x-axis will increase the common latencies (around 2 milliseconds), and proportionally decrease the flatter regions, which also provide information to the reader.
@@ -1343,17 +1346,35 @@ By just picking one instance, I solve this problem and allow for a clearer displ
 \centering
 \begin{subfigure}{.5\textwidth}
     \centering
-    \includegraphics[width=\textwidth]{img/exp5_1/histogram_client_nonsharded.png}
+    \includegraphics[width=\textwidth]{img/exp5_1/exp_5_1_histogram_mw_nonsharded.png}
     \caption{Non-Sharded Latency Histogram}
     \label{fig:mesh1}
 \end{subfigure}%
 \begin{subfigure}{.5\textwidth}
       \centering
-    \includegraphics[width=\textwidth]{img/exp5_1/histogram_client_sharded.png}
+    \includegraphics[width=\textwidth]{img/exp5_1/exp_5_1_histogram_mw_sharded.png}
     \caption{Sharded Latency Histogram}
     \label{fig:mesh1}
 \end{subfigure}
-\caption{Exp3.2: Latency and throughputs as measures by the clients}
+\caption{Exp.5.1: Latency and throughputs as measures by the \textbf{middlewares}}
+\label{fig:test}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}{.5\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{img/exp5_1/exp5_1_histogram_client_nonsharded.png}
+    \caption{Non-Sharded Latency Histogram}
+    \label{fig:mesh1}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+      \centering
+    \includegraphics[width=\textwidth]{img/exp5_1/exp5_1_histogram_client_sharded.png}
+    \caption{Sharded Latency Histogram}
+    \label{fig:mesh1}
+\end{subfigure}
+\caption{Exp.5.1: Latency and throughputs as measures by the \textbf{clients}}
 \label{fig:test}
 \end{figure}
 

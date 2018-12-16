@@ -97,7 +97,7 @@ def get_histogram_of_latencies(raw_df):
 
     latencies = latencies / 1_000_000.
 
-    freq, bins = np.histogram(latencies, bins=10000)
+    freq, bins = np.histogram(latencies, bins=1000)
     bins = bins[:-1]
     # bins = bins / 1_000_000.
     # freq = np.log(freq)
@@ -112,7 +112,7 @@ def get_histogram_of_latencies(raw_df):
     return bins, freq
 
 
-def plot_histogram_middleware(bins, frequencies):
+def plot_histogram_middleware(bins, frequencies, filepath=None):
     """
         Given one exhaustive dataset of all multiget responses,
         plot the
@@ -122,12 +122,22 @@ def plot_histogram_middleware(bins, frequencies):
 
     plt.figure()
 
-    plt.bar(bins, frequencies, bottom=None, width=1)
+    frequencies = frequencies / np.sum(frequencies)
+    frequencies *= 100
+
+    plt.bar(bins, frequencies, bottom=None, width=1.1)
     # plt.xticks(bins / 10.)
-    plt.xlim(0, 15)
+    plt.xlim(0, 12)
 
-    plt.show()
+    plt.xlabel('Response Time in ms')
+    plt.ylabel('Percentage of requests achieving this response time (in %)')
 
+
+    if filepath is not None:
+        plt.savefig(filepath)
+    else:
+        plt.show()
+    plt.clf()
 
 
 def get_histogram_latency_log_dataframe_middleware(df):
@@ -184,7 +194,7 @@ def read_client_histogram_as_dataframe(filepath, percentage_details=False, cumul
     cumulative_value = 0.
     set_tuples = []
     for x in set_histogram:
-        if x['<=msec'] < 10.0:
+        if x['<=msec'] < 11.0:
             set_tuples.append((
                 x['<=msec'],
                 (x['percent'] - cumulative_value)
@@ -197,7 +207,7 @@ def read_client_histogram_as_dataframe(filepath, percentage_details=False, cumul
     cumulative_value = 0.
     get_tuples = []
     for x in get_histogram:
-        if x['<=msec'] < 10.0:
+        if x['<=msec'] < 11.0:
             get_tuples.append((
                 x['<=msec'],
                 (x['percent'] - cumulative_value)
@@ -288,16 +298,33 @@ def get_client_percentiles(df):
 if __name__ == "__main__":
     EXAMPLE = "/Users/david/asl-fall18-project/data/raw/exp5_1_backups/__Exp51_multikeysize_6_middleware2__rep_1_client_Client2_sharding_True_middlewarethreads_64.txt"
     set_df, get_df = read_client_histogram_as_dataframe(EXAMPLE)
+    get_df.to_csv("./histograms_client_sharded.csv")
     plot_histogram_client(get_df, savefile="/Users/david/asl-fall18-project/report/img/exp5_1/histogram_client_sharded")
 
     EXAMPLE = "/Users/david/asl-fall18-project/data/raw/exp5_1_backups/__Exp51_multikeysize_6_middleware2__rep_1_client_Client2_sharding_False_middlewarethreads_64.txt"
     set_df, get_df = read_client_histogram_as_dataframe(EXAMPLE)
     plot_histogram_client(get_df, savefile="/Users/david/asl-fall18-project/report/img/exp5_1/histogram_client_nonsharded")
+    get_df.to_csv("./histograms_client_nonsharded.csv")
 
 
+    EXAMPLE = "/Users/david/asl-fall18-project/data/raw/exp5_1_backups/Middleware2_multikeygetsize_6_rep_1__sharding_False_middlewareworkerthreads_64/"
+    df = parse_log_exp5_1(EXAMPLE)
+    print(df.head(5))
+    print(df.columns)
 
-    # EXAMPLE = "/Users/david/asl-fall18-project/data/raw/exp5_1_backups/Middleware1_multikeygetsize_1_rep_0__sharding_False__middlewareworkerthreads_64/"
-    # df = parse_log_exp5_1(EXAMPLE)
-    # print(df.head(5))
-    # bins, freq = get_histogram_of_latencies(df)
-    # plot_histogram_middleware(bins, freq)
+    # df['latency'] = df['timeRealDoneOffset'] - df['timeRealOffset']
+
+    df.to_csv("./histograms_middleware_nonsharded.csv")
+    bins, freq = get_histogram_of_latencies(df)
+    plot_histogram_middleware(bins, freq, filepath="/Users/david/asl-fall18-project/report/img/exp5_1/exp_5_1_histogram_mw_nonsharded.png")
+
+    EXAMPLE = "/Users/david/asl-fall18-project/data/raw/exp5_1_backups/Middleware2_multikeygetsize_6_rep_1__sharding_True_middlewareworkerthreads_64/"
+    df = parse_log_exp5_1(EXAMPLE)
+    print(df.head(5))
+
+    # df['latency'] = df['timeRealDoneOffset'] - df['timeRealOffset']
+
+
+    df.to_csv("./histograms_middleware_sharded.csv")
+    bins, freq = get_histogram_of_latencies(df)
+    plot_histogram_middleware(bins, freq, filepath="/Users/david/asl-fall18-project/report/img/exp5_1/exp_5_1_histogram_mw_sharded.png")
