@@ -24,10 +24,18 @@
 
 
 """
+
+# in order of Memtier Threads
+observed_queue_length = [33.88, 2.4, 48.51, 13.64]
+observed_latency = [9.73, 3.95, 13.61, 11.19]
+observed_wait_time = [1.72, 2.90, 4.97, 8.76]
+
 import numpy as np
 
 from equations import get_traffic_intensity, get_mean_number_of_jobs_in_queue, \
-    get_mean_response_time, get_mean_waiting_time, get_traffic_intensity_mmm
+    get_mean_response_time, get_mean_waiting_time, get_traffic_intensity_mmm, \
+    get_mean_queue_size_mmm, get_p0, get_small_ro, get_mean_response_time_mmm, \
+    get_mean_waiting_time_mmm
 
 def calculate_everything_mm1(lam, mu):
 
@@ -45,24 +53,27 @@ def calculate_everything_mm1(lam, mu):
     wait_time = get_mean_waiting_time(traffic_intensity, mu)
     print("Wait time is: ", wait_time)
 
-def calculate_everything_mmm(lam, mu):
-    assert lam.shape == mu.shape, (lam.shape, mu.shape)
+def calculate_everything_mmm(lam, mu, middlewarethreads):
+    services = middlewarethreads
 
-    services = [16, 32, 64, 128]
-    mu = mu / services
-
-    print("Adjusted mean is: ", mu)
-
+    # services = np.asarray([16, 32, 64, 128])
+    # mu = mu / services
     traffic_intensity = get_traffic_intensity_mmm(lam, mu, services)
     print("Traffic intensity ", traffic_intensity)
 
-    queue_length = get_mean_number_of_jobs_in_queue(traffic_intensity)
+    # some necessary pre-calculations
+    p0 = get_p0(traffic_intensity, middlewarethreads)
+    small_rho = get_small_ro(middlewarethreads, traffic_intensity, p0)
+
+    print("Adjusted mean is: ", (mu))
+
+    queue_length = get_mean_queue_size_mmm(traffic_intensity, small_rho)
     print("Queue length: ", queue_length)
 
-    response_time = get_mean_response_time(mu, traffic_intensity)
+    response_time = get_mean_response_time_mmm(traffic_intensity, mu, small_rho, services)
     print("Mean response time: ", response_time)
 
-    wait_time = get_mean_waiting_time(traffic_intensity, mu)
+    wait_time = get_mean_waiting_time_mmm(mu, small_rho, services, traffic_intensity)
     print("Wait time is: ", wait_time)
 
 
@@ -87,9 +98,20 @@ if __name__ == "__main__":
         [8157.63297235, 9896.43692309, 11775.75432867, 12984.0081002], # VC 32
     ]
 
-    maximum_service_times = np.max(STATS_MW, axis=0)
-    mean_arrival_rate = np.max(STATS_CLIENT, axis=0)
+    maximum_service_times = STATS_MW[-1]
+    mean_arrival_rate = STATS_CLIENT[-1]
+    #
+    services = [2*8, 2*16, 2*32, 2*64]
+    for i in range(4):
+        lam = mean_arrival_rate[i] # ARRIVAL RATE
+        mu = maximum_service_times[i] # SERVICE TIME
+        m = services[i]
+        mu = mu / m
+        print()
+        calculate_everything_mmm(lam, mu, m)
 
-    # calculate_everything_mm1(mean_arrival_rate, maximum_service_times)
-    calculate_everything_mmm(mean_arrival_rate, maximum_service_times)
+    # mu = np.max(STATS_MW, axis=0)
+    # lam = np.max(STATS_CLIENT, axis=0)
+    #
+    # calculate_everything_mm1(lam, mu)
 

@@ -29,47 +29,62 @@ def get_mean_number_of_jobs_in_system(ro):
     """
     return ro / (1. - ro)
 
+def get_mean_number_of_jobs_in_queue(ro):
+    """
+        Returns E[n_q]
+    """
+    return ro**2 / (1. - ro)
+
 def get_mean_response_time(mu, ro):
     """
         Returns E[r]
     """
-    return (1. / mu) / (1. - ro)
+    return (1. / mu) / (1. - ro) * 1000
 
 def get_mean_waiting_time(ro, mu):
     """
         Returns E[w]
     """
-    return ro * (1. / mu) / (1. - ro)
+    return ro * (1. / mu) / (1. - ro) * 1000
 
 ### M/M/m
 def get_traffic_intensity_mmm(lam, mu, m):
     """
-        Return ro
+        Return rho
     """
-    return lam / (mu * m)
+    return float(lam) / (mu * float(m) )
 
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - autismo
-
-def get_p0(ro, m):
-    out = 1.0 + (m * ro) ** m / math.factorial(m) * (1.0 - ro)
-    out = out + np.sum([ (m * ro) ** i / math.factorial(i) for i in range(1, m)])
+def get_p0(rho, m):
+    a = 1
+    b = ( float(m) * rho) ** m
+    b = b / (math.factorial(m) * (1 - rho) )
+    c = np.sum([ ((m * rho) ** i) / math.factorial(i) for i in range(1, m)])
+    out = a + b + c
     out = 1. / out
     return out
 
-def get_small_ro(ro, m, p_0):
-    out = (m * ro ) ** m
-    out = out / (math.factorial(m) * (1. - ro))
-    out = out * p_0
+def get_small_ro(m, rho, p_0):
+    a = (m * rho) ** m
+    b = math.factorial(m) * (1. - rho)
+    c = p_0
+    out = a / b * c
     return out
 
-def get_mean_queue_size_mmm(ro, small_ro):
-    out = ro * small_ro / (1.0 - ro)
+def get_mean_queue_size_mmm(rho, small_ro):
+    out = rho * small_ro / (1. - rho)
     return out
 
 def get_mean_response_time_mmm(ro, mu, small_ro, m):
-    out = (1. / mu) * 1000
-    out = out * (1. + ( small_ro / (m * (1. - ro) ) ) )
+    out = (1. / mu)
+    out = out * (1. + ( small_ro / (m * (1. - ro) ) ) ) * 1000
     return out
+
+def get_mean_waiting_time_mmm(mu, small_rho, m, rho):
+    out = small_rho / (m * mu * (1. - rho)) * 1000
+    return out
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - autismo
+
 
 def get_stability_condition(ro):
     return ro < 1.
@@ -103,12 +118,6 @@ def get_probability_of_k_jobs_in_the_queue(ro, k):
     else:
         out = (1. - ro) * (ro ** (k + 1) )
     return out
-
-def get_mean_number_of_jobs_in_queue(ro):
-    """
-        Returns E[n_q]
-    """
-    return ro**2 / (1. - ro)
 
 def get_variance_of_number_of_jobs_in_queue(ro):
     """

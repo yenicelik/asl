@@ -75,17 +75,25 @@ def iterate_through_experiments_exp4_1():
     client_throughput_stddev = np.zeros((total_virtual_clients, total_middleware_threads))
     client_latency_stddev = np.zeros((total_virtual_clients, total_middleware_threads))
 
-    for _vc in range(0, 6):
-        vc = (2 ** _vc)
+    queuetime_means = np.zeros((total_virtual_clients, total_middleware_threads))
+    queuelength_means = np.zeros((total_virtual_clients, total_middleware_threads))
+    waittime_means = np.zeros((total_virtual_clients, total_middleware_threads))
 
-        for _mt in range(3 - 3, 7 - 3):
-            mt = (2 ** (_mt + 3))
+    for _mt in range(3 - 3, 7 - 3):
+        mt = (2 ** (_mt + 3))
+
+        for _vc in range(0, 6):
+            vc = (2 ** _vc)
 
             client_all_throughputs = []  # From here on, we average over all values
             client_all_latencies = []
 
             mw_all_throughputs = []
             mw_all_latencies = []
+
+            queuetimes = []
+            queuelengths = []
+            waittimes = []
 
             for repetition in range(3):
 
@@ -101,6 +109,12 @@ def iterate_through_experiments_exp4_1():
 
                     try:
                         df = parse_log(BASEPATH + middleware_filename)
+
+                        # Append queuetimes, queuelength and waittime
+                        queuetimes.append(df['differenceTimeEnqueuedAndDequeued'].astype(float).mean())
+                        queuelengths.append(df['queueSize'].astype(float).mean())
+                        waittimes.append(df['differenceTimeSentToServerAndReceivedResponseFromServer'].astype(float).mean())
+
                         mw_throughput, mw_latency = get_latency_log_dataframe(df)
                         mw_throughput *= mt * 1000 # bcs this gives us throughput per millisecond
 
@@ -142,8 +156,10 @@ def iterate_through_experiments_exp4_1():
                             print(e)
                             continue
 
-            print("VC and MT ", (mt, vc))
-            print("NEW VC and MT ", (_mt, _vc))
+            # Queuetimes etc.
+            queuetime_means[_vc, _mt] = np.mean(queuetimes)
+            queuelength_means[_vc, _mt] = np.mean(queuelengths)
+            waittime_means[_vc, _mt] = np.mean(waittimes)
 
             mw_mean_latency = np.mean(mw_all_latencies)
             mw_mean_throughput = np.sum(mw_all_throughputs) / 3.
@@ -165,23 +181,33 @@ def iterate_through_experiments_exp4_1():
             client_throughput_stddev[_vc, _mt] = client_stddev_throughput
             client_latency_stddev[_vc, _mt] = client_stddev_latency
 
-        print(client_throughput_means[:,_mt].flatten())
-        print(total_virtual_clients)
 
         # Assertions
         len_mt = client_throughput_means[:, _mt].flatten().shape
         len_vc = client_throughput_means[:, _mt].flatten().shape
         len1 = virtual_clients
 
-        print("All lengths are : ")
-        print(len_mt)
-        print(len_vc)
-        print(len1)
 
 
-    # THROUGHPUTS
-    print("###write:client ", write, client_throughput_means)
-    print("###write:middleware ", write, mw_throughput_means)
+    argmax_vc = np.argmax(mw_throughput_means, axis=0)
+    print("MW throughputs are: ", mw_throughput_means)
+    print("VC maximizing is: ", argmax_vc)
+
+    for idx, mt in enumerate([8, 16, 32, 64]):
+
+        max_vc = argmax_vc[idx]
+        print()
+        print()
+        print()
+
+        print("MT IS: ", mt)
+        # Section 7 data
+        # print("###write:client ", client_throughput_means[max_vc, idx])
+        # print("###write:middleware ", mw_throughput_means[max_vc, idx])
+        print("###write:queuesizes ", queuelength_means[max_vc, idx])
+        print("###write:latency ", mw_latency_means[max_vc, idx])
+        print("###write:waittime_means ", waittime_means[max_vc, idx] / 1000000.)
+
     ###write:client  1
     # [[ 1815.45333333  2321.54        2285.64        2127.40333333]
     # [ 4608.49        4581.64        4576.45333333  4406.16333333]
@@ -197,6 +223,7 @@ def iterate_through_experiments_exp4_1():
     # [ 8833.92859926 10153.21361682 12126.18091513 10299.9702301 ]
     # [ 7465.56068924 10133.52159323 12503.89763076 13706.73554513]]
 
+    # Taken out for experiment 7!
     # Plot the client values
     render_lineargraph_multiple_errorbars(
         labels=virtual_clients,

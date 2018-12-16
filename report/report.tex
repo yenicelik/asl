@@ -1598,13 +1598,20 @@ I choose the following input parameters to model the system:
 This rate is given by the \textbf{throughput as measured by the client-side in ops/sec}.
 \item Mean service rate $\mu$: For the M/M/1 case, I choose the mean service rate to be the \textbf{maximum throughput which can possibly be handled by the middleware} within the configuration in section 4.
 This means that I will choose the maximum possible throughput that the middleware experiences.
+For the M/M/m case, I choose the mean service rate to be the \textbf{throughput per middleware thread}, which I calculate by taking dividing the total middleware throughput by the number of threads.
+The logic behind this is that each individual process is suppsoed to handle each request separately, up to the part which ends up in the queue.
+Of course, the load that ends up in the queue makes up a big fraction of the total lifestime of a request, but this is the closest approximately that I can find about multiple services in the system.
+\item For the M/M/m model $m$: I use the number of middleware threads as the number of services, motivated for the same reasons as above.
+I do this because each middlewarethread is supposed to do parallel work (up to the queue size).
 \end{enumerate}
 
 %TODO why do you choose it like this?
 
 The following table provides a quick reference to these values.
 as given by the maximum throughput of the middleware (ops/sec) 
-as given by the maximum throughput of the clients (ops/sec) 
+as given by the maximum throughput of the clients (ops/sec).
+For the M/M/m model, the service rate will be divided by the total number of workerthreads as these threads separately work on the total workload.
+
 
 \begin{center}
 	\scriptsize{
@@ -1621,6 +1628,15 @@ as given by the maximum throughput of the clients (ops/sec)
 	} 
 \end{center}
 
+The comparisong comparison is conducted by calculating the relative error between observed and predicted values. 
+The error is calculated using the following formula:
+
+\begin{equation}
+e = \frac{x - y}{y} 
+\end{equation}
+where $x$ is the real value, and $y$ the predicted value, and $e$ denotes the relative error.
+For the relative error, the close the error is to the value $0.$, the more accurate our predictions are.
+Please notice that this error term is asymmetric.
 
 
 \subsection{M/M/1}
@@ -1631,38 +1647,117 @@ I will then compare these to the observed values from section 4.1 to arrive at a
 The system is stable, as is specified by all the rho values which are all smaller than 1.
 
 \begin{table}[H]
-	\caption{M/M/1 Predicted vs. Observed values for 8 Middlewarethreads}
+	\caption{M/M/1 Predicted Values}
+		\center
 	\scriptsize{
 		\begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|}
-					\hline & & & Predicted & Predicted & Predicted & Observed & Observed & Observed &\\ 
-			\hline Middelware threads $\mu$ & $\lambda$ & $\rho$ & Queue length & Latency & Wait time & Queue length & Latency & Wait time \\ 
-			\hline 8 & 8278 & 8120 & 0.9809023 & 50.38 & 0.00632536 & 0.00620456 &  14365.88 \\ 
-			\hline 16 & 10491 & 9209 & 0.87780868 & 6.31 & 0.00078007 & 0.00068475 &  14365.88 \\ 
-			\hline 32 & 11810 & 11789 & 0.99885762 & 1796.46 & 0.15272627 & 0.15264135 &  14365.88 \\ 
-			\hline 64 & 12984 & 12150 & 0.93577961 & 13.63 & 0.00119927 & 0.00112226 &  14365.88 \\ 
+					\hline & & &  & Predicted & Predicted & Predicted \\ 
+			\hline Middelware threads & $\mu$ & $\lambda$ & $\rho$ & Queue length & Latency in ms & Wait time in ms \\ 
+			\hline 8 & 8278 & 8120 & 0.9809023 & 
+			50.38 & 6.32536 & 6.20456 \\ 
+			\hline 16 & 10491 & 9209 & 0.87780868 & 
+			6.31 & 0.78007 & 0.68475\\ 
+			\hline 32 & 11810 & 11789 & 0.99885762 & 
+			1796.46 & 152.72627 & 152.64135 \\ 
+			\hline 64 & 12984 & 12150 & 0.93577961 
+			& 13.63 & 1.19927 & 1.12226\\ 
 			\hline
 		\end{tabular}
 	} 
 \end{table}
 
+The following table compares the observed values and the predicted values.
+This comparison is conducted by calculating the relative error, which I predict using the following formula:
+
+\begin{equation}
+e = \frac{x - y}{y} 
+\end{equation}
+where $x$ is the real value, and $y$ the predicted value, and $e$ denotes the relative error.
+
+%TODO calculate all errors again
+
+\begin{table}[H]
+	\caption{M/M/1 Observed values and prediction error for each value. The error is always a \textbf{relative error}.}
+		\center
+	\scriptsize{
+		\begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|}
+					\hline & Observed & Observed & Observed & Error & Error & Error \\ 
+			\hline & Queue length & Latency in ms & Wait time in ms & Queue length & Latency & Wait time \\ 
+			\hline 8 & 
+			33.66 &  9.737 & 1.72 &
+			0.49673203 & -0.35037897 & 2.60730233 \\ 
+			\hline 16 & 
+			2.40 &  3.95 & 2.90 &
+			1.62916667 & -0.80251392 & -0.76387931  \\ 
+			\hline 32 &
+			48.51 &  13.61 & 4.97 &
+			36.03277675 & 10.2216216 & 29.71254527 \\ 
+			\hline 64 &
+			13.64 & 11.19 &  8.76 &
+			-0.00073314 & -0.89282663 & -0.87188813 \\ 
+			\hline
+		\end{tabular}
+	} 
+\end{table}
+
+One can see that the relative error is very high for almost all, expect 2 values.
+As such, the M/M/1 queueing model provides a bad approximately to the throughput of the system.
+
+I will now proceed with the approximations arrived by using the M/M/m queuing model.
+
 For each configuration of workerthreads, I will proceed with this calculation.
-
-
 your entire system. Motivate your choice of input parameters to the model. Explain for which experiments the predictions of the model match and for which they do not.
+
+The relative error gives a good measure of how different the observed values are from the measured values.
+Although there are some values which are off by less than a few percent (i.e. $-0.0007$ implies being off by $ 0.7 \% $), most values are above $30\%$ off, or even off by a multiple of 30.
+The queueing model for M/M/1 gives a good understand of the range in which order of magnitude the quantities will be, but for this system, is not a very good approximation of the exact numbers.
+Some differences include that the model has high over-predictions for 32 middlewarethreads for example, where the queue-length is at 1796.
+Most of the estimates for the queuelengths are quite accurate (up to $50 - 33 = 17$ items in the queue). 
+The prediction for response times are not very accurate, but do provide an intuition on the order of magnitude.
 
 \subsection{M/M/m}
 
-
 \begin{table}[H]
-	\caption{M/M/1 Predicted vs. Observed values for 8 Middlewarethreads}
+	\caption{M/M/m Predicted Values}
+		\center
 	\scriptsize{
 		\begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|}
-					\hline & & & Predicted & Predicted & Predicted & Observed & Observed & Observed &\\ 
-			\hline Middelware threads $\mu$ & $\lambda$ & $\rho$ & Queue length & Latency & Wait time & Queue length & Latency & Wait time \\ 
-			\hline 8 & 1034 & 8120 & 0.9809023 & 50.38 & 0.00632536 & 0.00620456 &  14365.88 \\ 
-			\hline 16 & 655 & 9209 & 0.87780868 & 6.31 & 0.00078007 & 0.00068475 &  14365.88 \\ 
-			\hline 32 & 367 & 11789 & 0.99944397 & 1796.46 & 0.15272627 & 0.15264135 &  14365.88 \\ 
-			\hline 64 & 202 & 12150 & 0.93577961 & 13.63 & 0.00119927 & 0.00112226 &  14365.88 \\ 
+					\hline & & & & Predicted & Predicted & Predicted \\ 
+			\hline Middelware threads $m$ & $\mu$ & $\lambda$ & $\rho$ & Queue length & Latency in ms & Wait time in ms \\ 
+			\hline 8 & 509 & 8120 & 0.995 & 
+			211.4 & 28.00 & 26.04 \\ 
+			\hline 16 & 309 & 9209 & 0.930 & 
+			7.98 & 4.100 & 0.866 \\ 
+			\hline 32 & 183 & 11789 & 	0.999 & 
+			1787 & 157 & 151 \\ 
+			\hline 64 & 101 & 12150 & 0.9357 & 
+			5.14 & 10.28 & 0.42  \\ 
+			\hline
+		\end{tabular}
+	} 
+\end{table}
+
+The following table compares the observed values and the predicted values.
+
+\begin{table}[H]
+	\caption{M/M/1 Observed values and prediction error for each value. The error is always a \textbf{relative error}.}
+		\center
+	\scriptsize{
+		\begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|}
+					\hline & Observed & Observed & Observed & Error & Error & Error \\ 
+			\hline & Queue length & Latency in ms & Wait time in ms & Queue length & Latency & Wait time \\ 
+			\hline 8 & 
+			33.66 &  9.737 & 1.72 &
+			5.28045157 & 1.87562904 & 14.13953488 \\ 
+			\hline 16 & 
+			2.40 &  3.95 & 2.90 &
+			2.325    &   0.03797468  & -0.70137931  \\ 
+			\hline 32 &
+			48.51 &  13.61 & 4.97 &
+			35.83776541 & 10.53563556 & 29.38229376 \\ 
+			\hline 64 &
+			13.64 & 11.19 &  8.76 &
+			-0.62316716 & -0.08132261 & -0.95205479 \\ 
 			\hline
 		\end{tabular}
 	} 
@@ -1670,9 +1765,23 @@ your entire system. Motivate your choice of input parameters to the model. Expla
 
 Build an M/M/m model based on Section 4, where each middleware worker thread is represented as one service.  Motivate your choice of input parameters to the model. Explain for which experiments the predictions of the model match and for which they do not.
 
-\subsection{Network of Queues}
+One can see that the relative error is very high for almost all, expect 2 values.
+As such, the M/M/1 queueing model provides a bad approximately to the throughput of the system.
 
-Based on Section 3, build a network of queues which simulates your system. Motivate the design of your network of queues and relate it wherever possible to a component of your system. Motivate your choice of input parameters for the different queues inside the network. Perform a detailed analysis of the utilization of each component and clearly state what the bottleneck of your system is. Explain for which experiments the predictions of the model match and for which they do not.
+I will now proceed with the approximations arrived by using the M/M/m queuing model.
+
+For each configuration of workerthreads, I will proceed with this calculation.
+your entire system. Motivate your choice of input parameters to the model. Explain for which experiments the predictions of the model match and for which they do not.
+
+The relative error gives a good measure of how different the observed values are from the measured values.
+Although there are some values which are off by less than a few percent (i.e. $-0.0007$ implies being off by $ 0.7 \% $), most values are above $30\%$ off, or even off by a multiple of 30.
+The queueing model for M/M/1 gives a good understand of the range in which order of magnitude the quantities will be, but for this system, is not a very good approximation of the exact numbers.
+Some differences include that the model has high over-predictions for 32 middlewarethreads for example, where the queue-length is at 1796.
+Most of the estimates for the queuelengths are quite accurate (up to $50 - 33 = 17$ items in the queue). 
+The prediction for response times are not very accurate, but do provide an intuition on the order of magnitude.
+
+\subsection{Network of Queues}
+This section has been omitted.
 
 \section{Appendix}
 
