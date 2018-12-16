@@ -1378,6 +1378,15 @@ By just picking one instance, I solve this problem and allow for a clearer displ
 \label{fig:test}
 \end{figure}
 
+As a sanity check, the minimum response time of the client is higher than the minimum response time of the middlewares.
+This is simply because the client measures an additional network round-trip time, whereas the middleware only includes the time that it takes from the incoming request (after the request has gone through the network once), through the memcached server's waiting time, back to the middleware.
+On this very last step again, the network trip time back to the client is neglected.
+These times from client to middleware, and from middleware back to clients (stripping out the processing and waiting time) is not measured by the the middleware, however is measured by the client.
+These measures add up to the latency, as can be seen on histograms.
+The histograms support this claim, as there are some few requests that only take up to 1 millisecond, whereas on the client side, there are no requests taking up only 1 milliscond.
+
+
+
 %TODO fix displaying the 
 
 More network operations come from the fact that more individual servers need to be contact to finish a request (instead of one server, all servers need to be communicated with).
